@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	uart="2" timeout="3600" file="tsp.exp" track_expect
+}

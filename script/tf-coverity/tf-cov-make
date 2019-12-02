@@ -1,0 +1,204 @@
+#! /bin/sh
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+#
+# This script builds the TF in different configs.
+# Rather than telling cov-build to build TF using a simple 'make all' command,
+# the goal here is to combine several build flags to analyse more of our source
+# code in a single 'build'. The Coverity Scan service does not have the notion
+# of separate types of build - there is just one linear sequence of builds in
+# the project history.
+#
+
+# Bail out as soon as an error is encountered.
+set -e
+
+TF_SOURCES=$1
+if [ ! -d "$TF_SOURCES" ]; then
+    echo "ERROR: '$TF_SOURCES' does not exist or is not a directory"
+    echo "Usage: $(basename "$0") <trusted-firmware-directory>"
+    exit 1
+fi
+
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+# Get mbed TLS library code to build Trusted Firmware with Trusted Board Boot
+# support. The version of mbed TLS to use here must be the same as when
+# building TF in the usual context.
+if [ ! -d mbedtls ]; then
+    git clone https://github.com/ARMmbed/mbedtls.git
+fi
+cd mbedtls
+containing_dir="$(readlink -f "$(dirname "$0")/")"
+. $containing_dir/common-def.sh
+git checkout "$MBED_TLS_SOURCES_TAG"
+cd -
+TBB_OPTIONS="TRUSTED_BOARD_BOOT=1 GENERATE_COT=1 MBEDTLS_DIR=$(pwd)/mbedtls"
+ARM_TBB_OPTIONS="$TBB_OPTIONS ARM_ROTPK_LOCATION=devel_rsa"
+
+cd "$TF_SOURCES"
+
+# Clean TF source dir to make sure we don't analyse temporary files.
+make distclean
+
+#
+# Build TF in different configurations to get as much coverage as possible
+#
+
+# We need to clean the platform build between each configuration because Trusted
+# Firmware's build system doesn't track build options dependencies and won't
+# rebuild the files affected by build options changes.
+clean_build()
+{
+    local flags="$*"
+    echo "Building TF with the following build flags:"
+    echo "  $flags"
+    make $flags clean
+    make $flags all
+    echo "Build config complete."
+    echo
+}
+
+#
+# FVP platform
+# We'll use the following flags for all FVP builds.
+#
+fvp_common_flags="-j PLAT=fvp DEBUG=1"
+
+# Try all possible SPDs.
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_TSP_RAM_LOCATION=dram SPD=tspd
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_TSP_RAM_LOCATION=dram SPD=tspd TSP_INIT_ASYNC=1 \
+    TSP_NS_INTR_ASYNC_PREEMPT=1
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=opteed
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tlkd
+
+clean_build -j PLAT=fvp DEBUG=1 SPD=trusty
+clean_build -j PLAT=fvp DEBUG=1 SPD=trusty TRUSTY_SPD_WITH_GENERIC_SERVICES=1
+
+# SDEI
+clean_build PLAT=fvp DEBUG=1 SDEI_SUPPORT=1 EL3_EXCEPTION_HANDLING=1
+
+# Without coherent memory
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_TSP_RAM_LOCATION=dram SPD=tspd USE_COHERENT_MEM=0
+
+# Using PSCI extended State ID format rather than the original format
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_TSP_RAM_LOCATION=dram SPD=tspd PSCI_EXTENDED_STATE_ID=1 \
+    ARM_RECOM_STATE_ID_ENC=1
+
+# Alternative boot flows (This changes some of the platform initialisation code)
+clean_build $fvp_common_flags EL3_PAYLOAD=0x80000000
+clean_build $fvp_common_flags PRELOADED_BL33_BASE=0x80000000
+
+# Using the SP804 timer instead of the Generic Timer
+clean_build $fvp_common_flags FVP_USE_SP804_TIMER=1
+
+# Using the CCN driver and multi cluster topology
+clean_build $fvp_common_flags FVP_CLUSTER_COUNT=4
+
+# PMF
+clean_build $fvp_common_flags ENABLE_PMF=1
+
+# stack protector
+clean_build $fvp_common_flags ENABLE_STACK_PROTECTOR=strong
+
+# AArch32 build
+clean_build $fvp_common_flags CROSS_COMPILE=arm-linux-gnueabihf- \
+    ARCH=aarch32 AARCH32_SP=sp_min \
+    RESET_TO_SP_MIN=1 PRELOADED_BL33_BASE=0x80000000
+clean_build $fvp_common_flags CROSS_COMPILE=arm-linux-gnueabihf- \
+    ARCH=aarch32 AARCH32_SP=sp_min
+
+# Xlat tables lib version 1 (AArch64 and AArch32)
+clean_build $fvp_common_flags ARM_XLAT_TABLES_LIB_V1=1 RECLAIM_INIT_CODE=0
+clean_build $fvp_common_flags CROSS_COMPILE=arm-linux-gnueabihf- \
+    ARCH=aarch32 AARCH32_SP=sp_min ARM_XLAT_TABLES_LIB_V1=1 RECLAIM_INIT_CODE=0
+
+# Using GIC600 driver
+clean_build $fvp_common_flags FVP_USE_GIC_DRIVER=FVP_GIC600
+
+# SPM support
+clean_build $fvp_common_flags ENABLE_SPM=1 EL3_EXCEPTION_HANDLING=1
+
+#BL2 at EL3 support
+clean_build $fvp_common_flags BL2_AT_EL3=1
+clean_build $fvp_common_flags CROSS_COMPILE=arm-linux-gnueabihf- \
+    ARCH=aarch32 AARCH32_SP=sp_min BL2_AT_EL3=1
+
+#
+# Juno platform
+# We'll use the following flags for all Juno builds.
+#
+juno_common_flags="-j PLAT=juno DEBUG=1"
+clean_build $juno_common_flags SPD=tspd ${ARM_TBB_OPTIONS}
+clean_build $juno_common_flags EL3_PAYLOAD=0x80000000
+clean_build $juno_common_flags ENABLE_STACK_PROTECTOR=strong
+clean_build $juno_common_flags CSS_USE_SCMI_SDS_DRIVER=0
+clean_build $juno_common_flags SPD=tspd ${ARM_TBB_OPTIONS} ARM_CRYPTOCELL_INTEG=1 CCSBROM_LIB_PATH=${CRYPTOCELL_LIB_PATH}
+
+#
+# System Guidance for Infrastructure platform SGI575
+#
+make -j DEBUG=1 PLAT=sgi575 all
+
+#
+# System Guidance for Infrastructure platform RD-N1Edge
+#
+make -j DEBUG=1 PLAT=rdn1edge all
+
+#
+# System Guidance for Infrastructure platform RD-E1Edge
+#
+make -j DEBUG=1 PLAT=rde1edge all
+
+# Partners' platforms.
+# Enable as many features as possible.
+# We don't need to clean between each build here because we only do one build
+# per platform so we don't hit the build flags dependency problem.
+external_plat_common_flags="-j DEBUG=1"
+
+make PLAT=mt8173 $external_plat_common_flags all
+
+make PLAT=rk3368 $external_plat_common_flags COREBOOT=1 all
+make PLAT=rk3399 $external_plat_common_flags COREBOOT=1 all
+make PLAT=rk3328 $external_plat_common_flags COREBOOT=1 all
+
+# Although we do several consecutive builds for the Tegra platform below, we
+# don't need to clean between each one because the Tegra makefiles specify
+# a different build directory per SoC.
+make PLAT=tegra TARGET_SOC=t210 $external_plat_common_flags all
+make PLAT=tegra TARGET_SOC=t132 $external_plat_common_flags all
+make PLAT=tegra TARGET_SOC=t186 $external_plat_common_flags all
+
+# For the Xilinx platform, artificially increase the extents of BL31 memory
+# (using the platform-specific build options ZYNQMP_ATF_MEM_{BASE,SIZE}).
+# If we keep the default values, BL31 doesn't fit when it is built with all
+# these build flags.
+make PLAT=zynqmp $external_plat_common_flags \
+    RESET_TO_BL31=1 SPD=tspd \
+    ZYNQMP_ATF_MEM_BASE=0xFFFC0000 ZYNQMP_ATF_MEM_SIZE=0x00040000 \
+    all
+
+clean_build PLAT=qemu $external_plat_common_flags ${TBB_OPTIONS}
+clean_build PLAT=qemu $external_plat_common_flags ENABLE_STACK_PROTECTOR=strong
+
+# For hikey enable PMF to include all files in the platform port
+make PLAT=hikey $external_plat_common_flags ENABLE_PMF=1 all
+make PLAT=hikey960 $external_plat_common_flags all
+
+clean_build PLAT=uniphier $external_plat_common_flags ${TBB_OPTIONS} SPD=tspd
+clean_build PLAT=uniphier $external_plat_common_flags FIP_GZIP=1
+
+make PLAT=poplar $external_plat_common_flags all
+
+make PLAT=rpi3 $external_plat_common_flags PRELOADED_BL33_BASE=0xDEADBEEF all
+
+# Cannot use $external_plat_common_flags for LS1043 platform, as then
+# the binaries do not fit in memory.
+clean_build PLAT=ls1043 SPD=opteed ENABLE_STACK_PROTECTOR=strong
+clean_build PLAT=ls1043 SPD=tspd
+
+cd ..

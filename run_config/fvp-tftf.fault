@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	# Hold UART0 but expect fault messages in UART1
+	uart="0" file="hold_uart.exp" track_expect
+	uart="1" set_primary="1" file="tftf_fault.exp" track_expect
+}

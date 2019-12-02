@@ -1,0 +1,51 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+#
+# Expect script for Standalone MM partition UART2
+#
+# Refer to handle-arguments.inc for the list of parameters.
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+expect {
+	"SPM Version" {
+		puts "<<Secure Partition booting>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"MmMain Done!" {
+		puts "<<Secure Partition booted>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"Received event - 0xC4000041 on cpu"  {
+		puts "<<Received event>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"MmEntryPoint Done"  {
+		puts "<<Secure Partition done>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+exit_uart 0

@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+	reset_to_spmin="1" \
+		model="cortex-a32x4" gen_model_params
+	uart="0" set_expect_variable "num_cpus" "4"
+}

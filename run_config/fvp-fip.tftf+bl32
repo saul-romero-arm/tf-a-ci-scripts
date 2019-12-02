@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+	build_fip BL33="$archive/tftf.bin" BL32="$archive/bl32.bin"
+}

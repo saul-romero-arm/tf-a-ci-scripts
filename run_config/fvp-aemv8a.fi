@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+pre_tf_build() {
+	# Apply fault injection patches
+	apply_tf_patch "fault_inject/injected-fault-record-and-handler.patch"
+	apply_tf_patch "fault_inject/explicit-events.patch"
+	apply_tf_patch "fault_inject/fvp-fault-handlers.patch"
+}
+
+post_tf_archive() {
+	model="base-aemv8a" fault_inject="1" arch_version="8.4" \
+		gen_model_params
+}

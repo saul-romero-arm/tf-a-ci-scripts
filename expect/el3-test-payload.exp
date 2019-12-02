@@ -1,0 +1,22 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+#
+# Expect script for Trusted Firmware + EL3 Test Payload
+#
+# Refer to handle-arguments.inc for the list of parameters.
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+# Trusted Firmware boot section
+source [file join [file dirname [info script]] trusted-firmware.inc]
+
+source [file join [file dirname [info script]] utils.inc]
+
+expect_string "Booting the EL3 test payload" "EL3 Test Payload: Started"
+expect_string "All CPUs booted!" "EL3 Test Payload: SUCCESS!"
+exit_uart 0

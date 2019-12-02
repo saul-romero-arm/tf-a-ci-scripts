@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+pre_tf_build() {
+	# Build sptool for this config
+	targets="all fiptool sptool" set_tf_build_targets
+}
+
+pre_tftf_build() {
+	# Build TFTF and Quark for this config
+	targets="tftf quark" set_tftf_build_targets
+}
+
+post_tf_build() {
+	# Build the Secure Partition package
+	trusted_firmware/tools/sptool/sptool				\
+		-o "$archive/bl32.bin"					\
+		-i "$archive/quark.bin":"$archive/quark.dtb"
+
+	build_fip BL33="$archive/tftf.bin" BL32="$archive/bl32.bin"
+}

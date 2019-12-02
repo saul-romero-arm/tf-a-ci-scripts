@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+pre_tftf_build() {
+	# Build TFTF and Cactus-MM images for this config
+	targets="tftf cactus_mm" set_tftf_build_targets
+}
+
+post_tf_build() {
+	# Rename cactus_mm.bin as bl32.bin
+	mv "$archive/cactus_mm.bin" "$archive/bl32.bin"
+}
+
+fetch_tf_resource() {
+	set_run_env "num_uarts" "3"
+	uart="0" file="tftf.exp" track_expect
+	uart="1" file="hold_uart.exp" track_expect
+	uart="2" file="hold_uart.exp" track_expect
+}

@@ -1,0 +1,83 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+#
+# Expect script for Trusted Firmware + EDK2 UART0
+#
+# Refer to handle-arguments.inc for the list of parameters.
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+# Trusted Firmware boot section
+source [file join [file dirname [info script]] trusted-firmware.inc]
+
+# EDK2 section
+expect {
+	"UEFI firmware" {
+		puts "<<EDK2 starting>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"UEFI Interactive Shell" {
+		puts "<<EDK2 shell starting>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"any other key to continue." {
+		send "\r"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"Shell>" {
+		send "fs0:\r"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"FS0:" {
+		send "UefiInfo.efi\r"
+		puts "<<Loading UEFI application>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	-re "Loading driver at .* UefiInfo.efi" {
+		puts "<<UEFI application is being loaded>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"FS0:" {
+		puts "<<UEFI application loaded>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+exit_uart 0

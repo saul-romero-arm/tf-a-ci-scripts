@@ -1,0 +1,20 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+#
+# Expect script
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+# Expect the test to have set a fault message
+if {![info exists ::env(tftf_fault_msg)]} {
+	puts "Fault message not set"
+	exit_uart -1
+}
+
+expect_string "$env(tftf_fault_msg)"
+exit_uart 0

@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+#
+# Expect script for AArch32 Trusted Firmware + U-Boot + Linux boot process
+# with a AArch32 minimal initrd. The linux image must be a zImage and the
+# initrd must include the U-boot header.
+# TF with reset to SP_MIN
+#
+# Refer to handle-arguments.inc for the list of parameters.
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+# Trusted Firmware boot section
+source [file join [file dirname [info script]] trusted-firmware-aarch32-rst-to-sp-min.inc]
+
+# Linux kernel boot section
+source [file join [file dirname [info script]] linux.inc]
+
+# Busybox filesystem section
+source [file join [file dirname [info script]] busybox.inc]
+
+exit_uart -1

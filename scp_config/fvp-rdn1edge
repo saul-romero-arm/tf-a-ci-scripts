@@ -1,0 +1,2 @@
+CC=arm-none-eabi-gcc
+PRODUCT=rdn1e1

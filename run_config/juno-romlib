@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_archive() {
+	# A combined BL1 and ROMLIB binary with the right alignment is
+	# needed for Juno when library at ROM is enabled (USE_ROMLIB=1)
+	# The combined binary bl1_romlib.bin has to be used instead of BL1
+	echo "Copying bl1_romlib.bin to bl1.bin."
+	mv "$archive/bl1_romlib.bin" "$archive/bl1.bin"
+}

@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	# Use SCP binary from SCP build if it exists, or fetch pre-built ones.
+	if [ ! -f "$archive/scp_rom.bin" ]; then
+		url="$sgm_prebuilts/scp_rom.bin" fetch_file
+		archive_file "scp_rom.bin"
+	fi
+}
+
+post_fetch_tf_resource() {
+	model="css-sgm775" gen_model_params
+	set_run_env "ports_script" "$ci_root/model/css-sgi575-ports.awk"
+	set_run_env "num_uarts" "2"
+}

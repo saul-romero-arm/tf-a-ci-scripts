@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	kernel_type="fvp-aarch32-zimage" get_kernel
+	initrd_type="aarch32-ramdisk" get_initrd
+	uart="0" file="linux-rd-aarch32-rst-sp-min.exp" track_expect
+}

@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+	get_uboot_bin
+}
+
+post_fetch_tf_resource() {
+	preload_bl33="1" \
+	preload_bl33_bin="uboot.bin" \
+	reset_to_bl31="1" \
+		model="base-aemv8a" gen_model_params
+}

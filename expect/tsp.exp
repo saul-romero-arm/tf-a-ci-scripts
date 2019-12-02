@@ -1,0 +1,51 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+#
+# Expect script for TSP
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+#
+# Output from TSP:
+#
+#     NOTICE:  TSP: <version>(<mode>):<commit_id>
+#     NOTICE:  TSP: Built : <hh:mm:ss>, <date>
+#
+# With 'TSP: Built' message, we assume a successful boot. All further messages
+# are ignored.
+#
+
+# Arbitrary TSP response count during boot. Maybe adjusted as necessary
+set tsp_resp_proof [get_param tsp_resp_proof 1000]
+set tsp_resp_count 0
+
+expect_string "TSP: Built" "TSP booted"
+
+# TSPD prints more messages only when built with INFO or above.
+set tsp_debug [get_param tsp_debug]
+if {$tsp_debug != ""} {
+	while {1} {
+		expect {
+			# Following CPU power operations, TSP emits sample stats using
+			# the below prefix. After tsp_resp_proof responses during boot,
+			# we're confident TSP is functional; so quit with success.
+			"TSP: cpu" {
+				incr tsp_resp_count
+				if {$tsp_resp_count >= $tsp_resp_proof} {
+					puts "<<TSP $tsp_resp_count responses; sufficient>>"
+					break
+				}
+			}
+			timeout {
+				exit_timeout
+			}
+		}
+	}
+}
+
+source [file join [file dirname [info script]] uart-hold.inc]

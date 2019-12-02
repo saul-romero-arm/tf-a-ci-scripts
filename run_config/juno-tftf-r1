@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_archive() {
+	set_hook_var "juno_revision" "juno-r1"
+	echo "Choosing juno revision r1"
+}

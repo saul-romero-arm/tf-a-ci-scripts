@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	uart="0" file="linux-rd-busybox.exp" track_expect
+
+	busybox_prebuilt=$css_downloads/sgi/sgi575
+	url="$busybox_prebuilt/grub-busybox.img" saveas="rootfs.bin" fetch_file
+	archive_file "rootfs.bin"
+}

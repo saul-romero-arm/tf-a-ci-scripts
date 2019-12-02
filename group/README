@@ -1,0 +1,10 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+Files in this directory map build configs to their run configs. BUILD_CONFIG and
+RUN_CONFIG environment variables are set accordingly.
+
+These files are in the Java property file format; so, no quoting the RHS.

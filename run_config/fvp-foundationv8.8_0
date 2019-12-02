@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+	model="foundationv8" arch_version="8.0" gen_model_params
+	uart="0" set_expect_variable "num_cpus" "4"
+}

@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+	image=$(mktempfile)
+	printf '\1\0\0\0' > "$image"
+
+	aarch32="1" \
+	reset_to_spmin="1" \
+	cache_state_modelled="0" \
+	memprotect="$image" \
+	memprotect_addr="0xBFC0000" \
+		model="base-aemv8a-revb" gen_model_params
+}

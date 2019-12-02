@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+#
+# Expect script for Trusted Firmware + U-Boot + Linux boot process with
+# OpenEmbedded rootfs in /dev/vda2
+# TF with reset to BL3-1
+#
+# Refer to handle-arguments.inc for the list of parameters.
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+# Trusted Firmware boot section
+source [file join [file dirname [info script]] trusted-firmware-rst-to-bl31.inc]
+
+# Linux kernel boot section
+source [file join [file dirname [info script]] linux.inc]
+
+# OpenEmbedded filesystem section
+source [file join [file dirname [info script]] openembedded.inc]
+
+exit_uart -1
+

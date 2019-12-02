@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+	pctl_startup="0.0.*.0,0.1.*.0" \
+		secure_ram_fill="1" \
+		model="base-aemv8a" gen_model_params
+}

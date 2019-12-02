@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	kernel_type="fvp-oe-uboot" get_kernel
+	initrd_type="dummy-ramdisk" get_initrd
+	# No expect tracking as this is an interactive test (test_run=1)
+
+	tmp_dir="$(mktempdir)"
+	ln -s "${img_file:?}" "$archive/rootfs.bin"
+}

@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	dtb_type="fvp-base-gicv3-psci-1t" get_dtb
+	update_fip_hw_config
+}

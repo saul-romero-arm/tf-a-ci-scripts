@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	kernel_type="fvp-oe-uboot" get_kernel
+	initrd_type="dummy-ramdisk" get_initrd
+	get_rootfs
+	uart="0" timeout="1800" file="linux-oe-rst-bl31.exp" track_expect
+}
