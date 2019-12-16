@@ -23,6 +23,7 @@ export tftf_root="${tftf_root:-$workspace/trusted_firmware_tf}"
 export scp_root="${scp_root:-$workspace/scp}"
 scp_tools_root="${scp_tools_root:-$workspace/scp_tools}"
 cc_root="${cc_root:-$ccpathspec}"
+spm_root="${spm_root:-$workspace/spm}"
 
 scp_tf_tools_root="$scp_tools_root/scp_tf_tools"
 
@@ -31,6 +32,7 @@ tf_refspec="$TF_REFSPEC"
 tftf_refspec="$TFTF_REFSPEC"
 scp_refspec="$SCP_REFSPEC"
 scp_tools_commit="${SCP_TOOLS_COMMIT:-master}"
+spm_refspec="$SPM_REFSPEC"
 
 test_config="${TEST_CONFIG:?}"
 test_group="${TEST_GROUP:?}"
@@ -735,6 +737,47 @@ build_cc() {
 	make -C model-plugin PVLIB_HOME=$PVLIB_HOME &>>"$build_log"
 }
 
+build_spm() {
+	(
+	env_file="$workspace/spm.env"
+	config_file="${spm_build_config:-$spm_config_file}"
+
+	source "$config_file"
+
+	if [ -f "$env_file" ]; then
+		set -a
+		source "$env_file"
+		set +a
+	fi
+
+	cd "$spm_root"
+
+	# Always clean when running on Jenkins. Skip clean when running
+	# locally and explicitly requested.
+	if upon "$jenkins_run" || not_upon "$dont_clean"; then
+		# make clean fails on a fresh repo where the project has not
+		# yet been built. Hence only clean if out/reference directory
+	        # already exists.
+		if [ -d "out/reference" ]; then
+			make clean &>>"$build_log" || fail_build
+		fi
+	fi
+
+	# Log build command line. It is left unfolded on purpose to assist
+	# copying to clipboard.
+	cat <<EOF | log_separator >/dev/null
+
+Build command line:
+	make $make_j_opts $(cat "$config_file" | tr '\n' ' ')
+
+EOF
+
+	# Build SPM. Since build output is being directed to the build log, have
+	# descriptor 3 point to the current terminal for build wrappers to vent.
+	make $make_j_opts $(cat "$config_file") 3>&1 &>>"$build_log" \
+		|| fail_build
+	)
+}
 
 # Set metadata for the whole package so that it can be used by both Jenkins and
 # shell
@@ -755,6 +798,11 @@ set_tftf_build_targets() {
 set_scp_build_targets() {
 	echo "Set build target to '${targets:?}'"
 	set_hook_var "scp_build_targets" "$targets"
+}
+
+set_spm_build_targets() {
+	echo "Set build target to '${targets:?}'"
+	set_hook_var "spm_build_targets" "$targets"
 }
 
 # Look under $archive directory for known files such as blX images, kernel, DTB,
@@ -985,6 +1033,7 @@ tf_config="$(echo "$build_configs" | awk -F, '{print $1}')"
 tftf_config="$(echo "$build_configs" | awk -F, '{print $2}')"
 scp_config="$(echo "$build_configs" | awk -F, '{print $3}')"
 scp_tools_config="$(echo "$build_configs" | awk -F, '{print $4}')"
+spm_config="$(echo "$build_configs" | awk -F, '{print $5}')"
 
 test_config_file="$ci_root/group/$test_group/$test_config"
 
@@ -992,6 +1041,7 @@ tf_config_file="$ci_root/tf_config/$tf_config"
 tftf_config_file="$ci_root/tftf_config/$tftf_config"
 scp_config_file="$ci_root/scp_config/$scp_config"
 scp_tools_config_file="$ci_root/scp_tools_config/$scp_tools_config"
+spm_config_file="$ci_root/spm_config/$spm_config"
 
 # File that keeps track of applied patches
 tf_patch_record="$workspace/tf_patches"
@@ -1032,6 +1082,14 @@ else
 	echo "SCP Tools config:"
 	echo
 	sort "$scp_tools_config_file" | sed '/^\s*$/d;s/^/\t/'
+fi
+
+if ! config_valid "$spm_config"; then
+	spm_config=
+else
+	echo "SPM config:"
+	echo
+	sort "$spm_config_file" | sed '/^\s*$/d;s/^/\t/'
 	echo
 fi
 
@@ -1094,6 +1152,21 @@ if [ -n "$cc_config" ] ; then
 		git clone -q $cc_src_repo_url cc_plugin --depth 1 -b $cc_src_repo_tag > /dev/null
 		show_head "$cc_root"
 	fi
+fi
+
+if [ "$spm_config" ] && assert_can_git_clone "spm_root"; then
+	# If the SPM repository has already been checked out, use
+	# that location. Otherwise, clone one ourselves.
+	echo "Cloning SPM..."
+	clone_url="${SPM_CHECKOUT_LOC:-$spm_src_repo_url}" where="$spm_root" \
+		refspec="$SPM_REFSPEC" clone_repo &>>"$build_log"
+
+	# Query git submodules
+	pushd "$spm_root"
+	git submodule update --init
+	popd
+
+	show_head "$spm_root"
 fi
 
 if [ "$run_config" ]; then
@@ -1228,6 +1301,39 @@ for mode in $modes; do
 
 		# Clear any local changes made by applied patches
 		undo_tftf_patches
+
+		echo "##########"
+		echo
+		)
+	fi
+
+	# SPM build
+	if config_valid "$spm_config"; then
+		(
+		echo "##########"
+
+		# Get platform name from spm_config file
+		plat="$(echo "$spm_config" | awk -F- '{print $1}')"
+		plat_utils="$ci_root/${plat}_utils.sh"
+		if [ -f "$plat_utils" ]; then
+			source "$plat_utils"
+		fi
+
+		archive="$build_archive"
+		spm_build_root="$spm_root/out/reference/secure_aem_v8a_fvp_clang"
+
+		echo "Building SPM ($mode) ..." |& log_separator
+
+		# NOTE: mode has no effect on SPM build (for now), hence debug
+		# mode is built but subsequent build using release mode just
+		# goes through with "nothing to do".
+		build_spm
+
+		# Show SPM/Hafnium binary details
+		ls -lart $spm_build_root/hafnium.bin
+		cksum $spm_build_root/hafnium.bin
+
+		from="$spm_build_root" to="$archive" collect_build_artefacts
 
 		echo "##########"
 		echo

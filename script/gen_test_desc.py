@@ -39,6 +39,12 @@ def translate_build_config(group, config_list):
         # Reshuffle them into the canonical format
         config_list = [config_list[1], config_list[2], config_list[0], config_list[3]]
 
+    if group.startswith("spm-"):
+        # SPM configs would be specified in the following format:
+        #  spm_config, tf_config, tftf_config, scp_config, scp_tools
+        # Reshuffle them into the canonical format
+        config_list = [config_list[1], config_list[2], config_list[3], config_list[4], config_list[0]]
+
     return config_list
 
 
@@ -48,9 +54,9 @@ def gen_desc(group, test):
     build_config, run_config = test.split(":")
 
     # Test descriptors are always generated in the following order:
-    #  tf_config, tftf_config, scp_config, scp_tools
+    #  tf_config, tftf_config, scp_config, scp_tools, spm_config
     # Fill missing configs to the right with "nil".
-    config_list = (build_config.split(",") + ["nil"] * 4)[:4]
+    config_list = (build_config.split(",") + ["nil"] * 5)[:5]
 
     # Perform any group-specific translation on the config
     config_list = translate_build_config(group, config_list)
@@ -59,7 +65,7 @@ def gen_desc(group, test):
 
     # Create descriptor. Write the name of the original test config as its
     # content.
-    desc = os.path.join(workspace, "%".join([str(num_spawn).zfill(3), os.path.basename(group),
+    desc = os.path.join(workspace, "%".join([str(num_spawn).zfill(4), os.path.basename(group),
         test_config + TEST_SUFFIX]))
     with open(desc, "wt") as fd:
         print(test, file=fd)
