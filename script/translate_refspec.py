@@ -29,6 +29,7 @@ projects = {
         "trusted-firmware-ci": gerrit.GerritProject("pdswinf/ci/pdcs-platforms/platform-ci", gerrit_arm),
 	"cc_plugin": gerrit.GerritProject("tests/lava/test-definitions.git", gerrit_arm),
         "scp": gerrit.GerritProject("scp/firmware", gerrit_arm),
+        "spm": gerrit.GerritProject("trusted-firmware/spm", gerrit_arm),
     },
 
     # Projects hosted on trustedfirmware.org Gerrit server.
@@ -36,6 +37,7 @@ projects = {
         "trusted-firmware": gerrit.GerritProject("TF-A/trusted-firmware-a", gerrit_tforg),
         "trusted-firmware-tf": gerrit.GerritProject("TF-A/tf-a-tests", gerrit_tforg),
         "trusted-firmware-ci": gerrit.GerritProject("ci/tf-a-ci-scripts", gerrit_tforg),
+        "spm": gerrit.GerritProject("hafnium/hafnium", gerrit_tforg),
     },
 }
 

@@ -323,6 +323,8 @@ ci_src_repo_url="${ci_src_repo_url:-https://$tforg_gerrit_url/ci/tf-a-ci-scripts
 tf_ci_repo_url="$ci_src_repo_url"
 scp_src_repo_url="${scp_src_repo_url:-$SCP_SRC_REPO_URL}"
 scp_src_repo_url="${scp_src_repo_url:-$scp_src_repo_default}"
+spm_src_repo_url="${spm_src_repo_url:-$SPM_SRC_REPO_URL}"
+spm_src_repo_url="${spm_src_repo_url:-https://$tforg_gerrit_url/hafnium/hafnium}"
 
 # FIXME set a sane default for tfa_downloads
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"
