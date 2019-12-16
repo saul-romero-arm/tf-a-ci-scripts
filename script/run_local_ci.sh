@@ -336,6 +336,15 @@ else
 	import_cc=1
 fi
 
+if [ -z "$spm_root" ]; then
+	in_red "NOTE: NOT using local work tree for SPM"
+else
+	spm_root="$(readlink -f $spm_root)"
+	spm_refspec=
+	in_green "Using local work tree for SPM"
+	let "++local_count"
+fi
+
 # User preferences
 [ "$connect_debugger" ] && [ "$connect_debugger" -eq 1 ] && user_connect_debugger=1
 user_test_run="${user_connect_debugger:-$test_run}"
