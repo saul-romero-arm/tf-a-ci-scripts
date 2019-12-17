@@ -449,6 +449,13 @@ if upon "$clone_scp"; then
 	popd
 fi
 
+SPM_REFSPEC="${spm_refspec:-$SPM_REFSPEC}"
+if not_upon "$no_spm"; then
+	# Clone SPM repository
+	url="$spm_src_repo_url" name="spm" ref="SPM_REFSPEC" \
+		loc="SPM_CHECKOUT_LOC" clone_and_sync
+fi
+
 CI_REFSPEC="${ci_refspec:-$CI_REFSPEC}"
 if not_upon "$no_ci"; then
 	# Clone Trusted Firmware CI repository

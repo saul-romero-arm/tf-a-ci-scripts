@@ -385,7 +385,7 @@ else
 fi
 
 # Use clone_repos.sh to clone and share repositories that aren't local.
-no_tf="$tf_root" no_tftf="$tftf_root" no_ci="$ci_root" no_cc="$import_cc" \
+no_tf="$tf_root" no_tftf="$tftf_root" no_spm="$spm_root" no_ci="$ci_root" no_cc="$import_cc" \
 	bash $minus_x "$ci_root/script/clone_repos.sh"
 
 set -a
