@@ -84,30 +84,37 @@ emit_env() {
 	echo "$var=$val" >> "$env_file"
 }
 
-# # FIXME add support for file:// protocol
 fetch_directory() {
 	local base="$(basename "${url:?}")"
 	local sa
 
-	if is_url "$url"; then
-		# Have exactly one trailing /
-		local modified_url="$(echo "$url" | sed 's#/*$##')/"
+	case "${url}" in
+		http*://*)
+			# Have exactly one trailing /
+			local modified_url="$(echo "${url}" | sed 's#/*$##')/"
 
-		# Figure out the number of components between hostname and the
-		# final one
-		local cut_dirs="$(echo "$modified_url" | awk -F/ '{print NF - 5}')"
-		sa="${saveas:-$base}"
-		echo "Fetch: $modified_url -> $sa"
-		wget -rq -nH --cut-dirs="$cut_dirs" --no-parent \
-			--reject="index.html*" "$modified_url"
-		if [ "$sa" != "$base" ]; then
-			mv "$base" "$sa"
-		fi
-	else
-		sa="${saveas:-.}"
-		echo "Fetch: $url -> $sa"
-		cp -r "$url" "$sa"
-	fi
+			# Figure out the number of components between hostname and the
+			# final one
+			local cut_dirs="$(echo "$modified_url" | awk -F/ '{print NF - 5}')"
+			sa="${saveas:-$base}"
+			echo "Fetch: $modified_url -> $sa"
+			wget -rq -nH --cut-dirs="$cut_dirs" --no-parent \
+				--reject="index.html*" "$modified_url"
+			if [ "$sa" != "$base" ]; then
+				mv "$base" "$sa"
+			fi
+			;;
+		file://*)
+			sa="${saveas:-.}"
+			echo "Fetch: ${url} -> $sa"
+			cp -r "${url#file://}" "$sa"
+			;;
+		*)
+			sa="${saveas:-.}"
+			echo "Fetch: ${url} -> $sa"
+			cp -r "${url}" "$sa"
+			;;
+	esac
 }
 
 fetch_file() {
