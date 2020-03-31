@@ -432,9 +432,8 @@ build_tf() {
 
 			url="$mbedtls_archive" saveas="$mbedtls_ar" fetch_file
 			mkdir "$mbedtls_dir"
-			pushd "$mbedtls_dir"
-			tar -xzf "$mbedtls_ar"
-			popd
+			extract_tarball $mbedtls_ar $mbedtls_dir
+			mbedtls_dir="$mbedtls_dir/$mbedtls_repo_name"
 
 		fi
 

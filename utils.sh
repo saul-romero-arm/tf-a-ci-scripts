@@ -216,6 +216,27 @@ extend_path() {
 	eval "$path_var=\"$tmp_path\""
 }
 
+# Extract files from compressed archive to target directory. Supports .zip and
+# .tar.gz format
+extract_tarball() {
+	local archive="$1"
+	local target_dir="$2"
+
+	pushd "$target_dir"
+	case $(file --mime-type -b "$archive") in
+		application/gzip)
+			tar -xzf $archive
+			;;
+		application/zip)
+			unzip -q $archive
+			;;
+		*)
+			die "Unsupported tarball format"
+			;;
+	esac
+	popd
+}
+
 # Assume running on Jenkins if JENKINS_HOME is set
 if [ "$JENKINS_HOME" ]; then
 	jenkins_run=1
@@ -259,9 +280,11 @@ scp_src_repo_url="${scp_src_repo_url:-$SCP_SRC_REPO_URL}"
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"
 css_downloads="${css_downloads:-$tfa_downloads/css}"
 
-# FIXME public hosting has mbedtls-2.16.0-apache.tgz or mbedtls-2.16.0-gpl.tgz"
-#       See https://tls.mbed.org/download/start/
-mbedtls_archive="${mbedtls_archive:-$tfa_downloads/mbedtls/mbedtls-2.16.0.tar.gz}"
+# mbedTLS archive public hosting available at github.com
+mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-2.18.0.zip}"
+# The tar file contains mbedtls-mbedtls-2.18.0 repo which holds the necessary
+# source files of mbedTLS project
+mbedtls_repo_name="${mbedtls_repo_name:-mbedtls-mbedtls-2.18.0}"
 linaro_release="${linaro_release:-$tfa_downloads/linaro/18.04}"
 
 coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2018.06}"
