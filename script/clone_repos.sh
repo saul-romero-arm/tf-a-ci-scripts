@@ -36,6 +36,11 @@ emit_param() {
 	echo "$1=$2" >> "$param_file"
 }
 
+# Emit a parameter for code coverage metadata
+code_cov_emit_param() {
+	emit_param "CC_$(echo ${1^^} | tr '-' _)_$2" "$3"
+}
+
 meta_data() {
 	echo "$1" >> "$clone_data"
 }
@@ -84,12 +89,12 @@ post_gerrit_comment() {
 	# account credentials for the latter.
 	if [ "$gerrit_url" == "review.trustedfirmware.org" ]; then
 		ssh -p 29418 -i "$tforg_key" "$tforg_user@$gerrit_url" gerrit \
-		    review  "$GERRIT_CHANGE_NUMBER,$GERRIT_PATCHSET_NUMBER" \
-		    --message "'$(cat ${msg_file:?})'"
+			review  "$GERRIT_CHANGE_NUMBER,$GERRIT_PATCHSET_NUMBER" \
+			--message "'$(cat ${msg_file:?})'"
 	else
 		ssh -p 29418 "$gerrit_url" gerrit review \
-		    "$GERRIT_CHANGE_NUMBER,$GERRIT_PATCHSET_NUMBER" \
-		    --message "'$(cat ${msg_file:?})'"
+			"$GERRIT_CHANGE_NUMBER,$GERRIT_PATCHSET_NUMBER" \
+			--message "'$(cat ${msg_file:?})'"
 	fi
 }
 
@@ -157,7 +162,9 @@ clone_and_sync() {
 	if [ -d "$reference_dir" ]; then
 		ref_repo="--reference $reference_dir"
 	fi
+	echo "$ref_repo $url $name $branch"
 	git clone -q $ref_repo "$url" "$name" &>"$clone_log"
+	code_cov_emit_param "${name}" "URL" "${url}"
 	stat="on branch master"
 
 	pushd "$name"
@@ -195,7 +202,7 @@ clone_and_sync() {
 		refspec="$("$ci_root/script/translate_refspec.py" -p "$name" \
 			-u "$gerrit_user" -k "$gerrit_keyfile" \
 			-s "$gerrit_server" "topic:$topic" 2>/dev/null)" \
-		    || ret="$?"
+			|| ret="$?"
 		if [ "$ret" = 0 ]; then
 			{
 			git fetch -q origin "$refspec"
@@ -217,12 +224,14 @@ clone_and_sync() {
 		fi
 	fi
 
+	code_cov_emit_param "${name}" "REFSPEC" "${refspec}"
 	# Generate meta data. Eliminate any quoting in commit subject as it
 	# might cause problems when reporting back to Gerrit.
 	meta_data "$name: $stat"
 	meta_data "	$(git show --quiet --format=%H): $(git show --quiet --format=%s | sed "s/[\"']/ /g")"
 	meta_data "	Commit date: $(git show --quiet --format=%cd)"
 	meta_data
+	code_cov_emit_param "${name}" "COMMIT"  "$(git show --quiet --format=%H)"
 
 	# Calculate elapsed seconds
 	s_after="$(date +%s)"
@@ -396,8 +405,15 @@ if not_upon "$no_tftf"; then
 	# Clone Trusted Firmware TF repository
 	url="$tftf_src_repo_url" name="trusted-firmware-tf" ref="TFTF_REFSPEC" \
 		loc="TFTF_CHECKOUT_LOC" \
-		gerrit_test_groups="tftf-master-build tftf-master-fwu tftf-l1" \
+		gerrit_test_groups="tftf-l1-build tftf-l1-fvp tftf-l1-spm" \
 		clone_and_sync
+fi
+
+# Clone code coverage repository if code coverage is enabled
+if not_upon "$no_cc"; then
+	pushd "$ci_scratch"
+	git clone -q $cc_src_repo_url cc_plugin -b $cc_src_repo_tag 2> /dev/null
+	popd
 fi
 
 SCP_REFSPEC="${scp_refspec:-$SCP_REFSPEC}"
@@ -462,6 +478,8 @@ if [ "$GERRIT_BRANCH" ]; then
 		msg_file="$gerrit_data" post_gerrit_comment
 	fi
 fi
+
+echo "SCP_TOOLS_COMMIT=$SCP_TOOLS_COMMIT" >> "$param_file"
 
 # Copy environment file to ci_scratch for sub-jobs' access
 cp "$env_file" "$ci_scratch"

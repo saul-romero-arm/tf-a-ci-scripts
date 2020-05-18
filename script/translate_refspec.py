@@ -27,6 +27,7 @@ projects = {
         "trusted-firmware": gerrit.GerritProject("pdcs-platforms/ap/tf-topics", gerrit_arm),
         "trusted-firmware-tf": gerrit.GerritProject("trusted-firmware/tf-a-tests", gerrit_arm),
         "trusted-firmware-ci": gerrit.GerritProject("pdswinf/ci/pdcs-platforms/platform-ci", gerrit_arm),
+	"cc_plugin": gerrit.GerritProject("tests/lava/test-definitions.git", gerrit_arm),
         "scp": gerrit.GerritProject("scp/firmware", gerrit_arm),
     },
 

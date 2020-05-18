@@ -35,6 +35,8 @@ if run_config == "nil":
     sys.exit(0)
 
 fragments = run_config.split("-")
+if 'bmcov' in fragments:
+    fragments.remove('bmcov')
 exit_code = 0
 
 # Stems are fragments, except with everything after dot removed.
@@ -63,5 +65,4 @@ for frag_idx, chosen_fragment in enumerate(fragments):
             print("warning: {}: no matches for fragment '{}'".format(
                 arg, fragment), file=sys.stderr)
             exit_code = 1
-
 sys.exit(exit_code)

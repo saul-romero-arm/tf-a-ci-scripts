@@ -26,6 +26,6 @@ nomination_rules = {
         # Run SDEI boot test for SDEI, EHF, or RAS changes or mention
         ("pathre:sdei", "pathre:ehf", "pathre:ras", "has:SDEI_SUPPORT",
               "has:EL3_EXCEPTION_HANDLING"):
-            ["tftf-l2-tests/fvp-aarch64-sdei,fvp-default:fvp-tftf-fip.tftf-aemv8a-debug"],
+            ["tftf-l2-fvp/fvp-aarch64-sdei,fvp-default:fvp-tftf-fip.tftf-aemv8a-debug"],
 
         }

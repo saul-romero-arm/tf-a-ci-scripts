@@ -111,6 +111,7 @@ git checkout -q FETCH_HEAD
 if [ -z "$cov_force_commit" ]; then
 	"$ci_root/script/get_latest_snapshot.py" \\
 		--host "$coverity_host" \\
+		--https-port "$coverity_port" \\
 		--file "$golden_snapshot" \\
 		--description "*$cov_checker*" \\
 		--version "\$(git show -q --format=%H)" \\
@@ -188,10 +189,10 @@ EOF
 	cat <<EOF | name="stream-setup" create_snippet
 if cov-manage-im --mode streams --add --set "name:$stream_name" \\
 		--auth-key-file "$auth_file" \\
-		--host "$coverity_host"; then
+		--host "$coverity_host" --ssl --port "$coverity_port"; then
 	cov-manage-im --mode projects --name "Arm Trusted Firmware" --update \\
 		--insert "stream:$stream_name" --auth-key-file "$auth_file" \\
-		--host "$coverity_host"
+		--host "$coverity_host" --ssl --port "$coverity_port"
 fi
 EOF
 
@@ -241,6 +242,7 @@ EOF
 if [ ! -f "$golden_snapshot" -a -z "$cov_force_commit" ]; then
 	"$ci_root/script/get_latest_snapshot.py" \\
 		--host "$coverity_host" \\
+		--https-port "$coverity_port" \\
 		--file "$golden_snapshot" \\
 		--description "*$cov_checker*" \\
 		--version "\$(git show -q --format=%H)" \\
@@ -251,6 +253,7 @@ fi
 if [ ! -f "$golden_snapshot" -o -n "$cov_force_commit" ]; then
 	cd -P "$golden_repo"
 	cov-commit-defects --dir "$cov_dir/golden" --host "$coverity_host" \\
+		--https-port "$coverity_port" \\
 		--stream "$stream_name" --auth-key-file "$auth_file" \\
 		--version "\$(git show -q --format=%H)" \\
 		 --description "$description" \\
@@ -291,6 +294,7 @@ EOF
 if [ "$cov_force_commit" ]; then
 	cd -P "$branch_repo"
 	cov-commit-defects --dir "$cov_dir/branch" --host "$coverity_host" \\
+		--https-port "$coverity_port" \\
 		--stream "$stream_name" --description "$description" \\
 		--version "\$(git show -q --format=%H%)" \\
 		--auth-key-file "$auth_file" \\
@@ -306,6 +310,7 @@ EOF
 	cat <<EOF | name="branch-report-compare" \
 		deps="golden-cov-commit-defects branch-cov-analyze" create_snippet
 cov-commit-defects --dir "$cov_dir/branch" --host "$coverity_host" \\
+	--https-port "$coverity_port" \\
 	--stream "$stream_name" --auth-key-file "$auth_file" \\
 	--preview-report-v2 "$cov_dir/report.json" \\
 	--comparison-snapshot-id "\$(cat $golden_snapshot)"
@@ -317,6 +322,7 @@ EOF
 		deps="branch-cov-commit-defects stream-setup branch-cov-analyze" \
 		create_snippet
 cov-commit-defects --dir "$cov_dir/branch" --host "$coverity_host" \\
+	--https-port "$coverity_port" \\
 	--stream "$stream_name" --auth-key-file "$auth_file" \\
 	--preview-report-v2 "$cov_dir/report.json"
 EOF

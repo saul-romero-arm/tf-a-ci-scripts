@@ -11,13 +11,16 @@ echo "# Check Line Endings"
 
 LOG_FILE=`mktemp -t common.XXXX`
 
-# For all the source and doc files (*.h,*.c,*.S,*.mk,*.md)
+# For all the source and doc files
 # We only return the files that contain CRLF
 find "." -\( \
     -name '*.S' -or \
     -name '*.c' -or \
     -name '*.h' -or \
-    -name '*.md' -or \
+    -name '*.i' -or \
+    -name '*.dts' -or \
+    -name '*.dtsi' -or \
+    -name '*.rst' -or \
     -name 'Makefile' -or \
     -name '*.mk' \
 -\) -exec grep --files-with-matches $'\r$' {} \; &> "$LOG_FILE"

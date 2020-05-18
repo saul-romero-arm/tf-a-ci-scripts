@@ -75,7 +75,7 @@ actions:
 
       # For each test case, LAVA looks for a string which includes the testcase
       # name and result.
-      pattern: "(?s)> Executing '(?P<test_case_id>.+)'(.*)  TEST COMPLETE\\\s+(?P<result>(Skipped|Passed|Failed|Crashed))"
+      pattern: "(?s)> Executing '(?P<test_case_id>.+?(?='))'(.*)  TEST COMPLETE\\\s+(?P<result>(Skipped|Passed|Failed|Crashed))"
 
       # Teach to LAVA how to interpret the TFTF Tests results.
       fixupdict:

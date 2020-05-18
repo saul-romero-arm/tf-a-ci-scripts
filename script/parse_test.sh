@@ -36,6 +36,7 @@ emit_env "BUILD_CONFIG" "$build_config"
 emit_env "RUN_CONFIG" "$run_config"
 emit_env "TEST_CONFIG" "$test_config"
 emit_env "TEST_GROUP" "$test_group"
+emit_env "CC_ENABLE" "$cc_enable"
 
 # Default binary mode. This would usually come from the build package for FVP
 # runs, but is provided for LAVA jobs.

@@ -8,23 +8,37 @@
 set -u
 
 scp_bl2_url="$linaro_release/juno-latest-oe-uboot/SOFTWARE/scp_bl2.bin"
+psci_reset2_scp_bl2_url="$tfa_downloads/psci_reset2/scp_bl2.bin"
 uboot_bl33_url="$linaro_release/juno-latest-oe-uboot/SOFTWARE/bl33-uboot.bin"
+optee_fip_url="$linaro_release/juno-ack-android-uboot/SOFTWARE/fip.bin"
+
 juno_recovery_root="$linaro_release/juno-latest-oe-uboot"
 
 uboot32_fip_url="$linaro_release/juno32-latest-oe-uboot/SOFTWARE/fip.bin"
 juno32_recovery_root="$linaro_release/juno32-latest-busybox-uboot"
+juno32_recovery_root_oe="$linaro_release/juno32-latest-oe-uboot"
 
 juno_rootfs_url="$linaro_release/linaro-image-minimal-genericarmv8-20170127-888.rootfs.tar.gz"
+juno32_rootfs_url="$linaro_release/linaro-image-alip-genericarmv7a-20150710-336.rootfs.tar.gz"
 
 # FIXME use optee pre-built binaries
 get_optee_bin() {
-	url="$jenkins_url/job/tf-optee-build/PLATFORM_FLAVOR=juno,label=arch-dev/lastSuccessfulBuild/artifact/artefacts/tee.bin" \
-		saveas="bl32.bin" fetch_file
+	local tmpdir="$(mktempdir)"
+
+	pushd "$tmpdir"
+	extract_fip "$optee_fip_url"
+	mv "tos-fw.bin" "bl32.bin"
 	archive_file "bl32.bin"
+	popd
 }
 
 get_scp_bl2_bin() {
 	url="$scp_bl2_url" saveas="scp_bl2.bin" fetch_file
+	archive_file "scp_bl2.bin"
+}
+
+get_psci_reset2_scp_bl2_bin() {
+	url="$psci_reset2_scp_bl2_url" saveas="scp_bl2.bin" fetch_file
 	archive_file "scp_bl2.bin"
 }
 
@@ -45,6 +59,10 @@ get_uboot_bin() {
 
 gen_recovery_image32() {
 	url="$juno32_recovery_root" gen_recovery_image "$@"
+}
+
+gen_recovery_image32_oe() {
+	url="$juno32_recovery_root_oe" gen_recovery_image "$@"
 }
 
 gen_recovery_image() {

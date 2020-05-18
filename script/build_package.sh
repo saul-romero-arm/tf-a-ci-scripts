@@ -18,19 +18,25 @@ if [ ! -d "$workspace" ]; then
 fi
 
 # Directory to where the source code e.g. for Trusted Firmware is checked out.
-tf_root="${tf_root:-$workspace/trusted_firmware}"
-tftf_root="${tftf_root:-$workspace/trusted_firmware_tf}"
-scp_root="${scp_root:-$workspace/scp}"
+export tf_root="${tf_root:-$workspace/trusted_firmware}"
+export tftf_root="${tftf_root:-$workspace/trusted_firmware_tf}"
+export scp_root="${scp_root:-$workspace/scp}"
+scp_tools_root="${scp_tools_root:-$workspace/scp_tools}"
+cc_root="${cc_root:-$ccpathspec}"
+
+scp_tf_tools_root="$scp_tools_root/scp_tf_tools"
 
 # Refspecs
 tf_refspec="$TF_REFSPEC"
 tftf_refspec="$TFTF_REFSPEC"
 scp_refspec="$SCP_REFSPEC"
+scp_tools_commit="${SCP_TOOLS_COMMIT:-master}"
 
 test_config="${TEST_CONFIG:?}"
 test_group="${TEST_GROUP:?}"
 build_configs="${BUILD_CONFIG:?}"
 run_config="${RUN_CONFIG:?}"
+cc_config="${CC_ENABLE:-}"
 
 archive="$artefacts"
 build_log="$artefacts/build.log"
@@ -178,6 +184,9 @@ collect_scp_artefacts() {
 					;;
 				*/mcp_romfw/*)
 					cp $file $to/mcp_rom.$ext
+					;;
+				*/scp_romfw_bypass/*)
+					cp $file $to/scp_rom_bypass.$ext
 					;;
 				*)
 					echo "Unknown SCP binary: $file" >&2
@@ -533,6 +542,179 @@ EOF
 	)
 }
 
+clone_scp_tools() {
+
+	if [ ! -d "$scp_tools_root" ]; then
+		echo "Cloning SCP-tools ... $scp_tools_commit" |& log_separator
+
+	  	clone_url="${SCP_TOOLS_CHECKOUT_LOC:-$scp_tools_src_repo_url}" \
+			where="$scp_tools_root" \
+			refspec="${scp_tools_commit}"
+			clone_repo &>>"$build_log"
+	else
+		echo "Already cloned SCP-tools ..." |& log_separator
+	fi
+
+	show_head "$scp_tools_root"
+
+	cd "$scp_tools_root"
+
+	echo "Updating submodules"
+
+	git submodule init
+
+	git submodule update
+
+	cd "scmi"
+
+	git show --quiet --no-color | sed 's/^/  > /g'
+}
+
+clone_tf_for_scp_tools() {
+	scp_tools_arm_tf="$scp_tools_root/arm-tf"
+
+	if [ ! -d "$scp_tools_arm_tf" ]; then
+		echo "Cloning TF-4-SCP-tools ..." |& log_separator
+
+		clone_url="$tf_for_scp_tools_src_repo_url"
+		where="$scp_tools_arm_tf"
+
+		git clone "$clone_url" "$where"
+
+		cd "$scp_tools_arm_tf"
+
+		git checkout --track origin/dev/pedro/juno
+
+		git show --quiet --no-color | sed 's/^/  > /g'
+
+	else
+		echo "Already cloned TF-4-SCP-tools ..." |& log_separator
+	fi
+}
+
+build_scmi_lib_scp_tools() {
+	(
+	cd "$scp_tools_root"
+
+	cd "scmi"
+
+	scp_tools_arm_tf="$scp_tools_root/arm-tf"
+
+	cross_compile="/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
+
+	std_libs="-I$scp_tools_arm_tf/include/common"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/common/tbbr"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/drivers/arm"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/lib"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/lib/aarch64"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/lib/stdlib"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/lib/stdlib/sys"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/lib/xlat_tables"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/plat/common"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/plat/arm/common"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/plat/arm/css/common"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/plat/arm/board/common"
+	std_libs="$std_libs -I$scp_tools_arm_tf/include/plat/arm/soc/common"
+	std_libs="$std_libs -I$scp_tools_arm_tf/plat/arm/board/juno/include"
+
+	cflags="-Og -g"
+	cflags="$cflags -mgeneral-regs-only"
+	cflags="$cflags -mstrict-align"
+	cflags="$cflags -nostdinc"
+	cflags="$cflags -fno-inline"
+	cflags="$cflags -ffreestanding"
+	cflags="$cflags -ffunction-sections"
+	cflags="$cflags -fdata-sections"
+	cflags="$cflags -DAARCH64"
+	cflags="$cflags -DPRId32=\"ld\""
+
+	cflags="$cflags $std_libs"
+
+	protocols="power,system_power,performance,sensor"
+
+	echo "Building SCMI library (SCP-tools) ..."
+
+	make "CROSS_COMPILE=$cross_compile" \
+		"CFLAGS=$cflags" \
+		"PROTOCOLS=$protocols" \
+		"clean" \
+		"all"
+	)
+}
+
+build_tf_for_scp_tools() {
+
+	cd "$scp_tools_root/arm-tf"
+
+	cross_compile="/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
+
+	if [ "$1" = "release" ]; then
+		echo "Build TF-4-SCP-Tools rls..."
+	else
+		echo "Build TF-4-SCP-Tools dbg..."
+
+		make realclean
+
+		make "BM_TEST=scmi" \
+			"ARM_BOARD_OPTIMISE_MEM=1" \
+			"BM_CSS=juno" \
+			"CSS_USE_SCMI_SDS_DRIVER=1" \
+			"PLAT=juno" \
+			"DEBUG=1" \
+			"PLATFORM=juno" \
+			"CROSS_COMPILE=$cross_compile" \
+			"BM_WORKSPACE=$scp_tools_root/baremetal"
+
+		archive_file "build/juno/debug/bl1.bin"
+
+		archive_file "build/juno/debug/bl2.bin"
+
+		archive_file "build/juno/debug/bl31.bin"
+	fi
+}
+
+build_fip_for_scp_tools() {
+
+	cd "$scp_tools_root/arm-tf"
+
+	cross_compile="/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
+
+	if [ ! -d "$scp_root/build/product/juno/scp_ramfw/debug" ]; then
+		make fiptool
+		echo "Make FIP 4 SCP-Tools rls..."
+
+	else
+		make fiptool
+		echo "Make FIP 4 SCP-Tools dbg..."
+
+		make "PLAT=juno" \
+			"all" \
+			"fip" \
+			"DEBUG=1" \
+			"CROSS_COMPILE=$cross_compile" \
+			"BL31=$scp_tools_root/arm-tf/build/juno/debug/bl31.bin" \
+			"BL33=$scp_tools_root/baremetal/dummy_bl33" \
+			"SCP_BL2=$scp_root/build/product/juno/scp_ramfw/debug/bin/firmware.bin"
+
+		archive_file "$scp_tools_root/arm-tf/build/juno/debug/fip.bin"
+	fi
+}
+
+build_cc() {
+# Building code coverage plugin
+	ARM_DIR=/arm
+	pvlibversion=$(/arm/devsys-tools/abs/detag "SysGen:PVModelLib:$model_version::trunk")
+	PVLIB_HOME=$warehouse/SysGen/PVModelLib/$model_version/${pvlibversion}/external
+	if [ -n "$(find "$ARM_DIR" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
+    		echo "Error: Arm warehouse not mounted. Please mount the Arm warehouse to your /arm local folder"
+    		exit -1
+	fi  # Error if arm warehouse not found
+	cd "$ccpathspec/scripts/tools/code_coverage/fastmodel_baremetal/bmcov"
+
+	make -C model-plugin PVLIB_HOME=$PVLIB_HOME &>>"$build_log"
+}
+
+
 # Set metadata for the whole package so that it can be used by both Jenkins and
 # shell
 set_package_var() {
@@ -772,12 +954,14 @@ echo
 tf_config="$(echo "$build_configs" | awk -F, '{print $1}')"
 tftf_config="$(echo "$build_configs" | awk -F, '{print $2}')"
 scp_config="$(echo "$build_configs" | awk -F, '{print $3}')"
+scp_tools_config="$(echo "$build_configs" | awk -F, '{print $4}')"
 
 test_config_file="$ci_root/group/$test_group/$test_config"
 
 tf_config_file="$ci_root/tf_config/$tf_config"
 tftf_config_file="$ci_root/tftf_config/$tftf_config"
 scp_config_file="$ci_root/scp_config/$scp_config"
+scp_tools_config_file="$ci_root/scp_tools_config/$scp_tools_config"
 
 # File that keeps track of applied patches
 tf_patch_record="$workspace/tf_patches"
@@ -809,6 +993,15 @@ else
 	echo "SCP firmware config:"
 	echo
 	sort "$scp_config_file" | sed '/^\s*$/d;s/^/\t/'
+	echo
+fi
+
+if ! config_valid "$scp_tools_config"; then
+	scp_tools_config=
+else
+	echo "SCP Tools config:"
+	echo
+	sort "$scp_tools_config_file" | sed '/^\s*$/d;s/^/\t/'
 	echo
 fi
 
@@ -864,6 +1057,15 @@ if [ "$scp_config" ] && assert_can_git_clone "scp_root"; then
 	show_head "$scp_root"
 fi
 
+if [ -n "$cc_config" ] ; then
+	if [ "$cc_config" -eq 1 ] && assert_can_git_clone "cc_root"; then
+		# Copy code coverage repository
+		echo "Cloning Code Coverage..."
+		git clone -q $cc_src_repo_url cc_plugin --depth 1 -b $cc_src_repo_tag > /dev/null
+		show_head "$cc_root"
+	fi
+fi
+
 if [ "$run_config" ]; then
 	# Get candidates for run config
 	run_config_candiates="$("$ci_root/script/gen_run_config_candidates.py" \
@@ -902,13 +1104,20 @@ for mode in $modes; do
 	mkdir "$build_archive"
 
 	if [ "$mode" = "debug" ]; then
+		export bin_mode="debug"
 		DEBUG=1
 	else
+		export bin_mode="release"
 		DEBUG=0
 	fi
 
 	# Perform builds in a subshell so as not to pollute the current and
 	# subsequent builds' environment
+
+	if config_valid "$cc_config"; then
+	 # Build code coverage plugin
+		build_cc
+	fi
 
 	# SCP build
 	if config_valid "$scp_config"; then
@@ -928,9 +1137,28 @@ for mode in $modes; do
 		echo "Building SCP Firmware ($mode) ..." |& log_separator
 
 		build_scp
-
 		to="$archive" collect_scp_artefacts
 
+		echo "##########"
+		echo
+		)
+	fi
+
+	# SCP-tools build
+	if config_valid "$scp_tools_config"; then
+		(
+		echo "##########"
+
+		archive="$build_archive"
+		scp_tools_build_root="$scp_tools_root/build"
+
+		clone_scp_tools
+
+		echo "##########"
+		echo
+
+		echo "##########"
+		clone_tf_for_scp_tools
 		echo "##########"
 		echo
 		)
@@ -1020,14 +1248,7 @@ call_hook pre_package
 call_hook post_package
 
 if upon "$jenkins_run" && upon "$artefacts_receiver" && [ -d "artefacts" ]; then
-	tar -cJf "artefacts.tar.xz" "artefacts"
-	where="$artefacts_receiver/$test_group/$test_config/artefacts.tar.xz"
-	where+="?j=$JOB_NAME&b=$BUILD_NUMBER"
-	if wget -q --method=PUT --body-file="artefacts.tar.xz" "$where"; then
-		echo "Artefacts submitted to $where."
-	else
-		echo "Error submitting artefacts to $where."
-	fi
+	source "$CI_ROOT/script/send_artefacts.sh" "artefacts"
 fi
 
 echo

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -15,7 +15,7 @@ cd "$TF_CHECKOUT_LOC"
 
 # Build TF-A to get blx.bin images and the tools (fiptool and cert_create)
 # Debug build enabled so that valgrind has access to source file line numbers
-if ! make CROSS_COMPILE="aarch64-linux-gnu-" all fiptool certtool DEBUG=1 V=1 \
+if ! make CROSS_COMPILE="aarch64-none-elf-" all fiptool certtool DEBUG=1 V=1 \
 		&>"$workspace/build.log"; then
 	echo "Error building tools; see archived build.log"
 	exit 1

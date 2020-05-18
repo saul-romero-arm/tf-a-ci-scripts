@@ -13,8 +13,25 @@ import sys
 
 
 _rule_exclusions = [
+    "MISRA C-2012 Rule 2.4",
+    "MISRA C-2012 Rule 2.5",
+    "MISRA C-2012 Rule 2.7",
+    "MISRA C-2012 Rule 5.1",
+    "MISRA C-2012 Rule 5.8",
     "MISRA C-2012 Rule 8.6",
-    "MISRA C-2012 Rule 5.1"
+    "MISRA C-2012 Rule 8.7",
+    "MISRA C-2012 Rule 11.4",
+    "MISRA C-2012 Rule 11.5",
+    "MISRA C-2012 Rule 15.1",
+    "MISRA C-2012 Rule 15.5",
+    "MISRA C-2012 Rule 15.6",
+    "MISRA C-2012 Rule 16.1",
+    "MISRA C-2012 Rule 16.3",
+    "MISRA C-2012 Rule 17.1",
+    "MISRA C-2012 Rule 21.6",
+    "MISRA C-2012 Directive 4.6",
+    "MISRA C-2012 Directive 4.8",
+    "MISRA C-2012 Directive 4.9"
 ]
 
 # The following classification of rules and directives include 'MISRA C:2012

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -225,16 +225,13 @@ extract_tarball() {
 	pushd "$target_dir"
 	case $(file --mime-type -b "$archive") in
 		application/gzip)
-			tar -xzf $archive
-			;;
+				tar -xzf $archive
+				;;
 		application/zip)
-			unzip -q $archive
-			;;
-		*)
-			die "Unsupported tarball format"
-			;;
+				unzip -q $archive
+				;;
 	esac
-	popd
+	popd "$target_dir"
 }
 
 # Assume running on Jenkins if JENKINS_HOME is set
@@ -253,8 +250,9 @@ jenkins_url="${JENKINS_URL%/*}"
 jenkins_url="${jenkins_url:-https://ci.trustedfirmware.org/}"
 
 # Model revisions
-model_version="${model_version:-11.6}"
-model_build="${model_build:-45}"
+model_version="${model_version:-11.9}"
+model_build="${model_build:-41}"
+model_flavour="${model_flavour:-Linux64_GCC-6.4}"
 
 # Model snapshots from filer are not normally not accessible from developer
 # systems. Ignore failures from picking real path for local runs.
@@ -274,34 +272,43 @@ tftf_src_repo_url="${tftf_src_repo_url:-$TFTF_SRC_REPO_URL}"
 tftf_src_repo_url="${tftf_src_repo_url:-https://$tforg_gerrit_url/TF-A/tf-a-tests}"
 #tftf_arm_gerrit_repo="ssh://$arm_gerrit_url:29418/trusted-firmware/tf-a-tests.git"
 scp_src_repo_url="${scp_src_repo_url:-$SCP_SRC_REPO_URL}"
-#scp_src_repo_url="${scp_src_repo_url:-http://$arm_gerrit_url/scp/firmware}"
+#cc_src_repo_url="${cc_src_repo_url:-https://$arm_gerrit_url/tests/lava/test-definitions.git}"
+#cc_src_repo_tag="${cc_src_repo_tag:-kernel-team-workflow_2019-09-20}"
+
+#scp_tools_src_repo_url="${scp_tools_src_repo_url:-http://$arm_gerrit_url/scp/tools-non-public}"
+#tf_for_scp_tools_src_repo_url="https://gerrit.oss.arm.com/scp/test-framework"
 
 # FIXME set a sane default for tfa_downloads
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"
 css_downloads="${css_downloads:-$tfa_downloads/css}"
+
+linaro_1906_release="$tfa_downloads/linaro/19.06"
+linaro_release="${linaro_release:-$linaro_1906_release}"
 
 # mbedTLS archive public hosting available at github.com
 mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-2.18.0.zip}"
 # The tar file contains mbedtls-mbedtls-2.18.0 repo which holds the necessary
 # source files of mbedTLS project
 mbedtls_repo_name="${mbedtls_repo_name:-mbedtls-mbedtls-2.18.0}"
-linaro_release="${linaro_release:-$tfa_downloads/linaro/18.04}"
 
-coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2018.06}"
+coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2019.09}"
 #coverity_host="${coverity_host:-coverity.cambridge.arm.com}"
 coverity_default_checkers=(
 "--all"
 "--checker-option DEADCODE:no_dead_default:true"
-"--concurrency"
 "--enable AUDIT.SPECULATIVE_EXECUTION_DATA_LEAK"
+"--enable ENUM_AS_BOOLEAN"
 "--enable-constraint-fpp"
-"--security"
 "--ticker-mode none"
+"--hfa"
 )
 
 #export coverity_host
 
 path_list=(
+#Need to upgrade gcc to the following version
+#"/arm/pdsw/tools/gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf/bin"
+#"/arm/pdsw/tools/gcc-arm-9.2-2019.12-x86_64-arm-none-eabi/bin"
 "${nfs_volume}/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin"
 "${nfs_volume}/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf/bin"
 "${nfs_volume}/pdsw/tools/gcc-arm-none-eabi-5_4-2016q3/bin"

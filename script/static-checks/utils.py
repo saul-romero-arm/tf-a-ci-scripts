@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -41,24 +41,24 @@ def print_exception_info():
     print(textwrap.indent(str(sys.exc_info()[1]),"      "))
 
 
-def decode_string(string):
-    '''Tries to decode a binary string into ASCII. It gives an error if it
-    finds non-ASCII characters, but it will return the string converted
-    anyway, ignoring these characters.'''
+def decode_string(string, encoding='utf-8'):
+    '''Tries to decode a binary string. It gives an error if it finds
+    invalid characters, but it will return the string converted anyway,
+    ignoring these characters.'''
     try:
-        string = string.decode("ascii")
+        string = string.decode(encoding)
     except UnicodeDecodeError:
-        # Capture exceptions caused by non-ASCII characters.
-        print("ERROR:Non-ASCII characters detected.")
+        # Capture exceptions caused by invalid characters.
+        print("ERROR:Non-{} characters detected.".format(encoding.upper()))
         print_exception_info()
-        string = string.decode("ascii", "ignore")
+        string = string.decode(encoding, "ignore")
 
     return string
 
 
 def shell_command(cmd_line):
     '''Executes a shell command. Returns (returncode, stdout, stderr), where
-    stdout and stderr are ASCII-encoded strings.'''
+    stdout and stderr are strings.'''
 
     try:
         p = subprocess.Popen(cmd_line, stdout=subprocess.PIPE,

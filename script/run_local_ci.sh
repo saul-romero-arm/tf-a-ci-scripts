@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -85,7 +85,7 @@ run_one_test() {
 	export TEST_DESC="$(basename "$test_file")"
 	cp "$test_file" "$id/TEST_DESC"
 
-	workspace="$id" test_desc="$test_file" "$ci_root/script/parse_test.sh"
+	workspace="$id" test_desc="$test_file" cc_enable="$cc_enable" "$ci_root/script/parse_test.sh"
 
 	set -a
 	source "$id/env"
@@ -109,10 +109,15 @@ run_one_test() {
 	# Unset make flags for build script
 	MAKEFLAGS=
 
+	if [ $import_cc -eq 1 ]; then
+		# Path to plugin if there is no local reference
+		cc_path_spec=$workspace/cc_plugin
+	fi
+
 	case "$action" in
 		"build")
 			echo "building: $config_string" >&5
-			if ! bash $minus_x "$ci_root/script/build_package.sh" \
+			if ! ccpathspec="$cc_path_spec" bash $minus_x "$ci_root/script/build_package.sh" \
 					>&6 2>&1; then
 				{
 				print_failure "$config_string (build)"
@@ -129,23 +134,60 @@ run_one_test() {
 			if echo "$RUN_CONFIG" | grep -q "^fvp" && \
 					not_upon "$skip_runs"; then
 				echo "running: $config_string" >&5
-				if bash $minus_x "$ci_root/script/run_package.sh" \
+				if [ -n "$cc_enable" ]; then
+					# Enable of code coverage during run
+					if cc_enable="$cc_enable" trace_file_prefix=tr \
+					coverage_trace_plugin=$cc_path_spec/scripts/tools/code_coverage/fastmodel_baremetal/bmcov/model-plugin/CoverageTrace.so \
+					bash $minus_x "$ci_root/script/run_package.sh" \
 						>&6 2>&1; then
-					if grep -q -e "--BUILD UNSTABLE--" \
+						if grep -q -e "--BUILD UNSTABLE--" \
 							"$log_file"; then
-						print_unstable "$config_string" >&5
+							print_unstable "$config_string" >&5
+						else
+							print_success "$config_string" >&5
+							if [ -d "$workspace/artefacts/release" ] && \
+							[ -f "$workspace/artefacts/release/tr-FVP_Base_RevC_2xAEMv8A.cluster0.cpu0.log" ]; then
+								cp $workspace/artefacts/release/*.log $workspace/artefacts/debug
+							fi
+							# Setting environmental variables for run of code coverage
+							OBJDUMP=$TOOLCHAIN/bin/aarch64-none-elf-objdump \
+							READELF=$TOOLCHAIN/bin/aarch64-none-elf-readelf \
+							ELF_FOLDER=$workspace/artefacts/debug \
+							TRACE_FOLDER=$workspace/artefacts/debug \
+							workspace=$workspace \
+							TRACE_PREFIX=tr python \
+							$cc_path_spec/scripts/tools/code_coverage/fastmodel_baremetal/bmcov/report/gen-coverage-report.py --config \
+							$cc_path_spec/scripts/tools/code_coverage/fastmodel_baremetal/bmcov/report/config_atf.py
+						fi
+						exit 0
 					else
-						print_success "$config_string" >&5
+						{
+						print_failure "$config_string (run)"
+						if [ "$console_file" ]; then
+							echo "	see $console_file"
+						fi
+						} >&5
+						exit 1
 					fi
-					exit 0
 				else
-					{
-					print_failure "$config_string (run)"
-					if [ "$console_file" ]; then
-						echo "	see $console_file"
+					if bash $minus_x "$ci_root/script/run_package.sh" \
+						>&6 2>&1; then
+						if grep -q -e "--BUILD UNSTABLE--" \
+							"$log_file"; then
+							print_unstable "$config_string" >&5
+						else
+							print_success "$config_string" >&5
+						fi
+						exit 0
+					else
+						{
+						print_failure "$config_string (run)"
+						if [ "$console_file" ]; then
+							echo "	see $console_file"
+						fi
+						} >&5
+						exit 1
 					fi
-					} >&5
-					exit 1
 				fi
 			else
 				if grep -q -e "--BUILD UNSTABLE--" \
@@ -214,7 +256,7 @@ if [ -z "$tftf_root" ]; then
 	tforg_user="${tforg_user:?}"
 else
 	tftf_root="$(readlink -f $tftf_root)"
-	tf_refspec=
+	tftf_refspec=
 	in_green "Using local work tree for TFTF"
 	let "++local_count"
 fi
@@ -226,6 +268,23 @@ else
 	scp_refspec=
 	in_green "Using local work tree for SCP"
 	let "++local_count"
+fi
+
+if [ -n "$cc_enable" ]; then
+	in_green "Code Coverage enabled"
+	if [ -z "$TOOLCHAIN" ]; then
+		in_red "TOOLCHAIN not set for code coverage:  ex: export TOOLCHAIN=<path to toolchain>/gcc-arm-<gcc version>-x86_64-aarch64-none-elf"
+		exit 1
+	fi
+	if [ -n "$cc_path" ]; then
+		in_green "Code coverage plugin path specified"
+		cc_path_spec=$cc_path
+		import_cc=0
+	else
+		in_red "Code coverage plugin path not specified"
+		cc_path_spec="$workspace/cc_plugin"
+		import_cc=1
+	fi
 fi
 
 # User preferences
@@ -240,6 +299,8 @@ export local_ci=1
 export parallel
 export test_run=0
 export primary_live=0
+export cc_path_spec
+export import_cc
 
 rm -rf "$workspace"
 mkdir -p "$workspace"
@@ -255,8 +316,15 @@ else
 	clone_scp=0
 fi
 
-# Use clone_repos.sh to clone and share repositores that aren't local.
-no_tf="$tf_root" no_tftf="$tftf_root" no_ci="$ci_root" \
+# Enable of code coverage and whether there is a local plugin
+if upon "$cc_enable" && not_upon "$cc_path"; then
+	no_cc_t=1
+else
+	no_cc_t=0
+fi
+
+# Use clone_repos.sh to clone and share repositories that aren't local.
+no_tf="$tf_root" no_tftf="$tftf_root" no_ci="$ci_root" no_cc="$import_cc" \
 	bash $minus_x "$ci_root/script/clone_repos.sh"
 
 set -a

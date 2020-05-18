@@ -87,6 +87,24 @@ else
 fi
 echo
 
+# Check for any Banned API usage
+
+echo 'Checking Banned API usage...'
+echo
+if [ "$IS_CONTINUOUS_INTEGRATION" == 1 ]; then
+    "$CI_ROOT"/script/static-checks/static-checks-banned-apis.sh . patch
+else
+    "$CI_ROOT"/script/static-checks/static-checks-banned-apis.sh
+fi
+if [ "$?" != 0 ]; then
+  echo "Banned API check: FAILURE"
+  ((ERROR_COUNT++))
+else
+  echo "Banned API check: PASS"
+fi
+echo
+
+
 # Check error count
 
 if [ "$ERROR_COUNT" != 0 ] || [ "$WARNING_COUNT" != 0 ]; then

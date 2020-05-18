@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -8,7 +8,7 @@
 set -u
 
 bl1_addr="${bl1_addr:-0x0}"
-bl31_addr="${bl31_addr:-0x04020000}"
+bl31_addr="${bl31_addr:-0x04001000}"
 bl32_addr="${bl32_addr:-0x04002000}"
 bl33_addr="${bl33_addr:-0x88000000}"
 dtb_addr="${dtb_addr:-0x82000000}"
@@ -36,22 +36,10 @@ fvp_kernels=(
 [fvp-quad-busybox-uboot]="$tfa_downloads/quad_cluster/Image"
 )
 
-# From Linaro 16.12 release onwards the prebuilt ramdisk.img
-# contains 32-bit binaries which fails to boot on a AArch64-only
-# system.
-#
-# An updated 64-bit only ramdisk.img, which has been manually built,
-# has replaced the prebuilt version.
-#
-# When updating to a future Linaro release if this issue has not
-# been resolved then the fvp-uboot-tspd-aarch64-only run-config will
-# fail.
-
 # FVP initrd URLs
 declare -A fvp_initrd_urls
 fvp_initrd_urls=(
 [aarch32-ramdisk]="$linaro_release/fvp32-latest-busybox-uboot/ramdisk.img"
-[aarch64-only-ramdisk]="$linaro_release/fvp-latest-busybox-uboot/ramdisk-aarch64.img"
 [dummy-ramdisk]="$linaro_release/fvp-latest-oe-uboot/ramdisk.img"
 [dummy-ramdisk32]="$linaro_release/fvp32-latest-oe-uboot/ramdisk.img"
 [default]="$linaro_release/fvp-latest-busybox-uboot/ramdisk.img"
@@ -60,7 +48,7 @@ fvp_initrd_urls=(
 # FIXME use optee pre-built binaries
 get_optee_bin() {
 	url="$jenkins_url/job/tf-optee-build/PLATFORM_FLAVOR=fvp,label=arch-dev/lastSuccessfulBuild/artifact/artefacts/tee.bin" \
-		saveas="bl32.bin" fetch_file
+               saveas="bl32.bin" fetch_file
 	archive_file "bl32.bin"
 }
 
@@ -82,34 +70,8 @@ get_uboot_bin() {
 }
 
 get_uefi_bin() {
-
-	local project_scratch=/arm/projectscratch/ssg/uefi
-
-	local uefi_build_type="${uefi_build_type:-DEBUG}"
-	local uefi_build_aarch="${uefi_build_aarch:-AARCH64}"
-	local uefi_build_toolchain="${uefi_build_toolchain:-GCC5}"
-	local uefi_build_jobname="${uefi_build_jobname:-uefi-woa-github-edk2-master-ci}"
-	local uefi_tables="${uefi_tables:-static}"
-
-	uefi_ci_bin=FVP_${uefi_build_aarch}_EFI.fd
-	uefi_build_conf=fvp/${uefi_build_type}_${uefi_build_toolchain}/$uefi_build_aarch
-
-	if [ -d $project_scratch ]; then
-		uefi_artifacts_root=$project_scratch/$uefi_tables/Artifacts
-	else
-		local uefi_ci_job_url="$jenkins_url/job/uefi/job/$uefi_build_jobname"
-
-		local uefi_ci_conf="BUILD_AARCH=$uefi_build_aarch"
-		uefi_ci_conf="${uefi_ci_conf},BUILD_TYPE=${uefi_build_type}"
-		uefi_ci_conf="${uefi_ci_conf},EDK2_BUILD_PLATFORM=fvp"
-		uefi_ci_conf="${uefi_ci_conf},label=arch-dev"
-
-		local artifacts=lastSuccessfulBuild/artifact/Artifacts
-		uefi_artifacts_root=$uefi_ci_job_url/$uefi_ci_conf/$artifacts
-
-	fi
-
-	uefi_ci_bin_url=$uefi_artifacts_root/$uefi_build_conf/$uefi_ci_bin
+	uefi_downloads="${uefi_downloads:-http://files.oss.arm.com/downloads/uefi}"
+	uefi_ci_bin_url="${uefi_ci_bin_url:-$uefi_downloads/Artifacts/Linux/github/fvp/static/DEBUG_GCC5/FVP_AARCH64_EFI.fd}"
 
 	url=$uefi_ci_bin_url saveas="uefi.bin" fetch_file
 	archive_file "uefi.bin"
@@ -135,6 +97,8 @@ get_dtb() {
 	local dtb_type="${dtb_type:?}"
 	local dtb_url
 	local dtb_saveas="$workspace/dtb.bin"
+	local cc="$(get_tf_opt CROSS_COMPILE)"
+	local pp_flags="-P -nostdinc -undef -x assembler-with-cpp"
 
 	case "$dtb_type" in
 		"fvp-base-quad-cluster-gicv3-psci")
@@ -148,9 +112,13 @@ get_dtb() {
 			url="$dtb_url" saveas="$dtb_saveas" fetch_file
 			;;
 		*)
-			# Generate DTB file from DTC
+			# Preprocess DTS file
+			${cc}gcc -E ${pp_flags} -I"$tf_root/fdts" -I"$tf_root/include" \
+				-o "$workspace/${dtb_type}.pre.dts" \
+				"$tf_root/fdts/${dtb_type}.dts"
+			# Generate DTB file from DTS
 			dtc -I dts -O dtb \
-				"$tf_root/fdts/${dtb_type}.dts" -o "$dtb_saveas"
+				"$workspace/${dtb_type}.pre.dts" -o "$dtb_saveas"
 	esac
 
 	archive_file "$dtb_saveas"
@@ -190,6 +158,8 @@ get_rootfs() {
 	popd
 }
 
+fvp_romlib_jmptbl_backup="$(mktempdir)/jmptbl.i"
+
 fvp_romlib_runtime() {
 	local tmpdir="$(mktempdir)"
 
@@ -198,19 +168,21 @@ fvp_romlib_runtime() {
 	mv "${tf_build_root:?}/${plat:?}/${mode:?}/bl1.bin" "$tmpdir/bl1.bin"
 
 	# Patch index file
-	cp "${tf_root:?}/plat/arm/board/fvp/jmptbl.i" "$tmpdir/jmptbl.i"
-	sed -i '/rom_lib_init/! s/.$/&\ patch/' ${tf_root:?}/plat/arm/board/fvp/jmptbl.i
+	cp "${tf_root:?}/plat/arm/board/fvp/jmptbl.i" "$fvp_romlib_jmptbl_backup"
+	sed -i '/fdt/ s/.$/&\ patch/' ${tf_root:?}/plat/arm/board/fvp/jmptbl.i
 
 	# Rebuild with patched file
 	echo "Building patched romlib:"
 	build_tf
 
-	# Restore original index
-	mv "$tmpdir/jmptbl.i" "${tf_root:?}/plat/arm/board/fvp/jmptbl.i"
-
 	# Retrieve original BL1 and romlib binaries
 	mv "$tmpdir/romlib.bin" "${tf_build_root:?}/${plat:?}/${mode:?}/romlib/romlib.bin"
 	mv "$tmpdir/bl1.bin" "${tf_build_root:?}/${plat:?}/${mode:?}/bl1.bin"
+}
+
+fvp_romlib_cleanup() {
+	# Restore original index
+	mv "$fvp_romlib_jmptbl_backup" "${tf_root:?}/plat/arm/board/fvp/jmptbl.i"
 }
 
 set +u

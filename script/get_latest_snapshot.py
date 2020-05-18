@@ -22,6 +22,7 @@ except ImportError:
 
 # Get coverity host from environment, or fall back to the default one.
 coverity_host = os.environ.get("coverity_host", "coverity.cambridge.arm.com")
+coverity_port = os.environ.get("coverity_port", "8443")
 
 parser = argparse.ArgumentParser()
 
@@ -29,6 +30,7 @@ parser.add_argument("--description", help="Snapshot description filter")
 parser.add_argument("--file", dest="output_file", help="Output file. Mandatory")
 parser.add_argument("--old", default=10, help="Max snapshot age in days")
 parser.add_argument("--host", default=coverity_host, help="Coverity server")
+parser.add_argument("--https-port", default=coverity_port, help="Coverity Secure port")
 parser.add_argument("--version", help="Snapshot version filter")
 parser.add_argument("stream_name")
 
@@ -49,7 +51,7 @@ except:
     sys.exit(0)
 
 # SOAP magic stuff
-client = suds.client.Client("http://{}/ws/v9/configurationservice?wsdl".format(opts.host))
+client = suds.client.Client("https://{}/ws/v9/configurationservice?wsdl".format(opts.host))
 security = suds.wsse.Security()
 token = suds.wsse.UsernameToken(user, password)
 security.tokens.append(token)
