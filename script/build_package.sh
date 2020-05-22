@@ -196,6 +196,24 @@ collect_scp_artefacts() {
 	' bash '{}' +
 }
 
+# Map the UART ID used for expect with the UART descriptor and port
+# used by the FPGA automation tools.
+map_uart() {
+	local port="${port:?}"
+	local descriptor="${descriptor:?}"
+	local baudrate="${baudrate:?}"
+	local run_root="${archive:?}/run"
+
+	local uart_dir="$run_root/uart${uart:?}"
+	mkdir -p "$uart_dir"
+
+	echo "$port" > "$uart_dir/port"
+	echo "$descriptor" > "$uart_dir/descriptor"
+	echo "$baudrate" > "$uart_dir/baudrate"
+
+	echo "UART${uart} mapped to port ${port} with descriptor ${descriptor} and baudrate ${baudrate}"
+}
+
 # Arrange environment varibles to be set when expect scripts are launched
 set_expect_variable() {
 	local var="${1:?}"

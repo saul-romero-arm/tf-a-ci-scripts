@@ -130,7 +130,7 @@ run_one_test() {
 			;;
 
 		"run")
-			# Local runs only for FVP unless asked not to
+			# Local runs for FVP or arm_fpga unless asked not to
 			if echo "$RUN_CONFIG" | grep -q "^fvp" && \
 					not_upon "$skip_runs"; then
 				echo "running: $config_string" >&5
@@ -190,13 +190,37 @@ run_one_test() {
 					fi
 				fi
 			else
-				if grep -q -e "--BUILD UNSTABLE--" \
-						"$log_file"; then
-					print_unstable "$config_string (not run)" >&5
+				# Local runs for arm_fpga platform
+				if echo "$RUN_CONFIG" | grep -q "^arm_fpga" && \
+					not_upon "$skip_runs"; then
+					echo "running: $config_string" >&5
+					if bash $minus_x "$ci_root/script/test_fpga_payload.sh" \
+						>&6 2>&1; then
+						if grep -q -e "--BUILD UNSTABLE--" \
+							"$log_file"; then
+							print_unstable "$config_string" >&5
+						else
+							print_success "$config_string" >&5
+						fi
+						exit 0
+					else
+						{
+						print_failure "$config_string (run)"
+						if [ "$console_file" ]; then
+							echo "	see $console_file"
+						fi
+						} >&5
+						exit 1
+					fi
 				else
-					print_success "$config_string (not run)" >&5
+					if grep -q -e "--BUILD UNSTABLE--" \
+							"$log_file"; then
+						print_unstable "$config_string (not run)" >&5
+					else
+						print_success "$config_string (not run)" >&5
+					fi
+					exit 0
 				fi
-				exit 0
 			fi
 			;;
 
