@@ -1,0 +1,6 @@
+CROSS_COMPILE=aarch64-none-elf-
+PLAT=fvp
+TESTS=smcfuzzing
+SMC_FUZZING=1
+SMC_FUZZ_DTS=smc_fuzz/dts/sdei.dts
+
