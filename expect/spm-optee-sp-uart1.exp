@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+expect {
+	"OP-TEE version: 3.3"  {
+		puts "<<OP-TEE version>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"Primary CPU switching to normal world boot"  {
+		puts "<<OP-TEE initialized>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+exit_uart 0
