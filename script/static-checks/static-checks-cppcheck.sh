@@ -11,6 +11,8 @@ echo "# cppcheck to the entire source tree"
 
 TF_BASE="$(pwd)"
 
+export LOG_TEST_FILENAME=$(pwd)/static-checks-cppcheck.log
+
 # cppcheck configuration
 COMMON_ARGS=(-j 16 -q -f --std=c99 --error-exitcode=1 --relative-paths="$TF_BASE")
 CHECKS_ARGS=(--enable=warning,style,portability)
