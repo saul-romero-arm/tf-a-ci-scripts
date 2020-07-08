@@ -48,10 +48,10 @@ function do_check_tools()
     fi
 
     # Check that the AArch64 cross-toolchain is available.
-    aarch64-linux-gnu-gcc --version
+    aarch64-none-elf-gcc --version
 
     # Check that the AArch32 cross-toolchain is available.
-    arm-linux-gnueabihf-gcc --version
+    arm-none-eabi-gcc --version
 
     echo
     echo "Checks complete."
@@ -75,13 +75,13 @@ function do_configure()
     cov-configure				\
 	--comptype gcc				\
 	--template				\
-	--compiler aarch64-linux-gnu-gcc	\
+	--compiler aarch64-none-elf-gcc	\
 	--config cov-config/config.xml
     #   2) AArch32 compiler
     cov-configure				\
 	--comptype gcc				\
 	--template				\
-	--compiler arm-linux-gnueabihf-gcc	\
+	--compiler arm-none-eabi-gcc	\
 	--config cov-config/config.xml
 }
 

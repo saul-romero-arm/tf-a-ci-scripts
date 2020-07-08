@@ -305,14 +305,20 @@ coverity_default_checkers=(
 
 #export coverity_host
 
+# Define toolchain version and toolchain binary paths
+toolchain_version="9.2-2019.12"
+
+aarch64_none_elf_dir="${nfs_volume}/pdsw/tools/gcc-arm-${toolchain_version}-x86_64-aarch64-none-elf"
+aarch64_none_elf_prefix="aarch64-none-elf-"
+
+arm_none_eabi_dir="${nfs_volume}/pdsw/tools/gcc-arm-${toolchain_version}-x86_64-arm-none-eabi"
+arm_none_eabi_prefix="arm-none-eabi-"
+
 path_list=(
-#Need to upgrade gcc to the following version
-#"/arm/pdsw/tools/gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf/bin"
-#"/arm/pdsw/tools/gcc-arm-9.2-2019.12-x86_64-arm-none-eabi/bin"
-"${nfs_volume}/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin"
-"${nfs_volume}/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf/bin"
-"${nfs_volume}/pdsw/tools/gcc-arm-none-eabi-5_4-2016q3/bin"
-"$coverity_path/bin"
+		"${aarch64_none_elf_dir}/bin"
+		"${arm_none_eabi_dir}/bin"
+		"${nfs_volume}/pdsw/tools/gcc-arm-none-eabi-5_4-2016q3/bin"
+		"$coverity_path/bin"
 )
 
 ld_library_path_list=(

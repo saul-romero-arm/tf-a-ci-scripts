@@ -24,7 +24,7 @@ if [ ! -d "$TF_SOURCES" ]; then
     exit 1
 fi
 
-export CROSS_COMPILE=aarch64-linux-gnu-
+export CROSS_COMPILE=aarch64-none-elf-
 
 # Get mbed TLS library code to build Trusted Firmware with Trusted Board Boot
 # support. The version of mbed TLS to use here must be the same as when
@@ -106,15 +106,15 @@ clean_build $fvp_common_flags ENABLE_PMF=1
 clean_build $fvp_common_flags ENABLE_STACK_PROTECTOR=strong
 
 # AArch32 build
-clean_build $fvp_common_flags CROSS_COMPILE=arm-linux-gnueabihf- \
+clean_build $fvp_common_flags CROSS_COMPILE=arm-none-eabi- \
     ARCH=aarch32 AARCH32_SP=sp_min \
     RESET_TO_SP_MIN=1 PRELOADED_BL33_BASE=0x80000000
-clean_build $fvp_common_flags CROSS_COMPILE=arm-linux-gnueabihf- \
+clean_build $fvp_common_flags CROSS_COMPILE=arm-none-eabi- \
     ARCH=aarch32 AARCH32_SP=sp_min
 
 # Xlat tables lib version 1 (AArch64 and AArch32)
 clean_build $fvp_common_flags ARM_XLAT_TABLES_LIB_V1=1 RECLAIM_INIT_CODE=0
-clean_build $fvp_common_flags CROSS_COMPILE=arm-linux-gnueabihf- \
+clean_build $fvp_common_flags CROSS_COMPILE=arm-none-eabi- \
     ARCH=aarch32 AARCH32_SP=sp_min ARM_XLAT_TABLES_LIB_V1=1 RECLAIM_INIT_CODE=0
 
 # Using GIC600 driver
@@ -125,7 +125,7 @@ clean_build $fvp_common_flags ENABLE_SPM=1 EL3_EXCEPTION_HANDLING=1
 
 #BL2 at EL3 support
 clean_build $fvp_common_flags BL2_AT_EL3=1
-clean_build $fvp_common_flags CROSS_COMPILE=arm-linux-gnueabihf- \
+clean_build $fvp_common_flags CROSS_COMPILE=arm-none-eabi- \
     ARCH=aarch32 AARCH32_SP=sp_min BL2_AT_EL3=1
 
 #
