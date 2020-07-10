@@ -1,2 +1,3 @@
 CROSS_COMPILE=aarch64-none-elf-
-PLAT=fvp
+JUNO_TZMP1=1
+PLAT=juno

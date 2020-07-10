@@ -1,2 +1,3 @@
 CROSS_COMPILE=aarch64-none-elf-
-PLAT=fvp
+LOG_LEVEL=20
+PLAT=imx8mq

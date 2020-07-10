@@ -1,2 +1,3 @@
 CROSS_COMPILE=aarch64-none-elf-
-PLAT=fvp
+PLAT=tegra
+TARGET_SOC=t194
