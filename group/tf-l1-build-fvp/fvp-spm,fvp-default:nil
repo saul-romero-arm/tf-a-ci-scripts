@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+#
+# To build SP packages in TF-A we need to build FIP.
+# The resulting FIP has valid SP Packages mentioned in SP_LAYOUT_FILE but
+# dummy BL33 and BL32.
+#
+post_tf_build() {
+	# Create non-empty dummy images to include in the FIP.
+	local dummy_file="$(mktempfile)"
+	echo "hello world" > "$dummy_file"
+
+	build_fip BL33="$dummy_file" BL32="$dummy_file"
+}
