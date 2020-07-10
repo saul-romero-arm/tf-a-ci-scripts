@@ -1,0 +1,6 @@
+ARCH=aarch32
+CROSS_COMPILE=arm-none-eabi-
+NEW_TEST_SESSION=0
+PLAT=fvp
+TESTS=manual
+USE_NVM=1

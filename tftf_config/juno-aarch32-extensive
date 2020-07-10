@@ -1,0 +1,4 @@
+ARCH=aarch32
+CROSS_COMPILE=arm-none-eabi-
+PLAT=juno
+TESTS=extensive

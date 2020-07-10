@@ -1,0 +1,6 @@
+CROSS_COMPILE=arm-none-eabi-
+PLAT=juno
+ARCH=aarch32
+USE_NVM=1
+NEW_TEST_SESSION=0
+TESTS=manual-shutdown

@@ -1,0 +1,5 @@
+CROSS_COMPILE=aarch64-none-elf-
+NEW_TEST_SESSION=0
+PLAT=juno
+TESTS=manual
+USE_NVM=1

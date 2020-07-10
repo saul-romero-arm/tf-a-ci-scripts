@@ -1,0 +1,5 @@
+CROSS_COMPILE=aarch64-none-elf-
+PLAT=juno
+USE_NVM=1
+NEW_TEST_SESSION=0
+TESTS=manual-shutdown

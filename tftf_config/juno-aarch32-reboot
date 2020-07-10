@@ -1,0 +1,7 @@
+ARCH=aarch32
+CROSS_COMPILE=arm-none-eabi-
+PLAT=juno
+TESTS=reboot
+USE_NVM=1
+NEW_TEST_SESSION=0
+
