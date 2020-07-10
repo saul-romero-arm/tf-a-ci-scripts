@@ -241,6 +241,28 @@ if echo "$-" | grep -q "x"; then
 	export minus_x="-x"
 fi
 
+# if test_groups variable is not present, check if it can be formed at least from 'test_group' and 'tf_config'
+# environment variables
+if [ -z "${test_groups}" ]; then
+  if [ -n "${test_group}" -a -n "${tf_config}" ]; then
+
+    # default the rest to nil if not present
+    tftf_config="${tftf_config:-nil}"
+    scp_config="${scp_config:-nil}"
+    scp_tools="${scp_tools:-nil}"
+    run_config="${run_config:-nil}"
+
+    # constuct the 'long form' so it takes into account all possible configurations
+    tg=$(printf "%s/%s,%s,%s,%s:%s" "${test_group}" "${tf_config}" "${tftf_config}" "${scp_config}" "${scp_tools}" "${run_config}")
+
+    # trim any ',nil:' from it
+    tg="${tg/,nil:/:}" tg="${tg/,nil:/:}"; tg="${tg/,nil:/:}"
+
+    # finally exported
+    export test_groups="${tg}"
+  fi
+fi
+
 # For a local run, when some variables as specified as "?", launch zenity to
 # prompt for test config via. GUI. If it's "??", then choose a directory.
 if [ "$test_groups" = "?" -o "$test_groups" = "??" ]; then
