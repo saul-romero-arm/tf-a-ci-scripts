@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+	model="cortex-a65aex8" \
+	data_instance="cluster0.cpu0.thread0" \
+		gen_model_params
+	uart="0" set_expect_variable "num_cpus" "16"
+}

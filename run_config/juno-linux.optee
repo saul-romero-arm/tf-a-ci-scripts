@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+	get_scp_bl2_bin
+	get_uboot_bin
+	get_optee_bin
+	build_fip BL33="$archive/uboot.bin" BL32="$archive/bl32.bin" SCP_BL2="$archive/scp_bl2.bin"
+}
+
+post_fetch_tf_resource() {
+	gen_recovery_image "$archive/bl1.bin" "$archive/fip.bin"
+	payload_type="linux" gen_juno_yaml
+}

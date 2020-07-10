@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+	url="$project_filer/ci-files/spm-05-19-2020/tee-pager_v2.bin" fetch_file
+
+	archive_file "tee-pager_v2.bin"
+
+	build_fip BL33="$archive/tftf.bin" BL32="$archive/tee-pager_v2.bin"
+}
+
+post_fetch_tf_resource() {
+	model="base-aemv8a" \
+		gen_model_params
+}
+
+fetch_tf_resource() {
+	# Expect scripts
+	uart="0" file="tftf.exp" track_expect
+}

@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+# data_instance must be set to cluster0.cpu0.thread0 because the model does not accept --data
+# parameter on the default cluster0.cpu0 instance.
+
+post_fetch_tf_resource() {
+	model="cortex-a65x4" \
+	data_instance="cluster0.cpu0.thread0" \
+		gen_model_params
+	uart="0" set_expect_variable "num_cpus" "8"
+}

@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+pre_tf_build() {
+	# Apply ubsan test patch
+	apply_tf_patch "ubsan/ubsan_test.patch"
+}
+
+post_tf_archive() {
+	model="base-aemv8a" \
+		gen_model_params
+}
+
+fetch_tf_resource() {
+	# Expect trap message on uart 1
+	uart="1" set_primary="1" file="ubsan-test-trap.exp" track_expect
+}

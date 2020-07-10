@@ -6,8 +6,6 @@
 #
 
 post_fetch_tf_resource() {
-	model="cortex-a75x4" \
-	cache_state_modelled="0" \
-	gen_model_params
-	uart="0" set_expect_variable "num_cpus" "4"
+	bmcov_plugin=1 bmcov_plugin_path="${coverage_trace_plugin}" \
+        model="base-aemv8a" gen_model_params
 }

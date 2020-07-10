@@ -6,7 +6,7 @@
 #
 
 post_fetch_tf_resource() {
-	model="cortex-a75x4" \
+	model="cortex-a77x4" \
 	cache_state_modelled="0" \
 	gen_model_params
 	uart="0" set_expect_variable "num_cpus" "4"

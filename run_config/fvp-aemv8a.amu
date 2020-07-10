@@ -1,0 +1,9 @@
+#!/bin/bash
+
+post_fetch_tf_resource() {
+	model="base-aemv8a" \
+	arch_version="8.4" \
+	amu_present="1" \
+	cache_state_modelled="0" \
+		gen_model_params
+}

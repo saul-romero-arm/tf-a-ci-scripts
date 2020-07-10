@@ -5,10 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-post_tf_build() {
-	fvp_romlib_runtime
-}
-
-post_tf_archive() {
-	fvp_romlib_cleanup
+fetch_tf_resource() {
+	dtb_type="fvp-base-gicv3-psci-dynamiq-2t" get_dtb
+	update_fip_hw_config
 }

@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+# This run fragment is used to generate a dummy FIP. The resulting file is not
+# functional and cannot be used in a real run on a platform.
+#
+# This is useful in cases where we want to build a FIP in addition to the
+# individual firmware binaries.
+
+post_tf_build() {
+	# Create non-empty dummy images to include in the FIP.
+	local dummy_file="$(mktempfile)"
+	echo "hello world" > "$dummy_file"
+
+	build_fip BL33="$dummy_file" BL32="$dummy_file" \
+		  BL32_EXTRA1="$dummy_file" BL32_EXTRA2="$dummy_file"
+}

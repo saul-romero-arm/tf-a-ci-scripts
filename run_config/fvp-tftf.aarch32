@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	uart="0" file="tftf-aarch32.exp" track_expect
+	uart="1" file="hold_uart.exp" track_expect
+}

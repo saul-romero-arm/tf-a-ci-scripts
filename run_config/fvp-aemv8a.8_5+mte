@@ -6,8 +6,11 @@
 #
 
 post_fetch_tf_resource() {
-	model="cortex-a75x4" \
+	model="base-aemv8a" \
+	model_version="11.8" \
+	model_build="37" \
+	arch_version="8.5" \
 	cache_state_modelled="0" \
-	gen_model_params
-	uart="0" set_expect_variable "num_cpus" "4"
+	memory_tagging_support_level="2" \
+		gen_model_params
 }

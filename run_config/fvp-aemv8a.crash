@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+
+pre_tf_build() {
+        # Apply fault injection patches
+	apply_tf_patch "fault_inject/injected-fault-in-absence-of-ras.patch"
+        apply_tf_patch "fault_inject/explicit-events.patch"
+}
+
+post_tf_archive() {
+	model="base-aemv8a" fault_inject="1" arch_version="8.4" \
+		gen_model_params
+}
+
+fetch_tf_resource() {
+        uart="0"  timeout="60" file="timeout_test.exp" track_expect
+        uart="1"  timeout="60" file="crash_test.exp" track_expect
+}

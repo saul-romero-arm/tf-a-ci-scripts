@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+pre_tf_build() {
+	# Apply a patch which disables dynamic authentication
+	# of images during trusted board boot.
+	apply_tf_patch "tbb_dyn_auth/disable_dyn_auth.patch"
+}
+
+post_tf_archive() {
+	model="base-aemv8a" gen_model_params
+}
+
+fetch_tf_resource() {
+	uart="0" timeout="60" file="disable_dyn_auth.exp" track_expect
+}

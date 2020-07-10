@@ -5,10 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-post_tf_build() {
-	fvp_romlib_runtime
-}
-
 post_tf_archive() {
-	fvp_romlib_cleanup
+	set_hook_var "juno_revision" "juno-r1"
+	echo "Choosing juno revision r1"
 }

@@ -6,5 +6,7 @@
 #
 
 post_fetch_tf_resource() {
-	model="cortex-a55x4-a75x4" gen_model_params
+	model="cortex-a55x4-a75x4" \
+	cache_state_modelled="0" \
+	gen_model_params
 }

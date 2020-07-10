@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+	bmcov_plugin=1 bmcov_plugin_path="${coverage_trace_plugin}" \
+	model="base-aemv8a" cluster_0_num_cores="1" cluster_1_num_cores="0" \
+		gen_model_params
+	uart="0" set_expect_variable "num_cpus" "1"
+}

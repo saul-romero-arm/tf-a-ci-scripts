@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+	url="$tc_prebuilts/u-boot.bin" fetch_file
+	archive_file "u-boot.bin"
+
+	# Use SCP binary from SCP build if it exists, or fetch pre-built ones.
+	if [ ! -f "$archive/scp_ramfw.bin" ]; then
+		url="$tc_prebuilts/scp_ramfw.bin" fetch_file
+		archive_file "scp_ramfw.bin"
+	fi
+
+	build_fip BL33="$archive/u-boot.bin" SCP_BL2="$archive/scp_ramfw.bin"
+}

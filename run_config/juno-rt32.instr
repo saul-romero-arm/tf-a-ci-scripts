@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_archive() {
+	config_file="$ci_root/tf_config/juno-aarch32-rst-to-sp-min-enable-runtime-instr" \
+		juno_aarch32_runtime
+}

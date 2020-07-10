@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+	# The Trusted non-volatile counter is invalid. Authentication of BL2
+	# image is expected to fail.
+	uart="0" file="trusted-firmware-load-error.exp" track_expect
+	model="base-aemv8a" nvcounter_diag="4" gen_model_params
+}

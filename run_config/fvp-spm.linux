@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+	url="$project_filer/ci-files/spm-05-19-2020/hafnium.bin" fetch_file
+	url="$project_filer/ci-files/spm-05-19-2020/secure_hafnium.bin" fetch_file
+	url="$project_filer/ci-files/spm-05-19-2020/initrd.img" fetch_file
+	url="$project_filer/ci-files/spm-05-19-2020/manifest.dtb" fetch_file
+
+	archive_file "hafnium.bin"
+	archive_file "secure_hafnium.bin"
+	archive_file "initrd.img"
+	archive_file "manifest.dtb"
+
+	build_fip BL33="$archive/hafnium.bin" BL32="$archive/secure_hafnium.bin"
+}
+
+post_fetch_tf_resource() {
+	model="base-aemv8a" \
+	arch_version="8.4" \
+	initrd_bin="initrd.img" \
+	el3_payload_bin="manifest.dtb" \
+		gen_model_params
+}
+
+fetch_tf_resource() {
+	# Expect scripts
+	uart="0" file="spm-linux-uart0.exp" track_expect
+	uart="2" file="spm-uart2.exp" track_expect
+}

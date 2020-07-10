@@ -5,9 +5,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-fetch_tf_resource() {
-	kernel_type="fvp-aarch32-zimage" get_kernel
-	initrd_type="aarch32-ramdisk" get_initrd
-	uart="0" file="linux-rd-busybox-aarch32.exp" track_expect
+post_fetch_tf_resource() {
+	bl2_at_el3="1" \
+	aarch32="1" \
+	bl2_addr="0x4022000" \
+		model="base-aemv8a" gen_model_params
+
 	uart="0" set_expect_variable "skip_early_boot_msgs" "1"
 }

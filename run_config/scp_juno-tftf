@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+	path_bypass_rom="$scp_root/build/product/juno/scp_romfw_bypass/$mode/bin"
+
+	cp "$path_bypass_rom/scp_romfw_bypass.bin" "$path_bypass_rom/scp_bl1.bin"
+	archive_file "$path_bypass_rom/scp_bl1.bin"
+
+	archive_file "$scp_root/build/product/juno/scp_ramfw/$mode/bin/scp_ramfw.bin"
+
+	build_fip BL33="$archive/tftf.bin" SCP_BL2="$archive/scp_ramfw.bin"
+}
+
+post_fetch_tf_resource() {
+	gen_recovery_image "$archive/bl1.bin" "$archive/fip.bin" "$archive/scp_bl1.bin"
+	payload_type="tftf" gen_juno_yaml
+}
