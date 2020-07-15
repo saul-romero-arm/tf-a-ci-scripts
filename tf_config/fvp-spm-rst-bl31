@@ -1,0 +1,8 @@
+CROSS_COMPILE=aarch64-none-elf-
+PLAT=fvp
+RESET_TO_BL31=1
+SPD=spmd
+SPMD_SPM_AT_SEL2=1
+CTX_INCLUDE_EL2_REGS=1
+ARM_ARCH_MINOR=4
+SP_LAYOUT_FILE=${tftf_root}/build/fvp/${bin_mode}/sp_layout.json

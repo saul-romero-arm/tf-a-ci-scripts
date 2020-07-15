@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+	#
+	# To build SP packages in TF-A we need to build FIP.
+	# The resulting FIP has valid SP Packages mentioned in SP_LAYOUT_FILE
+	# but dummy BL33 and BL32.
+	#
+	local dummy_file="$(mktempfile)"
+	echo "hello world" > "$dummy_file"
+
+	build_fip BL33="$dummy_file" BL32="$dummy_file"
+
+	url="$project_filer/ci-files/spm-07-29-2020/hafnium.bin" fetch_file
+	url="$project_filer/ci-files/spm-07-29-2020/secure_hafnium.bin" fetch_file
+	url="$project_filer/ci-files/spm-07-29-2020/initrd.img" fetch_file
+	url="$project_filer/ci-files/spm-07-29-2020/manifest.dtb" fetch_file
+	url="${tf_build_root}/${plat}/${mode}/fdts/fvp_spmc_manifest.dtb" fetch_file
+	url="${tf_build_root}/${plat}/${mode}/cactus-primary.pkg" fetch_file
+	url="${tf_build_root}/${plat}/${mode}/cactus-secondary.pkg" fetch_file
+
+	archive_file "hafnium.bin"
+	archive_file "secure_hafnium.bin"
+	archive_file "initrd.img"
+	archive_file "manifest.dtb"
+	archive_file "fvp_spmc_manifest.dtb"
+	archive_file "cactus-primary.pkg"
+	archive_file "cactus-secondary.pkg"
+}
+
+post_fetch_tf_resource() {
+	model="base-aemv8a" \
+	arch_version="8.4" \
+	reset_to_bl31="1" \
+	preload_bl33="1" \
+	preload_bl33_bin="hafnium.bin" \
+	spmc_manifest="fvp_spmc_manifest.dtb" \
+	spm_bin="secure_hafnium.bin" \
+	sp1_pkg="cactus-primary.pkg" \
+	sp2_pkg="cactus-secondary.pkg" \
+	initrd_bin="initrd.img" \
+	el3_payload_bin="manifest.dtb" \
+		gen_model_params
+}
+
+fetch_tf_resource() {
+	# Expect scripts
+	uart="0" file="spm-linux-uart0.exp" track_expect
+	uart="2" file="spm-uart2.exp" track_expect
+}

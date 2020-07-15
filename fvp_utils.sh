@@ -17,6 +17,12 @@ initrd_addr="${initrd_addr:-0x84000000}"
 kernel_addr="${kernel_addr:-0x80080000}"
 el3_payload_addr="${el3_payload_addr:-0x80000000}"
 
+# SPM requires following addresses for RESET_TO_BL31 case
+spm_addr="${spm_addr:-0x6000000}"
+spmc_manifest_addr="${spmc_addr:-0x0403f000}"
+sp1_addr="${sp1_addr:-0x7000000}"
+sp2_addr="${sp2_addr:-0x7100000}"
+
 ns_bl1u_addr="${ns_bl1u_addr:-0x0beb8000}"
 fwu_fip_addr="${fwu_fip_addr:-0x08400000}"
 backup_fip_addr="${backup_fip_addr:-0x09000000}"

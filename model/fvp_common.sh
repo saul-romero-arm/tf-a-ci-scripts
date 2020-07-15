@@ -56,6 +56,11 @@ ${dtb_bin+--data cluster0.cpu0=$dtb_bin@${dtb_addr:?}}
 ${kernel_bin+--data cluster0.cpu0=$kernel_bin@${kernel_addr:?}}
 ${initrd_bin+--data cluster0.cpu0=$initrd_bin@${initrd_addr:?}}
 
+${spm_bin+--data ${data_instance}=$spm_bin@${spm_addr:?}}
+${spmc_manifest+--data ${data_instance}=$spmc_manifest@${spmc_manifest_addr:?}}
+${sp1_pkg+--data ${data_instance}=$sp1_pkg@${sp1_addr:?}}
+${sp2_pkg+--data ${data_instance}=$sp2_pkg@${sp2_addr:?}}
+
 ${ns_bl1u_bin+--data cluster0.cpu0=$ns_bl1u_bin@$ns_bl1u_addr}
 ${fwu_fip_bin+--data cluster0.cpu0=$fwu_fip_bin@$fwu_fip_addr}
 ${backup_fip_bin+--data cluster0.cpu0=$backup_fip_bin@$backup_fip_addr}
