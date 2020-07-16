@@ -200,20 +200,23 @@ default_var() {
 extend_path() {
 	local path_var="$1"
 	local array_var="$2"
-	local tmp_path="${!path_var}"
-	local tmp_array
-	local item
+	local path_val="${!path_var}"
 	local op="${op:-prepend}"
+	local sep=':'
+	local array_val
 
-	eval "tmp_array=\"\${$array_var[@]}\""
-	for item in $tmp_array; do
-		if [ "$op" = "prepend" ]; then
-			tmp_path="$item${tmp_path+:}$tmp_path"
-		elif [ "$op" = "append" ]; then
-			tmp_path="$tmp_path${tmp_path+:}$item"
-		fi
-	done
-	eval "$path_var=\"$tmp_path\""
+	eval "array_val=\"\${$array_var[@]}\""
+	array_val="$(echo ${array_val// /:})"
+
+	[ -z "$path_val" ] && sep=''
+
+	if [ "$op" = "prepend" ]; then
+		array_val="${array_val}${sep}${path_val}"
+	elif [ "$op" = "append" ]; then
+		array_val="${path_val}${sep}${array_val}"
+	fi
+
+	eval "$path_var=\"$array_val\""
 }
 
 # Extract files from compressed archive to target directory. Supports .zip and
