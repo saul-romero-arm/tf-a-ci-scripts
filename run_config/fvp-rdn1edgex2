@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	#Fetch the pre-built SCP/MCP binaries if they haven't been built
+	if [ ! -f "$archive/mcp_rom.bin" ]; then
+		url="$sgi_prebuilts/mcp_rom.bin" fetch_file
+		archive_file "mcp_rom.bin"
+	fi
+	if [ ! -f "$archive/scp_ram.bin" ]; then
+		url="$sgi_prebuilts/scp_ram.bin" fetch_file
+		archive_file "scp_ram.bin"
+	fi
+	if [ ! -f "$archive/scp_rom.bin" ]; then
+		url="$sgi_prebuilts/scp_rom.bin" fetch_file
+		archive_file "scp_rom.bin"
+	fi
+
+	# Hold scp terminal_uart_aon on css0
+	uart="2" file="hold_uart.exp" track_expect
+
+	# Hold scp terminal_uart_aon on css1
+	uart="3" file="hold_uart.exp" track_expect
+}
+
+post_fetch_tf_resource() {
+	model="css-rdn1edgex2" gen_model_params
+	set_run_env "ports_script" "$ci_root/model/css-rdinfra-ports.awk"
+	set_run_env "num_uarts" "4"
+	uart="0" set_expect_variable "num_cpus" "16"
+}
