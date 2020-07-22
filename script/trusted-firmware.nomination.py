@@ -52,7 +52,8 @@ nomination_rules = {
 
         # Run Coverity MISRA checks for corstone700 platform changes
         "path:plat/arm/board/corstone700":
-            ["tf-l2-coverity-misra-nominated/corstone700-default:coverity-tf-misra.diff"],
+            ["tf-l2-coverity-misra-nominated/corstone700-fvp-default:coverity-tf-misra.diff",
+             "tf-l2-coverity-misra-nominated/corstone700-fpga-default:coverity-tf-misra.diff"],
 
         # Run Coverity MISRA checks for SPM_MM changes
         "pathre:spm_mm":
