@@ -200,9 +200,9 @@ make -j DEBUG=1 PLAT=sgm775 ${ARM_TBB_OPTIONS} SPD=tspd \
     CSS_USE_SCMI_SDS_DRIVER=1 all
 
 #
-# System Guidance for Infrastructure platform RD-N1Edge
+# System Guidance for Infrastructure platform RD-N1-Edge-Dual
 #
-make -j DEBUG=1 PLAT=rdn1edge  ${ARM_TBB_OPTIONS} all
+make -j DEBUG=1 PLAT=rdn1edge CSS_SGI_CHIP_COUNT=2 ${ARM_TBB_OPTIONS} all
 
 #
 # System Guidance for Infrastructure platform RD-E1Edge
