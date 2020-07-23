@@ -27,6 +27,16 @@ fetch_tf_resource() {
 	uart="3" file="hold_uart.exp" track_expect
 }
 
+pre_tf_build() {
+	#
+	# Dual-Chip RD-N1-Edge FVP has reliability issues with stlr instruction
+	# while sending events across the chip through CCIX link. Apply 'send
+	# explicit event after store release instruction' patch to improve the
+	# reliability of cross chip events.
+	#
+	apply_tf_patch "css_rd_multichip_fvp/spinlock-send-explicit-event-after-store-release.patch"
+}
+
 post_fetch_tf_resource() {
 	model="css-rdn1edgex2" gen_model_params
 	set_run_env "ports_script" "$ci_root/model/css-rdinfra-ports.awk"
