@@ -15,6 +15,11 @@ nomination_rules = {
             ["tf-l3-boot-tests-css/fvp-rdn1edge-tbb,fvp-rdn1edge-default:fvp-tftf-fip.tftf-rdn1edge",
              "tf-l2-coverity-misra-nominated/fvp-rdn1edge-tbb:coverity-tf-misra.diff"],
 
+        # Run RD-Daniel TF-A Tests and MISRA checks for any platform changes
+        "path:plat/arm/board/rddaniel":
+            ["tf-l3-boot-tests-css/fvp-rddaniel-tbb:fvp-linux.sgi-fip.sgi-rddaniel-debug",
+             "tf-l2-coverity-misra-nominated/fvp-rddaniel-tbb:coverity-tf-misra.diff"],
+
         # Run SGI575 boot test, TF-A Tests and MISRA checks for any changes with "sgi" in the path
         "pathre:sgi":
             ["tf-l3-boot-tests-css/fvp-sgi575-tbb:fvp-linux.sgi-fip.sgi-sgi575-debug",
