@@ -13,7 +13,9 @@ nomination_rules = {
         # Run RDN1EDGE TF-A Tests and MISRA checks for any platform changes
         "path:plat/arm/board/rdn1edge":
             ["tf-l3-boot-tests-css/fvp-rdn1edge-tbb,fvp-rdn1edge-default:fvp-tftf-fip.tftf-rdn1edge",
-             "tf-l2-coverity-misra-nominated/fvp-rdn1edge-tbb:coverity-tf-misra.diff"],
+             "tf-l2-coverity-misra-nominated/fvp-rdn1edge-tbb:coverity-tf-misra.diff",
+             "tf-l3-boot-tests-css/fvp-rdn1edgex2-tbb:fvp-linux.sgi-fip.sgi-rdn1edgex2-debug",
+             "tf-l2-coverity-misra-nominated/fvp-rdn1edgex2-tbb:coverity-tf-misra.diff"],
 
         # Run RD-Daniel TF-A Tests and MISRA checks for any platform changes
         "path:plat/arm/board/rddaniel":
