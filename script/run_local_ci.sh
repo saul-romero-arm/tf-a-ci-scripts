@@ -285,6 +285,9 @@ if [ -n "$cc_enable" ]; then
 		cc_path_spec="$workspace/cc_plugin"
 		import_cc=1
 	fi
+else
+	in_green "Code coverage disabled"
+	import_cc=1
 fi
 
 # User preferences
