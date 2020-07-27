@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -28,6 +28,7 @@ exclude_paths = [
 
     ("lib/aarch64/xlat_tables.c", "deprecated library code"),
 
+    ("plat/arm/board/fvp/fconf/fconf_nt_config_getter.c", "Not currently used. Future functionality"),
     ("plat/arm/common/arm_tzc_dmc500.c", "not used by any upstream platform"),
 
     ("plat/mediatek/mt8173/plat_mt_gic.c", "deprecated code"),

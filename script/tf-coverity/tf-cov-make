@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -127,6 +127,9 @@ clean_build $fvp_common_flags ENABLE_SPM=1 EL3_EXCEPTION_HANDLING=1
 clean_build $fvp_common_flags BL2_AT_EL3=1
 clean_build $fvp_common_flags CROSS_COMPILE=arm-none-eabi- \
     ARCH=aarch32 AARCH32_SP=sp_min BL2_AT_EL3=1
+
+# Measured Boot
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} MEASURED_BOOT=1
 
 #
 # Juno platform
