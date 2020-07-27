@@ -1,0 +1,2 @@
+# Ignore python cache in all possible folders
+__pycache__/
