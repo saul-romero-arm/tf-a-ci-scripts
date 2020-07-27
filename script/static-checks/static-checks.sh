@@ -61,7 +61,12 @@ echo
 
 # Check line endings
 
-"$CI_ROOT"/script/static-checks/static-checks-coding-style-line-endings.sh
+if [ "$IS_CONTINUOUS_INTEGRATION" == 1 ]; then
+    "$CI_ROOT"/script/static-checks/static-checks-coding-style-line-endings.sh . patch
+else
+    "$CI_ROOT"/script/static-checks/static-checks-coding-style-line-endings.sh
+fi
+
 if [ "$?" != 0 ]; then
   echo "Line ending test: FAILURE"
   ((ERROR_COUNT++))
