@@ -7,7 +7,7 @@
 source [file join [file dirname [info script]] handle-arguments.inc]
 
 expect {
-	"Booting Cactus Secure Partition"  {
+	"Booting Primary Cactus Secure Partition"  {
 		puts "<<SP entry>>"
 	}
 	timeout {
@@ -16,7 +16,7 @@ expect {
 }
 
 expect {
-	"vCPU count: 8"  {
+	"FFA_VERSION returned 1.0"  {
 		puts "<<SP exit>>"
 	}
 	timeout {
