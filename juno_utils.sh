@@ -81,7 +81,7 @@ gen_recovery_image() {
 		find "$zip_dir" -name images.txt -exec cp -f "$image_txt" {} \;
 	fi
 
-	(cd "$zip_dir" && zip -rq "$zip_file" *)
+	(cd "$zip_dir" && zip -rq "$zip_file" -- *)
 	archive_file "$zip_file"
 }
 
