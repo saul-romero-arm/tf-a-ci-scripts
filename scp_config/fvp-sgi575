@@ -1,2 +1,2 @@
-CC=arm-none-eabi-gcc
+CC=/arm/pdsw/tools/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-gcc
 PRODUCT=sgi575
