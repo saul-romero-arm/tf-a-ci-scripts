@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-set_model_path "${pinned_css:?}/FVP_CSS_SGM-775"
+set_model_path "$warehouse/SysGen/SubSystemModels/$model_version/$model_build/models/$model_flavour/FVP_CSS_SGM-775"
 
 cat <<EOF >"$model_param_file"
 ${bl1_bin+-C css.trustedBootROMloader.fname=$bl1_bin}
@@ -20,4 +20,5 @@ ${uart1_out+-C soc.pl011_uart1.out_file=$uart1_out}
 ${uart1_out+-C soc.pl011_uart1.unbuffered_output=1}
 -C config_id=0
 -C displayController=2
+-C css.cache_state_modelled=1
 EOF

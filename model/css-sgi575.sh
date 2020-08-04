@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-set_model_path "${pinned_css:?}/FVP_CSS_SGI-575"
+set_model_path "$warehouse/SysGen/SubSystemModels/11.10/36/models/Linux64_GCC-6.4/FVP_CSS_SGI-575"
 
 cat <<EOF >"$model_param_file"
 -C board.flashloader0.fname=$fip_bin

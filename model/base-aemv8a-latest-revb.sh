@@ -5,8 +5,10 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-set_model_path "$warehouse/SysGen/Models/0.8/9810/models/Linux64_GCC-4.9/FVP_Base_AEMv8A-AEMv8A"
+set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/models/$model_flavour/FVP_Base_AEMv8A-AEMv8A"
 
-default_var sve_plugin_path "$warehouse/SysGen/ShojiPlugin/0.8/9905/hpc-00rel3/Linux64_GCC-4.9/ScalableVectorExtension.so"
+default_var sve_plugin_path "$warehouse/SysGen/ShojiPlugin/$model_version/$model_build/v9.0-00bet4/$model_flavour/ScalableVectorExtension.so"
 
-source "$ci_root/model/base-aemv8a-common.sh"
+default_var is_dual_cluster 1
+
+source "$ci_root/model/base-aemva-common.sh"

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-set_model_path "$warehouse/SysGen/SubSystemModels/$model_version/$model_build/models/Linux64_GCC-4.9/FVP_RD_N1_edge"
+set_model_path "$warehouse/SysGen/SubSystemModels/11.10/36/models/Linux64_GCC-6.4/FVP_RD_N1_edge"
 
 cat <<EOF >"$model_param_file"
 -C board.flashloader0.fname=$fip_bin

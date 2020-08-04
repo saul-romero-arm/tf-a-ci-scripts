@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -9,8 +9,10 @@
 
 default_var pctl_startup 0.0.0.0
 default_var quantum 1000
+default_var data_instance cluster0.cpu0
+default_var cache_state_modelled 1
+default_var print_stat 1
 
-reset_var cache_state_modelled
 reset_var has_bl1
 reset_var has_fip
 reset_var preload_bl33
@@ -38,39 +40,46 @@ ${cache_state_modelled+-C cache_state_modelled=$cache_state_modelled}
 ${secure_ram_fill+-C bp.secureSRAM.fill1=0x00000000}
 ${secure_ram_fill+-C bp.secureSRAM.fill2=0x00000000}
 
-${bl2_at_el3+--data cluster0.cpu0=$bl2_bin@${bl2_addr:?}}
+${bl2_at_el3+--data ${data_instance}=$bl2_bin@${bl2_addr:?}}
 
-${reset_to_bl31+--data cluster0.cpu0=$bl31_bin@${bl31_addr:?}}
-${preload_bl33+--data cluster0.cpu0=$preload_bl33_bin@${bl33_addr:?}}
+${reset_to_bl31+--data ${data_instance}=$bl31_bin@${bl31_addr:?}}
+${preload_bl33+--data ${data_instance}=$preload_bl33_bin@${bl33_addr:?}}
 
-${reset_to_spmin+--data cluster0.cpu0=$bl32_bin@${bl32_addr:?}}
-${reset_to_spmin+--data cluster0.cpu0=$uboot_bin@${bl33_addr:?}}
+${reset_to_spmin+--data ${data_instance}=$bl32_bin@${bl32_addr:?}}
+${reset_to_spmin+--data ${data_instance}=$uboot_bin@${bl33_addr:?}}
 
-${memprotect+--data cluster0.cpu0=$memprotect@${memprotect_addr:?}}
-${romlib_bin+--data cluster0.cpu0=$romlib_bin@${romlib_addr:?}}
+${memprotect+--data ${data_instance}=$memprotect@${memprotect_addr:?}}
+${romlib_bin+--data ${data_instance}=$romlib_bin@${romlib_addr:?}}
 
 ${has_bl1+-C bp.secureflashloader.fname=$bl1_bin}
 ${has_fip+-C bp.flashloader0.fname=$fip_bin}
 
-${dtb_bin+--data cluster0.cpu0=$dtb_bin@${dtb_addr:?}}
-${kernel_bin+--data cluster0.cpu0=$kernel_bin@${kernel_addr:?}}
-${initrd_bin+--data cluster0.cpu0=$initrd_bin@${initrd_addr:?}}
+${dtb_bin+--data ${data_instance}=$dtb_bin@${dtb_addr:?}}
+${kernel_bin+--data ${data_instance}=$kernel_bin@${kernel_addr:?}}
+${initrd_bin+--data ${data_instance}=$initrd_bin@${initrd_addr:?}}
 
 ${spm_bin+--data ${data_instance}=$spm_bin@${spm_addr:?}}
 ${spmc_manifest+--data ${data_instance}=$spmc_manifest@${spmc_manifest_addr:?}}
 ${sp1_pkg+--data ${data_instance}=$sp1_pkg@${sp1_addr:?}}
 ${sp2_pkg+--data ${data_instance}=$sp2_pkg@${sp2_addr:?}}
 
-${ns_bl1u_bin+--data cluster0.cpu0=$ns_bl1u_bin@$ns_bl1u_addr}
-${fwu_fip_bin+--data cluster0.cpu0=$fwu_fip_bin@$fwu_fip_addr}
-${backup_fip_bin+--data cluster0.cpu0=$backup_fip_bin@$backup_fip_addr}
+${ns_bl1u_bin+--data ${data_instance}=$ns_bl1u_bin@$ns_bl1u_addr}
+${fwu_fip_bin+--data ${data_instance}=$fwu_fip_bin@$fwu_fip_addr}
+${backup_fip_bin+--data ${data_instance}=$backup_fip_bin@$backup_fip_addr}
 
 ${flashloader1_bin+-C bp.flashloader1.fname=$flashloader1_bin}
 ${rootfs_bin+-C bp.virtioblockdevice.image_path=$rootfs_bin}
 
 ${uart0_out+-C bp.pl011_uart0.out_file=$uart0_out}
 ${uart0_out+-C bp.pl011_uart0.unbuffered_output=1}
+${uart1_out+-C bp.pl011_uart1.out_file=$uart1_out}
 
 ${no_quantum--Q ${quantum}}
 
 EOF
+
+if [ "$print_stat" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+--stat
+EOF
+fi

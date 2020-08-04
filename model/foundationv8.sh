@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/models/Linux64_GCC-4.9/Foundation_Platform"
+set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/models/$model_flavour/Foundation_Platform"
 
 default_var ncores 4
 default_var quantum 1000
@@ -24,4 +24,5 @@ ${rootfs_bin+--block-device=$rootfs_bin}
 --gicv3
 --quantum=$quantum
 ${arch_version+--arm-v$arch_version}
+${bmcov_plugin+--plugin=$bmcov_plugin_path}
 EOF
