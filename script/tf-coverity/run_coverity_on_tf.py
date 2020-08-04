@@ -36,7 +36,7 @@ assert tarball_name("baz.tar.bz2") == "baz"
 
 
 def get_coverity_tool():
-    coverity_tarball = "cov-analysis-linux64-2017.07.tar.gz"
+    coverity_tarball = "cov-analysis-linux64-2019.03.tar.gz"
     url = "http://files.oss.arm.com/downloads/tf-a/" + coverity_tarball
     print("Downloading Coverity Build tool from %s..." % url)
     file_handle = urllib.request.urlopen(url)
@@ -55,6 +55,14 @@ def get_coverity_tool():
     cov_dir_path = os.path.abspath(os.path.join(cov_dir_name, "bin"))
     print("  export PATH=%s$PATH" % (cov_dir_path + os.pathsep))
 
+    # Patch is needed for coverity version 2019.03
+    patch_file = os.path.abspath(os.path.join(__file__, os.pardir, "cov-2019.03-fix.patch"))
+    cov_file = os.path.abspath(os.path.join(cov_dir_name, "config",
+                               "templates", "gnu", "compiler-compat-arm-intrin.h"))
+    print("Patching file")
+    print(cov_file)
+    utils.exec_prog("patch", [cov_file, "-i", patch_file],
+                            out=subprocess.PIPE, out_text_mode=True)
 
 def print_coverage(coverity_dir, tf_dir, exclude_paths=[], log_filename=None):
     analyzed = []
@@ -70,8 +78,9 @@ def print_coverage(coverity_dir, tf_dir, exclude_paths=[], log_filename=None):
     # Get the list of files analyzed by Coverity.
     #
     # To do that, we examine the build log file Coverity generated and look for
-    # compilation lines. These are the lines starting with "COMPILING:". We consider
-    # only those lines that actually compile C files, i.e. lines of the form:
+    # compilation lines. These are the lines starting with "COMPILING:" or
+    # "EXECUTING:". We consider only those lines that actually compile C files,
+    # i.e. lines of the form:
     #   gcc -c file.c -o file.o
     # This filters out other compilation lines like generation of dependency files
     # (*.d) and such.
@@ -79,7 +88,8 @@ def print_coverage(coverity_dir, tf_dir, exclude_paths=[], log_filename=None):
     coverity_build_log = os.path.join(coverity_dir, "build-log.txt")
     with open(coverity_build_log, encoding="utf-8") as build_log:
         for line in build_log:
-            results = re.search("COMPILING:.*-c *(.*\.c).*-o.*\.o", line)
+            line = re.sub('//','/', line)
+            results = re.search("(?:COMPILING|EXECUTING):.*-c *(.*\.c).*-o.*\.o", line)
             if results is not None:
                 filename = results.group(1)
                 if filename not in analyzed:

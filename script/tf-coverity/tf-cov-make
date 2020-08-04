@@ -76,11 +76,20 @@ clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_TSP_RAM_LOCATION=dram SPD=t
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=opteed
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tlkd
 
+# Dualroot chain of trust.
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tspd COT=dualroot
+
 clean_build -j PLAT=fvp DEBUG=1 SPD=trusty
 clean_build -j PLAT=fvp DEBUG=1 SPD=trusty TRUSTY_SPD_WITH_GENERIC_SERVICES=1
 
 # SDEI
 clean_build PLAT=fvp DEBUG=1 SDEI_SUPPORT=1 EL3_EXCEPTION_HANDLING=1
+
+# SDEI with fconf
+clean_build PLAT=fvp DEBUG=1 SDEI_IN_FCONF=1 SDEI_SUPPORT=1 EL3_EXCEPTION_HANDLING=1
+
+# Secure interrupt descriptors with fconf
+clean_build PLAT=fvp DEBUG=1 SEC_INT_DESC_IN_FCONF=1
 
 # Without coherent memory
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_TSP_RAM_LOCATION=dram SPD=tspd USE_COHERENT_MEM=0
@@ -117,16 +126,53 @@ clean_build $fvp_common_flags ARM_XLAT_TABLES_LIB_V1=1 RECLAIM_INIT_CODE=0
 clean_build $fvp_common_flags CROSS_COMPILE=arm-none-eabi- \
     ARCH=aarch32 AARCH32_SP=sp_min ARM_XLAT_TABLES_LIB_V1=1 RECLAIM_INIT_CODE=0
 
-# Using GIC600 driver
-clean_build $fvp_common_flags FVP_USE_GIC_DRIVER=FVP_GIC600
+# SPM support based on Management Mode Interface Specification
+clean_build $fvp_common_flags SPM_MM=1 EL3_EXCEPTION_HANDLING=1
 
-# SPM support
-clean_build $fvp_common_flags ENABLE_SPM=1 EL3_EXCEPTION_HANDLING=1
+# SPM support with TOS(optee) as SPM sitting at S-EL1
+clean_build $fvp_common_flags SPD=spmd SPMD_SPM_AT_SEL2=0
+
+# SPM support with Secure hafnium as SPM sitting at S-EL2
+# SP_LAYOUT_FILE is used only during FIP creation but build won't progress
+# if we have NULL value to it, so passing a dummy string.
+clean_build $fvp_common_flags SPD=spmd SPMD_SPM_AT_SEL2=1 ARM_ARCH_MINOR=4 \
+	CTX_INCLUDE_EL2_REGS=1 SP_LAYOUT_FILE=dummy
 
 #BL2 at EL3 support
 clean_build $fvp_common_flags BL2_AT_EL3=1
 clean_build $fvp_common_flags CROSS_COMPILE=arm-none-eabi- \
     ARCH=aarch32 AARCH32_SP=sp_min BL2_AT_EL3=1
+
+# RAS Extension Support
+clean_build $fvp_common_flags EL3_EXCEPTION_HANDLING=1 \
+    FAULT_INJECTION_SUPPORT=1 HANDLE_EA_EL3_FIRST=1 RAS_EXTENSION=1 \
+    SDEI_SUPPORT=1
+
+# Hardware Assisted Coherency(DynamIQ)
+clean_build $fvp_common_flags FVP_CLUSTER_COUNT=1 FVP_MAX_CPUS_PER_CLUSTER=8 \
+    HW_ASSISTED_COHERENCY=1 USE_COHERENT_MEM=0
+
+# Pointer Authentication Support
+clean_build $fvp_common_flags CTX_INCLUDE_PAUTH_REGS=1 \
+    ARM_ARCH_MINOR=5 EL3_EXCEPTION_HANDLING=1 BRANCH_PROTECTION=1 SDEI_SUPPORT=1 SPD=tspd TSP_NS_INTR_ASYNC_PREEMPT=1
+
+# Undefined Behaviour Sanitizer
+# Building with UBSAN SANITIZE_UB=on increases the executable size.
+# Hence it is only properly supported in bl31 with RESET_TO_BL31 enabled
+make $fvp_common_flags clean
+make $fvp_common_flags SANITIZE_UB=on RESET_TO_BL31=1 bl31
+
+# debugfs feature
+clean_build $fvp_common_flags DEBUG=1 USE_DEBUGFS=1
+
+# MPAM feature
+clean_build $fvp_common_flags ENABLE_MPAM_FOR_LOWER_ELS=1
+
+# Using GICv3.1 driver with extended PPI and SPI range
+clean_build $fvp_common_flags GIC_EXT_INTID=1
+
+# Using GICv4 features with extended PPI and SPI range
+clean_build $fvp_common_flags GIC_ENABLE_V4_EXTN=1 GIC_EXT_INTID=1
 
 # Measured Boot
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} MEASURED_BOOT=1
@@ -140,22 +186,93 @@ clean_build $juno_common_flags SPD=tspd ${ARM_TBB_OPTIONS}
 clean_build $juno_common_flags EL3_PAYLOAD=0x80000000
 clean_build $juno_common_flags ENABLE_STACK_PROTECTOR=strong
 clean_build $juno_common_flags CSS_USE_SCMI_SDS_DRIVER=0
-clean_build $juno_common_flags SPD=tspd ${ARM_TBB_OPTIONS} ARM_CRYPTOCELL_INTEG=1 CCSBROM_LIB_PATH=${CRYPTOCELL_LIB_PATH}
+clean_build $juno_common_flags SPD=tspd ${ARM_TBB_OPTIONS} ARM_CRYPTOCELL_INTEG=1 CCSBROM_LIB_PATH=${CRYPTOCELL_LIB_PATH} KEY_SIZE=2048
 
 #
 # System Guidance for Infrastructure platform SGI575
+# Enable build config with RAS_EXTENSION to cover more files
+make -j DEBUG=1 PLAT=sgi575 ${ARM_TBB_OPTIONS} EL3_EXCEPTION_HANDLING=1 FAULT_INJECTION_SUPPORT=1 \
+    HANDLE_EA_EL3_FIRST=1 RAS_EXTENSION=1 SDEI_SUPPORT=1 SPM_MM=1 all
 #
-make -j DEBUG=1 PLAT=sgi575 all
+# System Guidance for Mobile platform SGM775
+#
+make -j DEBUG=1 PLAT=sgm775 ${ARM_TBB_OPTIONS} SPD=tspd \
+    CSS_USE_SCMI_SDS_DRIVER=1 all
 
 #
 # System Guidance for Infrastructure platform RD-N1Edge
 #
-make -j DEBUG=1 PLAT=rdn1edge all
+make -j DEBUG=1 PLAT=rdn1edge  ${ARM_TBB_OPTIONS} all
 
 #
 # System Guidance for Infrastructure platform RD-E1Edge
 #
-make -j DEBUG=1 PLAT=rde1edge all
+make -j DEBUG=1 PLAT=rde1edge ${ARM_TBB_OPTIONS} CSS_SGI_CHIP_COUNT=1 all
+
+#
+# System Guidance for Infrastructure platform RD-Daniel
+#
+make -j DEBUG=1 PLAT=rddaniel ${ARM_TBB_OPTIONS} all
+
+#
+# System Guidance for Infrastructure platform RD-Danielxlr
+#
+make -j DEBUG=1 PLAT=rddanielxlr ${ARM_TBB_OPTIONS} CSS_SGI_CHIP_COUNT=4 all
+
+#
+# Neoverse N1 SDP platform
+#
+make -j DEBUG=1 PLAT=n1sdp ${ARM_TBB_OPTIONS} all
+
+#
+# FVP VE platform
+#
+make -j DEBUG=1 PLAT=fvp_ve AARCH32_SP=sp_min ARCH=aarch32 \
+    CROSS_COMPILE=arm-none-eabi- ARM_ARCH_MAJOR=7 \
+    ARM_CORTEX_A5=yes ARM_XLAT_TABLES_LIB_V1=1 \
+    FVP_HW_CONFIG_DTS=fdts/fvp-ve-Cortex-A5x1.dts all
+
+#
+# A5 DesignStart Platform
+#
+make -j DEBUG=1 PLAT=a5ds AARCH32_SP=sp_min ARCH=aarch32 \
+    ARM_ARCH_MAJOR=7 ARM_CORTEX_A5=yes ARM_XLAT_TABLES_LIB_V1=1 \
+    CROSS_COMPILE=arm-none-eabi- FVP_HW_CONFIG_DTS=fdts/a5ds.dts
+
+#
+# Corstone700 Platform
+#
+
+corstone700_common_flags="CROSS_COMPILE=arm-none-eabi- \
+                          PLAT=corstone700 \
+                          ARCH=aarch32 \
+                          RESET_TO_SP_MIN=1 \
+                          AARCH32_SP=sp_min \
+                          ARM_LINUX_KERNEL_AS_BL33=0 \
+                          ARM_PRELOADED_DTB_BASE=0x80400000 \
+                          ENABLE_PIE=1 \
+                          DEBUG=1 \
+                          ENABLE_STACK_PROTECTOR=all \
+                          all"
+
+echo "Info: Building Corstone700 FVP ..."
+
+make TARGET_PLATFORM=fvp ${corstone700_common_flags}
+
+echo "Info: Building Corstone700 FPGA ..."
+
+make TARGET_PLATFORM=fpga ${corstone700_common_flags}
+
+#
+# Arm internal FPGA port
+#
+make PLAT=arm_fpga $external_plat_common_flags CROSS_COMPILE=aarch64-none-elf- \
+    FPGA_PRELOADED_DTB_BASE=0x88000000 PRELOADED_BL33_BASE=0x82080000 all
+
+#
+# Total Compute platform
+#
+make -j DEBUG=1 PLAT=tc0 ${ARM_TBB_OPTIONS} all
 
 # Partners' platforms.
 # Enable as many features as possible.
@@ -164,10 +281,14 @@ make -j DEBUG=1 PLAT=rde1edge all
 external_plat_common_flags="-j DEBUG=1"
 
 make PLAT=mt8173 $external_plat_common_flags all
+make PLAT=mt8183 $external_plat_common_flags all
 
+make PLAT=rk3288 CROSS_COMPILE=arm-none-eabi- \
+    $external_plat_common_flags ARCH=aarch32 AARCH32_SP=sp_min all
 make PLAT=rk3368 $external_plat_common_flags COREBOOT=1 all
-make PLAT=rk3399 $external_plat_common_flags COREBOOT=1 all
-make PLAT=rk3328 $external_plat_common_flags COREBOOT=1 all
+make PLAT=rk3399 $external_plat_common_flags COREBOOT=1 PLAT_RK_DP_HDCP=1 all
+make PLAT=rk3328 $external_plat_common_flags COREBOOT=1 PLAT_RK_SECURE_DDR_MINILOADER=1 all
+make PLAT=px30 $external_plat_common_flags PLAT_RK_SECURE_DDR_MINILOADER=1 all
 
 # Although we do several consecutive builds for the Tegra platform below, we
 # don't need to clean between each one because the Tegra makefiles specify
@@ -175,6 +296,7 @@ make PLAT=rk3328 $external_plat_common_flags COREBOOT=1 all
 make PLAT=tegra TARGET_SOC=t210 $external_plat_common_flags all
 make PLAT=tegra TARGET_SOC=t132 $external_plat_common_flags all
 make PLAT=tegra TARGET_SOC=t186 $external_plat_common_flags all
+make PLAT=tegra TARGET_SOC=t194 $external_plat_common_flags all
 
 # For the Xilinx platform, artificially increase the extents of BL31 memory
 # (using the platform-specific build options ZYNQMP_ATF_MEM_{BASE,SIZE}).
@@ -185,23 +307,163 @@ make PLAT=zynqmp $external_plat_common_flags \
     ZYNQMP_ATF_MEM_BASE=0xFFFC0000 ZYNQMP_ATF_MEM_SIZE=0x00040000 \
     all
 
+# Build both for silicon (default) and virtual QEMU platform.
+clean_build PLAT=versal $external_plat_common_flags
+clean_build PLAT=versal $external_plat_common_flags VERSAL_PLATFORM=versal_virt
+
+# Platforms from Allwinner
+make PLAT=sun50i_a64 $external_plat_common_flags all
+make PLAT=sun50i_h6 $external_plat_common_flags all
+
+# Platforms from i.MX
+make AARCH32_SP=optee ARCH=aarch32 ARM_ARCH_MAJOR=7 ARM_CORTEX_A7=yes \
+    CROSS_COMPILE=arm-none-eabi- PLAT=warp7 ${TBB_OPTIONS} \
+    $external_plat_common_flags all
+make AARCH32_SP=optee ARCH=aarch32 CROSS_COMPILE=arm-none-eabi- PLAT=picopi \
+    $external_plat_common_flags all
+make PLAT=imx8mm $external_plat_common_flags all
+make PLAT=imx8mn $external_plat_common_flags all
+make PLAT=imx8mp $external_plat_common_flags all
+
+# Temporarily building in release mode until the following ticket is resolved:
+# https://developer.trustedfirmware.org/T626
+# make PLAT=imx8mq $external_plat_common_flags all
+make PLAT=imx8mq -j all
+
+make PLAT=imx8qm $external_plat_common_flags all
+make PLAT=imx8qx $external_plat_common_flags all
+
+# Platforms from Intel
+make PLAT=stratix10 $external_plat_common_flags all
+make PLAT=agilex $external_plat_common_flags all
+
+# Platforms from Broadcom
+clean_build PLAT=stingray BOARD_CFG=bcm958742t INCLUDE_EMMC_DRIVER_ERASE_CODE=1
+clean_build PLAT=stingray BOARD_CFG=bcm958742t-ns3 INCLUDE_EMMC_DRIVER_ERASE_CODE=1
+
+# Platforms from Marvell
+make PLAT=a3700 $external_plat_common_flags SCP_BL2=/dev/null all
+# Source files from mv-ddr-marvell repository are necessary
+# to build below four platforms
+wget http://files.oss.arm.com/downloads/tf-a/mv-ddr-marvell/mv-ddr-marvell-a881467ef0f0185e6570dd0483023fde93cbb5f5.tar.gz 2> /dev/null
+tar -xzf mv-ddr-marvell-a881467ef0f0185e6570dd0483023fde93cbb5f5.tar.gz 2> /dev/null
+mv mv-ddr-marvell drivers/marvell/mv_ddr
+
+# These platforms from Marvell have dependency on GCC-6.2.1 toolchain
+make PLAT=a80x0 DEBUG=1 SCP_BL2=/dev/null \
+    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+make PLAT=a80x0_mcbin DEBUG=1 SCP_BL2=/dev/null \
+    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+make PLAT=a70x0 DEBUG=1 SCP_BL2=/dev/null \
+    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+make PLAT=a70x0_amc DEBUG=1 SCP_BL2=/dev/null \
+    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+make PLAT=a80x0_puzzle DEBUG=1 SCP_BL2=/dev/null \
+    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+
+# Removing the source files
+rm -rf drivers/marvell/mv_ddr 2> /dev/null
+
+# Platforms from Meson
+make PLAT=gxbb $external_plat_common_flags all
+make PLAT=gxl $external_plat_common_flags all
+make PLAT=g12a $external_plat_common_flags all
+
+# Platforms from Renesas
+# Renesas R-Car D3 Automotive SoC
+clean_build PLAT=rcar $external_plat_common_flags BL32=Makefile \
+    BL33=Makefile LIFEC_DBSC_PROTECT_ENABLE=0 LSI=D3 \
+    MBEDTLS_DIR=$(pwd)/mbedtls PMIC_ROHM_BD9571=0 \
+    RCAR_AVS_SETTING_ENABLE=0 SPD=none RCAR_LOSSY_ENABLE=0 \
+    RCAR_SA0_SIZE=0 RCAR_SYSTEM_SUSPEND=0 TRUSTED_BOARD_BOOT=1
+
+# Renesas R-Car H3 Automotive SoC
+clean_build PLAT=rcar $external_plat_common_flags BL32=Makefile \
+    BL33=Makefile MBEDTLS_DIR=$(pwd)/mbedtls LSI=H3 \
+    MACHINE=ulcb  PMIC_LEVEL_MODE=0 RCAR_DRAM_LPDDR4_MEMCONF=0 \
+    RCAR_DRAM_SPLIT=1 RCAR_GEN3_ULCB=1 SPD=opteed \
+    TRUSTED_BOARD_BOOT=1
+
+# Renesas R-Car H3N Automotive SoC
+clean_build PLAT=rcar $external_plat_common_flags BL32=Makefile \
+    BL33=Makefile MBEDTLS_DIR=$(pwd)/mbedtls LSI=H3N \
+    SPD=opteed TRUSTED_BOARD_BOOT=1
+
+# Renesas R-Car M3 Automotive SoC
+clean_build PLAT=rcar $external_plat_common_flags BL32=Makefile \
+    BL33=Makefile MBEDTLS_DIR=$(pwd)/mbedtls LSI=M3 \
+    MACHINE=ulcb  PMIC_LEVEL_MODE=0 RCAR_DRAM_LPDDR4_MEMCONF=0 \
+    RCAR_DRAM_SPLIT=2 RCAR_GEN3_ULCB=1 SPD=opteed \
+    TRUSTED_BOARD_BOOT=1
+
+# Renesas R-Car M3N Automotive SoC
+clean_build PLAT=rcar $external_plat_common_flags BL32=Makefile \
+    BL33=Makefile MBEDTLS_DIR=$(pwd)/mbedtls LSI=M3N \
+    MACHINE=ulcb  PMIC_LEVEL_MODE=0 RCAR_DRAM_LPDDR4_MEMCONF=0 \
+    RCAR_GEN3_ULCB=1 SPD=opteed TRUSTED_BOARD_BOOT=1
+
+# Renesas R-Car E3 Automotive SoC
+clean_build PLAT=rcar $external_plat_common_flags BL32=Makefile \
+    BL33=Makefile MBEDTLS_DIR=$(pwd)/mbedtls LSI=E3 \
+    RCAR_AVS_SETTING_ENABLE=0 RCAR_DRAM_DDR3L_MEMCONF=0 \
+    RCAR_SA0_SIZE=0 SPD=opteed TRUSTED_BOARD_BOOT=1
+
+# Renesas R-Car V3M Automotive SoC
+clean_build PLAT=rcar $external_plat_common_flags BL32=Makefile \
+    MBEDTLS_DIR=$(pwd)/mbedtls BL33=Makefile LSI=V3M MACHINE=eagle \
+    PMIC_ROHM_BD9571=0 RCAR_DRAM_SPLIT=0 RCAR_SYSTEM_SUSPEND=0 \
+    AVS_SETTING_ENABLE=0 SPD=none TRUSTED_BOARD_BOOT=1
+
+# Platforms from ST
+make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
+    $external_plat_common_flags ARM_ARCH_MAJOR=7 STM32MP_EMMC=1 \
+    STM32MP_RAW_NAND=1 STM32MP_SDMMC=1 STM32MP_SPI_NAND=1 STM32MP_SPI_NOR=1 \
+    ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl1 bl2 bl32
+
+# Platforms from TI
+make PLAT=k3 $external_plat_common_flags all
+
 clean_build PLAT=qemu $external_plat_common_flags ${TBB_OPTIONS}
-clean_build PLAT=qemu $external_plat_common_flags ENABLE_STACK_PROTECTOR=strong
+# Use GICV3 driver
+clean_build PLAT=qemu $external_plat_common_flags QEMU_USE_GIC_DRIVER=QEMU_GICV3 \
+    ENABLE_STACK_PROTECTOR=strong
+# Use encrypted FIP feature.
+clean_build PLAT=qemu $external_plat_common_flags ${TBB_OPTIONS} \
+    BL32_RAM_LOCATION=tdram DECRYPTION_SUPPORT=aes_gcm ENCRYPT_BL31=1 \
+    ENCRYPT_BL32=1 FW_ENC_STATUS=0 SPD=opteed
+
+clean_build PLAT=qemu_sbsa $external_plat_common_flags
 
 # For hikey enable PMF to include all files in the platform port
-make PLAT=hikey $external_plat_common_flags ENABLE_PMF=1 all
-make PLAT=hikey960 $external_plat_common_flags all
+make PLAT=hikey $external_plat_common_flags ${TBB_OPTIONS} ENABLE_PMF=1 all
+make PLAT=hikey960 $external_plat_common_flags ${TBB_OPTIONS} all
+make PLAT=poplar $external_plat_common_flags all
 
+# Platforms from Socionext
 clean_build PLAT=uniphier $external_plat_common_flags ${TBB_OPTIONS} SPD=tspd
 clean_build PLAT=uniphier $external_plat_common_flags FIP_GZIP=1
 
+clean_build PLAT=synquacer $external_plat_common_flags SPM_MM=1 \
+    EL3_EXCEPTION_HANDLING=1 PRELOADED_BL33_BASE=0x0
+
+# Support for SCP Message Interface protocol with platform specific drivers
+clean_build PLAT=synquacer $external_plat_common_flags \
+    PRELOADED_BL33_BASE=0x0 SQ_USE_SCMI_DRIVER=1
+
 make PLAT=poplar $external_plat_common_flags all
 
-make PLAT=rpi3 $external_plat_common_flags PRELOADED_BL33_BASE=0xDEADBEEF all
+# Raspberry Pi Platforms
+make PLAT=rpi3 $external_plat_common_flags ${TBB_OPTIONS} \
+    ENABLE_STACK_PROTECTOR=strong PRELOADED_BL33_BASE=0xDEADBEEF all
+make PLAT=rpi4 $external_plat_common_flags all
 
 # Cannot use $external_plat_common_flags for LS1043 platform, as then
 # the binaries do not fit in memory.
 clean_build PLAT=ls1043 SPD=opteed ENABLE_STACK_PROTECTOR=strong
 clean_build PLAT=ls1043 SPD=tspd
+
+# A113D (AXG) platform.
+clean_build PLAT=axg $external_plat_common_flags SPD=opteed
+clean_build PLAT=axg $external_plat_common_flags AML_USE_ATOS=1
 
 cd ..

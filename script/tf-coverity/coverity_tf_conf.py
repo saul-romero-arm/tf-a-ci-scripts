@@ -15,31 +15,43 @@
 # - description aims at providing the reason why the files are expected
 #   to be excluded.
 exclude_paths = [
-    ("drivers/arm/cci400/cci400.c", "deprecated driver"),
-    ("drivers/arm/gic/v3/arm_gicv3_common.c", "platform to exercise GIC-500/600 powerdown not available yet"),
-    ("drivers/arm/tzc400/tzc400.c", "deprecated driver"),
-    ("drivers/arm/tzc/tzc_common_private.c",
-     "file included, actually indirectly analyzed"),
-    ("drivers/arm/tzc/tzc_dmc500.c", "not used by any upstream platform"),
-
-    ("drivers/io/io_dummy.c", "not used by any upstream platform"),
-    ("drivers/partition/gpt.c", "not used by any upstream platform"),
-    ("drivers/partition/partition.c", "not used by any upstream platform"),
-
-    ("lib/aarch64/xlat_tables.c", "deprecated library code"),
+    ("drivers/arm/tzc/tzc_common_private.c", "File included, actually indirectly analyzed"),
+    ("drivers/marvell/comphy/phy-comphy-3700.c", "File is actually analyzed. False positive"),
+    ("drivers/marvell/comphy/phy-comphy-cp110.c", "File is actually analyzed. False positive"),
+    ("drivers/marvell/gwin.c", "Not used by any upstream marvell platform"),
+    ("drivers/marvell/mochi/ap807_setup.c", "Not used by any upstream marvell platform"),
+    ("drivers/renesas/rcar/ddr/ddr_b/boot_init_dram_config.c",
+     "It is used as a header file and is included in boot_init_dram.c .Since it is not explicitly compiled, such file cannot be converted into an instrumented binary for further analysis"),
+    ("drivers/auth/cryptocell/713/.*", "There is no dummy library to support 713 for now. This can be removed once we have this library in place"),
+    ("drivers/st/scmi-msg/.*", "Not used by any upstream platform"),
 
     ("plat/arm/board/fvp/fconf/fconf_nt_config_getter.c", "Not currently used. Future functionality"),
-    ("plat/arm/common/arm_tzc_dmc500.c", "not used by any upstream platform"),
+    ("plat/marvell/armada/a8k/common/plat_bl1_setup.c", "Not used by any upstream marvell platform"),
+    ("plat/mediatek/common/custom/oem_svc.c", "Used only by mt6795 which is unsupported platform"),
+    ("plat/mediatek/mt6795/.*", "This platform fails to build and is not supported by mediatek"),
+    ("plat/mediatek/mt8173/plat_mt_gic.c", "Deprecated code"),
+    ("plat/nvidia/tegra/common/tegra_gicv3.c", "Not used by any upstream nvidia platform"),
+    ("plat/qemu/common/sp_min/sp_min_setup.c", "Not used in any upstream platform - see GENFW-2164"),
+    ("plat/rockchip/rk3399/drivers/m0/.*", "Work around the lack of support for the M0 compiler in the scripts"),
 
-    ("plat/mediatek/mt8173/plat_mt_gic.c", "deprecated code"),
+    # The following block is excluding files that are impossible to include in a build due to a missing file
+    # this should be removed as soon as it would be possible to build stingray platform with SCP_BL2 option
+    ("drivers/brcm/iproc_gpio.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("drivers/brcm/scp.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("drivers/brcm/spi/iproc_qspi.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("drivers/brcm/spi/iproc_spi.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("drivers/brcm/spi_flash.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("drivers/brcm/spi_sf.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("plat/brcm/board/common/bcm_elog_ddr.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("plat/brcm/board/stingray/src/brcm_pm_ops.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("plat/brcm/board/stingray/src/ncsi.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("plat/brcm/board/stingray/src/scp_cmd.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("plat/brcm/board/stingray/src/scp_utils.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("plat/brcm/common/brcm_mhu.c", "Cannot be built due to the missing m0_ipc.h file"),
+    ("plat/brcm/common/brcm_scpi.c", "Cannot be built due to the missing m0_ipc.h file"),
 
-    ("lib/aarch32/arm32_aeabi_divmod.c", "not used by any upstream platform"),
-
-    # Waiting for the following patch to be available:
-    # http://ssg-sw.cambridge.arm.com/gerrit/#/c/49862/
-    ("plat/rockchip/rk3399/drivers/m0/.*",
-     "work around the lack of support for the M0 compiler in the scripts"),
+    ("lib/compiler-rt/.*", "3rd party libraries will not be fixed"),
+    ("lib/libfdt/.*", "3rd party libraries will not be fixed"),
 
     ("tools/.*", "Host tools"),
-    ("plat/qemu/sp_min/sp_min_setup.c", "not used in any upstream platform - see GENFW-2164")
 ]

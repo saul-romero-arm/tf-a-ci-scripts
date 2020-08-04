@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -81,7 +81,7 @@ function do_configure()
     cov-configure				\
 	--comptype gcc				\
 	--template				\
-	--compiler arm-none-eabi-gcc	\
+	--compiler arm-none-eabi-gcc			\
 	--config cov-config/config.xml
 }
 

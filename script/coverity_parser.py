@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
 import argparse
+import collections
 import json
 import re
 import shutil
@@ -108,6 +109,16 @@ def _new_issue(cid, orig_issue):
         "description": orig_issue["mainEventDescription"]
     }
 
+def _new_issue_v7(cid, checker, issue):
+    return {
+        "cid": cid,
+        "file": issue["strippedFilePathname"],
+        "line": issue["lineNumber"],
+        "checker": checker,
+        "classification": _classify_checker(checker),
+        "description": issue["eventDescription"],
+    }
+
 
 def _cls_string(issue):
     cls = issue["classification"]
@@ -123,30 +134,68 @@ def make_key(i):
             str(i["cid"]).zfill(5))
 
 
-# Iterate through all issues that are not ignored. If show_all is set, only
-# issues that are not in the comparison snapshot are returned.
-def iter_issues(path, show_all=False):
-    with open(path, encoding="utf-8") as fd:
-        report = json.load(fd)
 
-    # Unconditional filter
-    filters = [lambda i: ((i["triage"]["action"] != "Ignore") and
-            (i["occurrences"][0]["checker"] not in _rule_exclusions))]
 
-    # Whether we need diffs only
-    if not show_all:
-        # Pick only issues that are not present in comparison snapshot
-        filters.append(lambda i: not i["presentInComparisonSnapshot"])
+class Issues(object):
+    """An iterator over issue events that collects a summary
 
-    # Pick issue when all filters are true
-    filter_func = lambda i: all([f(i) for f in filters])
+    After using this object as an iterator, the totals member will contain a
+    dict that maps defect types to their totals, and a "total" key with the
+    total number of defects in this scan.
+    """
+    def __init__(self, path, show_all):
+        self.path = path
+        self.show_all = show_all
+        self.iterated = False
+        self.totals = collections.defaultdict(int)
+        self.gen = None
 
-    # Top-level is a group of issues, all sharing a common CID
-    for issue_group in filter(filter_func, report["issueInfo"]):
-        # Pick up individual occurrence of the CID
-        for occurrence in issue_group["occurrences"]:
-            yield _new_issue(issue_group["cid"], occurrence)
+    def iter_issues_v1(self, report):
+        # Unconditional filter
+        filters = [lambda i: ((i["triage"]["action"] != "Ignore") and
+                (i["occurrences"][0]["checker"] not in _rule_exclusions))]
 
+        # Whether we need diffs only
+        if not self.show_all:
+            # Pick only issues that are not present in comparison snapshot
+            filters.append(lambda i: not i["presentInComparisonSnapshot"])
+
+        # Pick issue when all filters are true
+        filter_func = lambda i: all([f(i) for f in filters])
+
+        # Top-level is a group of issues, all sharing a common CID
+        for issue_group in filter(filter_func, report["issueInfo"]):
+            # Pick up individual occurrence of the CID
+            self.totals[_classify_checker(occurrence["checkerName"])] += 1
+            self.totals["total"] += 1
+            for occurrence in issue_group["occurrences"]:
+                yield _new_issue(issue_group["cid"], occurrence)
+
+    def iter_issues_v7(self, report):
+        # TODO: filter by triage and action
+        f = lambda i: i["checkerName"] not in _rule_exclusions
+        for issue_group in filter(f, report["issues"]):
+            self.totals[_classify_checker(issue_group["checkerName"])] += 1
+            self.totals["total"] += 1
+            for event in issue_group["events"]:
+                yield _new_issue_v7(
+                    issue_group.get("cid"),
+                    issue_group["checkerName"],
+                    event
+                )
+
+    def _gen(self):
+        with open(self.path, encoding="utf-8") as fd:
+            report = json.load(fd)
+        if report.get("formatVersion", 0) >= 7:
+            return self.iter_issues_v7(report)
+        else:
+            return self.iter_issues_v1(report)
+
+    def __iter__(self):
+        if self.gen is None:
+            self.gen = self._gen()
+        yield from self.gen
 
 # Format issue (returned from iter_issues()) as text.
 def format_issue(issue):
@@ -169,6 +218,13 @@ def format_issue_html(issue):
 </tr>""".format_map(dict(issue, cls=cls, cov_class=cov_class))
 
 
+TOTALS_FORMAT = str.strip("""
+TotalDefects:     {total}
+MandatoryDefects: {mandatory}
+RequiredDefects:  {required}
+AdvisoryDefects:  {advisory}
+""")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
@@ -176,13 +232,15 @@ if __name__ == "__main__":
             action="store_const", const=True, help="List all issues")
     parser.add_argument("--output",
             help="File to output filtered defects to in JSON")
+    parser.add_argument("--totals",
+            help="File to output total defects in flat text")
     parser.add_argument("json_report")
 
     opts = parser.parse_args()
 
+    issue_cls = Issues(opts.json_report, opts.show_all)
     issues = []
-    for issue in sorted(iter_issues(opts.json_report, opts.show_all),
-            key=lambda i: make_key(i)):
+    for issue in sorted(issue_cls, key=lambda i: make_key(i)):
         print(format_issue(issue))
         issues.append(issue)
 
@@ -190,5 +248,9 @@ if __name__ == "__main__":
         # Dump selected issues
         with open(opts.output, "wt") as fd:
             fd.write(json.dumps(issues))
+
+    if opts.totals:
+        with open(opts.totals, "wt") as fd:
+            fd.write(TOTALS_FORMAT.format_map(issue_cls.totals))
 
     sys.exit(int(len(issues) > 0))
