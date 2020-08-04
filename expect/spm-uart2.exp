@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+expect {
+	"Booting Cactus Secure Partition"  {
+		puts "<<SP entry>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+expect {
+	"vCPU count: 8"  {
+		puts "<<SP exit>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+exit_uart 0

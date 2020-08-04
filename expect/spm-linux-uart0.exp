@@ -1,0 +1,18 @@
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+expect {
+	"Please press Enter to activate this console." {
+		puts "<<Linux PVM booted>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+exit_uart 0
