@@ -24,4 +24,6 @@ if [ "$CI_ROOT" ]; then
 		--meta-data inject.data \
 		--meta-data html:coverity.data \
 		|| true
+	source $CI_ROOT/script/gen_merge_report.sh "${WORKSPACE}/report.json" \
+	"${WORKSPACE}/report.html"
 fi

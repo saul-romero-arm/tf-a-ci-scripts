@@ -6,7 +6,6 @@
 #
 
 set -e
-
 # If it's a Juno build-only config, or an FVP config, we do everything locally
 if [ "$RUN_CONFIG" = "nil" ]; then
 	exit 0
@@ -16,6 +15,10 @@ case "$RUN_CONFIG" in
 	fvp-*)
 		exit 0;;
 	coverity-*)
+		exit 0;;
+	scan_build-*)
+		exit 0;;
+	norun-*)
 		exit 0;;
 esac
 
