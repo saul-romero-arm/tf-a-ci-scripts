@@ -1,7 +1,7 @@
 --- a/plat/arm/common/aarch64/arm_sdei.c
 +++ b/plat/arm/common/aarch64/arm_sdei.c
-@@ -12,7 +12,12 @@
- 
+@@ -48,7 +48,12 @@ void plat_sdei_setup(void)
+ #else
  /* Private event mappings */
  static sdei_ev_map_t arm_sdei_private[] = {
 -	PLAT_ARM_PRIVATE_SDEI_EVENTS
