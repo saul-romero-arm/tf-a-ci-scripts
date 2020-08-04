@@ -8,6 +8,7 @@
 import argparse
 import codecs
 import collections
+import functools
 import os
 import re
 import subprocess
@@ -56,6 +57,20 @@ def file_include_list(path):
         return None
 
 
+@functools.lru_cache()
+def dir_include_paths(directory):
+    """Generate a set that contains all includes from a directory"""
+    dir_includes = set()
+    for (root, _dirs, files) in os.walk(directory):
+        for fname in files:
+            if fname.endswith(".h"):
+                names = os.path.join(root, fname).split(os.sep)
+                for i in range(len(names)):
+                    suffix_path = "/".join(names[i:])
+                    dir_includes.add(suffix_path)
+    return dir_includes
+
+
 def inc_order_is_correct(inc_list, path, commit_hash=""):
     """Returns true if the provided list is in order. If not, output error
     messages to stdout."""
@@ -67,37 +82,37 @@ def inc_order_is_correct(inc_list, path, commit_hash=""):
     if commit_hash != "":
         commit_hash = commit_hash + ":"
 
-    # Get list of system includes from libc include directory.
-    libc_incs = [f for f in os.listdir("include/lib/libc") if f.endswith(".h")]
-
     # First, check if all includes are in the appropriate group.
     inc_group = "System"
     incs = collections.defaultdict(list)
     error_msgs = []
+    plat_incs = dir_include_paths("plat") | dir_include_paths("include/plat")
+    libc_incs = dir_include_paths("include/lib/libc")
 
     for inc in inc_list:
-        if inc[1:-1] in libc_incs:
+        inc_path = inc[1:-1]
+        if inc_path in libc_incs:
             if inc_group != "System":
-                error_msgs.append(inc[1:-1] + " should be in system group, at the top")
-        elif (
-            "plat/" in inc
-            or "platform" in inc
-            or (inc.startswith('"') and "plat" in path)
-        ):
+                error_msgs.append(inc_path + " should be in system group, at the top")
+        elif inc_path in plat_incs:
             inc_group = "Platform"
         elif inc_group in ("Project", "System"):
             inc_group = "Project"
         else:
             error_msgs.append(
-                inc[1:-1] + " should be in project group, after system group"
+                inc_path + " should be in project group, after system group"
             )
-        incs[inc_group].append(inc[1:-1])
+        incs[inc_group].append(inc_path)
 
     # Then, check alphabetic order (system, project and user separately).
     if not error_msgs:
         for name, inc_list in incs.items():
             if sorted(inc_list) != inc_list:
-                error_msgs.append("{} includes not in order.".format(name))
+                error_msgs.append(
+                    "{} includes not in order. Include order should be {}".format(
+                        name, ", ".join(sorted(inc_list))
+                    )
+                )
 
     # Output error messages.
     if error_msgs:
