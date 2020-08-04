@@ -439,9 +439,14 @@ if upon "$clone_scp"; then
 	if [ -d "$cmsis_ref_repo" ]; then
 		cmsis_reference="--reference $cmsis_ref_repo"
 	fi
-
 	git submodule -q update $cmsis_reference --init
-
+	# Workaround while fixing permissions on /arm/projectscratch/ssg/trusted-fw/ref-repos/cmsis
+	cd cmsis
+	code_cov_emit_param "CMSIS" "URL" "$(git remote -v | grep fetch |  awk '{print $2}')"
+	code_cov_emit_param "CMSIS" "COMMIT" "$(git rev-parse HEAD)"
+	code_cov_emit_param "CMSIS" "REFSPEC" "master"
+	cd ..
+	########################################
 	popd
 fi
 

@@ -12,14 +12,28 @@
 set -e
 
 # Download all ZIP files from the chosen Linaro release
-time wget -q -c -m -A .zip -np -nd "https://releases.linaro.org/members/arm/platforms/${1:?}/"
+base="http://releases.linaro.org/members/arm/platforms/${1:?}"
+
+wget -q "$base/MD5SUMS"
+
+for file in $(awk '{print $2}' < MD5SUMS); do
+  wget "$base/$file"
+done
+
+# Check files didn't get corrupted in the transfer
+md5sum -c MD5SUMS
 
 # Uncompress each ZIP file in its own directory (named after the ZIP file)
 for zipfile in $(echo *.zip); do
 	echo
 	echo "Uncompressing file $zipfile"
 
-	unzip -d "${zipfile%.zip}" "$zipfile"
+	directory_name="${zipfile%.zip}"
+	mkdir "$directory_name"
+
+	cd "$directory_name"
+	unzip "../$zipfile"
+	cd -
 done
 
-rm -f *.zip
+rm -rf *.zip *.xz *.gz

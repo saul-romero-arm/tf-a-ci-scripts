@@ -320,6 +320,7 @@ fip_update() {
 		cert_args+=" --rot-key $rot_key"
 
 		local dyn_config_opts=(
+		"fw-config"
 		"hw-config"
 		"tb-fw-config"
 		"nt-fw-config"
@@ -442,8 +443,6 @@ build_tf() {
 			url="$mbedtls_archive" saveas="$mbedtls_ar" fetch_file
 			mkdir "$mbedtls_dir"
 			extract_tarball $mbedtls_ar $mbedtls_dir
-			mbedtls_dir="$mbedtls_dir/$mbedtls_repo_name"
-
 		fi
 
 		emit_env "MBEDTLS_DIR" "$mbedtls_dir"
@@ -789,6 +788,14 @@ set_model_path() {
 	set_run_env "model_path" "${1:?}"
 }
 
+set_model_env() {
+	local var="${1:?}"
+	local val="${2?}"
+	local run_root="${archive:?}/run"
+
+	mkdir -p "$run_root"
+	echo "export $var=$val" >> "$run_root/model_env"
+}
 set_run_env() {
 	local var="${1:?}"
 	local val="${2?}"

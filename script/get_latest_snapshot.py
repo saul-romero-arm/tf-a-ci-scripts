@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
 import argparse
 import datetime
+import json
 import os
 import sys
 
@@ -27,28 +28,18 @@ coverity_port = os.environ.get("coverity_port", "8443")
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--description", help="Snapshot description filter")
-parser.add_argument("--file", dest="output_file", help="Output file. Mandatory")
 parser.add_argument("--old", default=10, help="Max snapshot age in days")
 parser.add_argument("--host", default=coverity_host, help="Coverity server")
 parser.add_argument("--https-port", default=coverity_port, help="Coverity Secure port")
+parser.add_argument("--auth-key-file", default=None, help="Coverity authentication file", dest="auth_key_file")
 parser.add_argument("--version", help="Snapshot version filter")
 parser.add_argument("stream_name")
 
 opts = parser.parse_args()
 
-if not opts.output_file:
-    raise Exception("Must specify an output file")
-
-# We output the snapshot ID to the specified file. In case of any errors, we
-# remove the file, and Coverity wrapper can test for its existence.
-try:
-    user = os.environ["TFCIBOT_USER"]
-    password = os.environ["TFCIBOT_PASSWORD"]
-except:
-    print(" Unable to get credentials for user tfcibot")
-    print(" For potentially faster analysis, suggest set "
-        "TFCIBOT_PASSWORD and TFCIBOT_PASSWORD in the environment")
-    sys.exit(0)
+token = json.load(open(opts.auth_key_file))
+user = token["username"]
+password = token["key"]
 
 # SOAP magic stuff
 client = suds.client.Client("https://{}/ws/v9/configurationservice?wsdl".format(opts.host))
@@ -79,9 +70,6 @@ results = client.service.getSnapshotsForStream(streamid_obj, filter_obj)
 
 # Print ID of the last snapshot if results were returned
 if results:
-    try:
-        with open(opts.output_file, "w") as fd:
-            print(results[-1].id, file=fd)
-    except:
-        os.remove(opts.output_file)
-        raise
+    print(results[-1].id)
+else:
+    sys.exit(1)

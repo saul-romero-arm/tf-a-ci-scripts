@@ -91,7 +91,7 @@ name="execute_pmqa" extract_script
 echo
 rm -rf "test_assets"
 echo "Cloning test assets..."
-git clone -q --depth 1 http://ssg-sw.cambridge.arm.com/gerrit/tests/test_assets.git
+git clone -q --depth 1 https://gerrit.oss.arm.com/tests/test_assets
 echo "Cloned test assets."
 
 cd test_assets

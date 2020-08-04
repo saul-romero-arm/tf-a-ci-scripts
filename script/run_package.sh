@@ -56,7 +56,7 @@ cleanup() {
 		# data (Host CPU time spent running in User and System). Safely
 		# kill the model by using SIGINT(^C) that helps in printing
 		# statistical data.
-		if [ "$pid" == "$model_pid" ]; then
+		if [ "$pid" == "$model_pid" ] && [ "${COVERAGE_ON}" != "1" ]; then
 			model_cid=$(pgrep -P "$model_pid" | xargs)
 			# ignore errors
 			kill -SIGINT "$model_cid" &>/dev/null || true
@@ -125,6 +125,10 @@ if [ -f "run/env" ]; then
 	source "run/env"
 fi
 
+# Source model environment for run
+if [ -f "run/model_env" ]; then
+	source "run/model_env"
+fi
 # Fail if there was no model path set
 if [ -z "$model_path" ]; then
 	die "No model path set by package!"
