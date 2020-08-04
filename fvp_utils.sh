@@ -9,7 +9,7 @@ set -u
 
 bl1_addr="${bl1_addr:-0x0}"
 bl31_addr="${bl31_addr:-0x04001000}"
-bl32_addr="${bl32_addr:-0x04002000}"
+bl32_addr="${bl32_addr:-0x04003000}"
 bl33_addr="${bl33_addr:-0x88000000}"
 dtb_addr="${dtb_addr:-0x82000000}"
 fip_addr="${fip_addr:-0x08000000}"
@@ -51,7 +51,6 @@ fvp_initrd_urls=(
 [default]="$linaro_release/fvp-latest-busybox-uboot/ramdisk.img"
 )
 
-# FIXME use optee pre-built binaries
 get_optee_bin() {
 	url="$jenkins_url/job/tf-optee-build/PLATFORM_FLAVOR=fvp,label=arch-dev/lastSuccessfulBuild/artifact/artefacts/tee.bin" \
                saveas="bl32.bin" fetch_file
