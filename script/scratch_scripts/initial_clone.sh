@@ -59,7 +59,7 @@ fi
 
 # Clone CI repository and move to the refspec
 git clone -q --depth 1 \
-	http://ssg-sw.cambridge.arm.com/gerrit/pdswinf/ci/pdcs-platforms/platform-ci
+	https://gerrit.oss.arm.com/pdswinf/ci/pdcs-platforms/platform-ci
 
 if [ "$CI_REFSPEC" ]; then
 	# Only recent Git versions support fetching refs via. commit IDs.

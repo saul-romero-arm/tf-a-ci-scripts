@@ -26,7 +26,49 @@ strip_var() {
 	eval "$var=$val"
 }
 
+set_ci_root() {
+	ci_root=`pwd`/"platform-ci"
+	CI_ROOT=$ci_root
+}
+
 strip_var CI_REFSPEC
+
+if [ ! -z $PROJECT ]; then
+	export REPO_UNDER_TEST=`basename $PROJECT`
+	echo "REPO_UNDER_TEST is blank, but PROJECT is set, setting REPO_UNDER_TEST based on PROJECT"
+	echo "REPO_UNDER_TEST=$REPO_UNDER_TEST"
+	echo "REPO_UNDER_TEST=$REPO_UNDER_TEST" >> env
+fi
+
+# For jobs triggered by Gerrit, obtain REPO_UNDER_TEST, TF_SRC_REPO_URL
+# and TFTF_SRC_REPO_URL (if not set explicitly) from Gerrit Environment
+# variables.
+
+if [ "$GERRIT_REFSPEC" ]; then
+
+	if [ -z $REPO_UNDER_TEST ]; then
+		if [ $GERRIT_PROJECT == "pdcs-platforms/ap/tf-topics" ] || [ $GERRIT_PROJECT == "TF-A/trusted-firmware-a" ]; then
+			export REPO_UNDER_TEST="trusted-firmware"
+			echo "REPO_UNDER_TEST is blank, setting REPO_UNDER_TEST based on GERRIT_PROJECT"
+
+		elif [ $GERRIT_PROJECT == "trusted-firmware/tf-a-tests" ] || [ $GERRIT_PROJECT == "TF-A/tf-a-tests" ]; then
+			export REPO_UNDER_TEST="trusted-firmware-tf"
+			echo "REPO_UNDER_TEST is blank, setting REPO_UNDER_TEST based on GERRIT_PROJECT"
+
+		elif [ $GERRIT_PROJECT == "pdswinf/ci/pdcs-platforms/platform-ci" ]; then
+			export REPO_UNDER_TEST="trusted-firmware-ci"
+			echo "REPO_UNDER_TEST is blank, setting REPO_UNDER_TEST based on GERRIT_PROJECT"
+		fi
+	fi
+
+	if [ -z $TF_SRC_REPO_URL ] && [ $REPO_UNDER_TEST == "trusted-firmware" ]; then
+		export TF_SRC_REPO_URL="https://$GERRIT_HOST/$GERRIT_PROJECT"
+	fi
+
+	if [ -z $TFTF_SRC_REPO_URL ] && [ $REPO_UNDER_TEST == "trusted-firmware-tf" ]; then
+		export TFTF_SRC_REPO_URL="https://$GERRIT_HOST/$GERRIT_PROJECT"
+	fi
+fi
 
 if [ "$CI_ENVIRONMENT" ]; then
 	tmpfile="$(mktemp --tmpdir="$WORKSPACE")"
@@ -59,12 +101,20 @@ if [ -z "$CI_REFSPEC" ] && [ "$REPO_UNDER_TEST" = "trusted-firmware-ci" ] && \
 fi
 
 # Clone CI repository and move to the refspec
+if [ ! -d "platform-ci" ]
+then
 git clone -q --depth 1 \
 	--reference /arm/projectscratch/ssg/trusted-fw/ref-repos/trusted-firmware-ci \
 	https://gerrit.oss.arm.com/pdswinf/ci/pdcs-platforms/platform-ci
+else
+	pushd platform-ci
+	git fetch
+	git checkout origin/master
+	popd
+fi
 
+set_ci_root
 # Set CI_ROOT as a fallback
-ci_root="platform-ci/trusted-fw/new-ci"
 echo "CI_ROOT=$ci_root" >> env
 
 if [ "$CI_REFSPEC" ]; then
@@ -77,10 +127,10 @@ if [ "$CI_REFSPEC" ]; then
 	# module load swdev
 	# module load git/git/2.14.3
 
-	# Translate refpsec if supported
+	# Translate refspec if supported
 	if [ -x "$ci_root/script/translate_refspec.py" ]; then
 		CI_REFSPEC="$("$ci_root/script/translate_refspec.py" \
-				-p trusted-firmware-ci "$CI_REFSPEC")"
+				-p trusted-firmware-ci -s arm "$CI_REFSPEC")"
 	fi
 
 	pushd platform-ci &>/dev/null

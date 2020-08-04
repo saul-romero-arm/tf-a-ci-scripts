@@ -69,7 +69,7 @@ if [ ! -d "platform-ci" ]
 then
 	git clone -q --depth 1 \
 		--reference /arm/projectscratch/ssg/trusted-fw/ref-repos/trusted-firmware-ci \
-		http://ssg-sw.cambridge.arm.com/gerrit/pdswinf/ci/pdcs-platforms/platform-ci
+		https://gerrit.oss.arm.com/pdswinf/ci/pdcs-platforms/platform-ci
 else
 	pushd platform-ci
 	git fetch
