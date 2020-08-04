@@ -3,11 +3,12 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-# Expect script for the test Secure Partition Cactus
-#
 
 source [file join [file dirname [info script]] handle-arguments.inc]
 
-expect_string "Booting test Secure Partition Cactus"
-
-source [file join [file dirname [info script]] uart-hold.inc]
+# Expect an error while loading BL2 image.
+expect {
+	"Loading of FW_CONFIG failed" { exit_uart 0 }
+	"BL1: Booting BL2"		{ exit_uart -1 }
+	timeout				{ exit_timeout }
+}

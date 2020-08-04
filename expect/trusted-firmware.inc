@@ -1,21 +1,32 @@
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-
-#
-# Script to interact with Trusted Firmware when resetting to BL1.
+# Script to interact with AArch64 Trusted Firmware-A.
 #
 # This script is not standalone and should be sourced by a top expect script.
 #
 
 # Initial boot message won't be present if we're starting at BL31. Skip waiting
-# for them by inspecting the environment variable 'skip_early_boot_msgs'
+# for them by inspecting the environment variable 'skip_early_boot_msgs'.
 if {![info exists ::env(skip_early_boot_msgs)]} {
 	expect_string "Booting Trusted Firmware"
-	expect_string "BL1: Booting BL2"
-	expect_re "BL1: Booting BL3-?1" "BL1: Booting BL31"
+
+	expect {
+		"BL1: Booting BL2" { puts "<<BL2 booting>>" }
+
+		# Catch all 3 possible BL2 loading error messages, namely:
+		#   "Failure in pre image load handling of BL2"
+		#   "Failed to load BL2 firmware."
+		#   "Failure in post image load handling of BL2"
+		-re "Fail.*load.*BL2" {
+			puts "<<BL2 loading error>>"
+			exit_uart -1
+		}
+	    }
+
+	expect_string "BL1: Booting BL31"
 } else {
 	puts "<<Skipping early boot messages from BL1 and BL2>>"
 }

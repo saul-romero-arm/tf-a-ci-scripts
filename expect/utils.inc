@@ -3,8 +3,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-
-
 # Retrieve script parameters from environment variables. If they don't exist,
 # return empty string
 proc get_param {name {default ""}} {

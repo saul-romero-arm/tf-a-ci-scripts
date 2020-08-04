@@ -3,8 +3,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-
-#
 # Script to interact with Trusted Firmware when resetting to BL31.
 #
 # This script is not standalone and should be sourced by a top expect script.

@@ -1,0 +1,24 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script for Trusted Firmware Test Framework
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+# Value for trap BRK instruction
+set trap_value 0x00003e8
+
+expect {
+	"Unexpected BRK instruction with value $trap_value" {
+		exit_uart 0
+	}
+
+	timeout {
+                exit_uart -1
+        }
+}
+
+exit_uart -1

@@ -3,8 +3,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-
-#
 # Expect script for Trusted Firmware + UEFI + Linux boot process with RAM Disk
 #
 # Refer to handle-arguments.inc for the list of parameters.

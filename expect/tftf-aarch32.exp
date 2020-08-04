@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -8,11 +8,12 @@
 
 source [file join [file dirname [info script]] handle-arguments.inc]
 
+source [file join [file dirname [info script]] trusted-firmware-aarch32.inc]
+
+expect_string "Booting trusted firmware test framework" "Starting TFTF"
+expect_string "Running in AArch32 HYP mode"
+
 expect {
-	"Initial lookup level: 3" {
-		puts "<<Using TTST, but it shouldn't be using it>>"
-		exit_uart -1
-	}
 	"Tests Failed  : 0" {
 		puts "<<TFTF Success>>"
 		exit_uart 0

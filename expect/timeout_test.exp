@@ -8,26 +8,12 @@
 
 source [file join [file dirname [info script]] handle-arguments.inc]
 
-expect_string "Initial lookup level: 3"
-
 expect_string "Booting trusted firmware test framework" "Starting TFTF"
-
 expect {
-	"Tests Failed  : 0" {
-		puts "<<TFTF Success>>"
-		exit_uart 0
-	}
-	"Tests Passed  : 0" {
-		puts "<<TFTF no tests passed>>"
-		exit_uart -1
-	}
-	-re "Tests Failed  : \[^0]" {
-		puts "<<TFTF Fail>>"
-		exit_uart -1
-	}
-	timeout {
-		exit_timeout
-	}
+        timeout {
+		puts "<<Timeout expected - Success>>"
+                exit_uart 0
+        }
 }
 
 exit_uart -1

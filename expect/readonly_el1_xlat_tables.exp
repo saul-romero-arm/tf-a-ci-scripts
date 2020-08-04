@@ -3,11 +3,9 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-# Expect script for the test Secure Partition Cactus
+# Expect script for Trusted Firmware Test Framework
 #
 
 source [file join [file dirname [info script]] handle-arguments.inc]
 
-expect_string "Booting test Secure Partition Cactus"
-
-source [file join [file dirname [info script]] uart-hold.inc]
+expect_string "Translation tables are now read-only at EL1."

@@ -3,8 +3,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-
-#
 # Expect script for Trusted Firmware + U-Boot + Linux boot process with
 # OpenEmbedded rootfs in /dev/vda2
 # TF with reset to BL3-1

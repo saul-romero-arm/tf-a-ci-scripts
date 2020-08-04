@@ -3,8 +3,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-
-#
 # Script to handle the arguments and initialise the expect session.
 #
 # This script is not standalone and should be sourced by a top expect script.
