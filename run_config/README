@@ -1,0 +1,12 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+Files in this directory sets Trusted Firmware run configurations files, which
+are shell scripts that define hook functions, the latter called in different
+phases during the build process.
+
+Please run 'git grep call_hook' on the repository root folder to look for
+possible hooks names.

@@ -1,0 +1,8 @@
+#
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+Files in this directory sets Trusted Firmware-A tests (TF-A-Tests) build options
+as they ought to appear on the build command line.
