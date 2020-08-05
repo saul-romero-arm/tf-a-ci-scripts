@@ -13,6 +13,19 @@ import shutil
 import sys
 
 
+# Ignore some directories, as they're imported from other projects. Their
+# code style is not necessarily the same as ours, and enforcing our rules
+# on their code will likely lead to many false positives. They're false in
+# the sense that they may not be violations of the origin project's code
+# style, when they're violations of our code style.
+IGNORED_DIRS = [
+    "lib/libfdt",
+    "include/lib/libfdt",
+    "lib/compiler-rt",
+    "lib/zlib",
+    "include/lib/zlib",
+]
+
 _rule_exclusions = [
     "MISRA C-2012 Rule 2.4",
     "MISRA C-2012 Rule 2.5",
@@ -150,31 +163,42 @@ class Issues(object):
         self.totals = collections.defaultdict(int)
         self.gen = None
 
-    def iter_issues_v1(self, report):
-        # Unconditional filter
-        filters = [lambda i: ((i["triage"]["action"] != "Ignore") and
-                (i["occurrences"][0]["checker"] not in _rule_exclusions))]
-
-        # Whether we need diffs only
+    def filter_groups_v1(self, group):
+        """Decide if we should keep an issue group from a v1-6 format dict"""
+        if group["triage"]["action"] == "Ignore":
+            return False
+        if group["occurrences"][0]["checker"] in _rule_exclusions:
+            return False
+        for skip_dir in IGNORED_DIRS:
+            if group["file"].lstrip("/").startswith(skip_dir):
+                return False
+        # unless we're showing all groups, remove the groups that are in both
+        # golden and branch
         if not self.show_all:
-            # Pick only issues that are not present in comparison snapshot
-            filters.append(lambda i: not i["presentInComparisonSnapshot"])
+            return not group["presentInComparisonSnapshot"]
+        return True
 
-        # Pick issue when all filters are true
-        filter_func = lambda i: all([f(i) for f in filters])
-
+    def iter_issues_v1(self, report):
         # Top-level is a group of issues, all sharing a common CID
-        for issue_group in filter(filter_func, report["issueInfo"]):
+        for issue_group in filter(self.filter_groups_v1, report["issueInfo"]):
             # Pick up individual occurrence of the CID
             self.totals[_classify_checker(occurrence["checkerName"])] += 1
             self.totals["total"] += 1
             for occurrence in issue_group["occurrences"]:
                 yield _new_issue(issue_group["cid"], occurrence)
 
+    def filter_groups_v7(self, group):
+        """Decide if we should keep an issue group from a v7 format dict"""
+        if group.get("checker_name") in _rule_exclusions:
+            return False
+        for skip_dir in IGNORED_DIRS:
+            if group["strippedMainEventFilePathname"].startswith(skip_dir):
+                return False
+        return True
+
     def iter_issues_v7(self, report):
         # TODO: filter by triage and action
-        f = lambda i: i["checkerName"] not in _rule_exclusions
-        for issue_group in filter(f, report["issues"]):
+        for issue_group in filter(self.filter_groups_v7, report["issues"]):
             self.totals[_classify_checker(issue_group["checkerName"])] += 1
             self.totals["total"] += 1
             for event in issue_group["events"]:
