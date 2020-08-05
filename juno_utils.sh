@@ -21,7 +21,6 @@ juno32_recovery_root_oe="$linaro_release/juno32-latest-oe-uboot"
 juno_rootfs_url="$linaro_release/linaro-image-minimal-genericarmv8-20170127-888.rootfs.tar.gz"
 juno32_rootfs_url="$linaro_release/linaro-image-alip-genericarmv7a-20150710-336.rootfs.tar.gz"
 
-# FIXME use optee pre-built binaries
 get_optee_bin() {
 	local tmpdir="$(mktempdir)"
 
@@ -107,6 +106,17 @@ juno_aarch32_runtime() {
 	local tmpdir="$(mktempdir)"
 	from="$tf_root/build/juno/$mode" to="$tmpdir" collect_build_artefacts
 	bin_name="tos-fw" src="$tmpdir/bl32.bin" fip_update
+}
+
+juno_manual_test_run() {
+	local zip_dir="$workspace/juno_recovery"
+	local zip_file="${zip_dir}.zip"
+	local tmpdir="$(mktempdir)"
+
+	# $1: test name
+	# $2: timeout (seconds)
+	# $3: log file path
+	$ci_root/script/juno_manual.py console02.remote.oss.arm.com login login $zip_file $tmpdir $1 $2 $3
 }
 
 set +u
