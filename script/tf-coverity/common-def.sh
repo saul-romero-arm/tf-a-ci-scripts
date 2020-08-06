@@ -5,7 +5,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-JENKINS_URL=https://jenkins.oss.arm.com/
 
 # mbed TLS variables
 MBED_TLS_DIR=mbedtls

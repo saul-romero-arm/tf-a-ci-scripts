@@ -75,6 +75,17 @@ common_flags() {
     echo " $parallel_make $debug -s "
 }
 
+# Check if execution environment is ARM's jenkins (Jenkins running under ARM
+# infraestructure)
+is_arm_jenkins_env() {
+    if [ "$JENKINS_HOME" ]; then
+	if echo "$JENKINS_URL" | grep "arm.com"; then
+	    return 0;
+	fi
+    fi
+    return 1
+}
+
 #
 # FVP platform
 # We'll use the following flags for all FVP builds.
@@ -198,7 +209,9 @@ clean_build $juno_common_flags SPD=tspd ${ARM_TBB_OPTIONS}
 clean_build $juno_common_flags EL3_PAYLOAD=0x80000000
 clean_build $juno_common_flags ENABLE_STACK_PROTECTOR=strong
 clean_build $juno_common_flags CSS_USE_SCMI_SDS_DRIVER=0
-clean_build $juno_common_flags SPD=tspd ${ARM_TBB_OPTIONS} ARM_CRYPTOCELL_INTEG=1 CCSBROM_LIB_PATH=${CRYPTOCELL_LIB_PATH} KEY_SIZE=2048
+
+is_arm_jenkins_env && \
+    clean_build $juno_common_flags SPD=tspd ${ARM_TBB_OPTIONS} ARM_CRYPTOCELL_INTEG=1 CCSBROM_LIB_PATH=${CRYPTOCELL_LIB_PATH} KEY_SIZE=2048
 
 #
 # System Guidance for Infrastructure platform SGI575
@@ -354,26 +367,29 @@ clean_build PLAT=stingray $(common_flags) BOARD_CFG=bcm958742t-ns3 INCLUDE_EMMC_
 
 # Platforms from Marvell
 make PLAT=a3700 $(common_flags) SCP_BL2=/dev/null all
-# Source files from mv-ddr-marvell repository are necessary
-# to build below four platforms
-wget http://files.oss.arm.com/downloads/tf-a/mv-ddr-marvell/mv-ddr-marvell-fae3f6c98230ae51a78e248af5de96fac97a8fca.tar.gz 2> /dev/null
-tar -xzf mv-ddr-marvell-fae3f6c98230ae51a78e248af5de96fac97a8fca.tar.gz 2> /dev/null
-mv mv-ddr-marvell drivers/marvell/mv_ddr
 
-# These platforms from Marvell have dependency on GCC-6.2.1 toolchain
-make PLAT=a80x0 DEBUG=1 SCP_BL2=/dev/null \
-    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
-make PLAT=a80x0_mcbin DEBUG=1 SCP_BL2=/dev/null \
-    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
-make PLAT=a70x0 DEBUG=1 SCP_BL2=/dev/null \
-    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
-make PLAT=a70x0_amc DEBUG=1 SCP_BL2=/dev/null \
-    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
-make PLAT=a80x0_puzzle DEBUG=1 SCP_BL2=/dev/null \
-    CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+if is_arm_jenkins_env; then
+    # Source files from mv-ddr-marvell repository are necessary
+    # to build below four platforms
+    wget http://files.oss.arm.com/downloads/tf-a/mv-ddr-marvell/mv-ddr-marvell-fae3f6c98230ae51a78e248af5de96fac97a8fca.tar.gz 2> /dev/null
+    tar -xzf mv-ddr-marvell-fae3f6c98230ae51a78e248af5de96fac97a8fca.tar.gz 2> /dev/null
+    mv mv-ddr-marvell drivers/marvell/mv_ddr
 
-# Removing the source files
-rm -rf drivers/marvell/mv_ddr 2> /dev/null
+    # These platforms from Marvell have dependency on GCC-6.2.1 toolchain
+    make PLAT=a80x0 DEBUG=1 SCP_BL2=/dev/null \
+        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+    make PLAT=a80x0_mcbin DEBUG=1 SCP_BL2=/dev/null \
+        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+    make PLAT=a70x0 DEBUG=1 SCP_BL2=/dev/null \
+        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+    make PLAT=a70x0_amc DEBUG=1 SCP_BL2=/dev/null \
+        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+    make PLAT=a80x0_puzzle DEBUG=1 SCP_BL2=/dev/null \
+        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+
+    # Removing the source files
+    rm -rf drivers/marvell/mv_ddr 2> /dev/null
+fi
 
 # Platforms from Meson
 make PLAT=gxbb $(common_flags) all
