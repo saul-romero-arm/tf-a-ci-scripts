@@ -123,8 +123,8 @@ fetch_file() {
 	local saveas
 
 	if is_url "$url"; then
-		sa="${saveas+-o $saveas}"
 		saveas="${saveas-"$(basename "$url")"}"
+		sa="${saveas+-o $saveas}"
 		echo "Fetch: $url -> $saveas"
 		# Use curl to support file protocol
 		curl -sLS $sa "$url"
