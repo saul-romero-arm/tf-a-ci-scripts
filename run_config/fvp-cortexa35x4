@@ -6,6 +6,14 @@
 #
 
 post_fetch_tf_resource() {
-	model="cortex-a35x4" gen_model_params
+	local model="cortex-a35x4"
+	model="$model" gen_model_params
 	uart="0" set_expect_variable "num_cpus" "4"
+
+	model="$model" \
+	dtb="fvp-base-gicv3-psci.dtb" \
+	container_name="fvp:fvp_base_cortex-a35x124_11.11_34" \
+	container_model_params="$archive/model_params" \
+	container_entrypoint="/opt/model/FVP_Base_Cortex-A35x124/models/Linux64_GCC-6.4/FVP_Base_Cortex-A35x4" \
+	gen_fvp_yaml
 }

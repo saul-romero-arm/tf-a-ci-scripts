@@ -207,4 +207,97 @@ fvp_romlib_cleanup() {
 	mv "$fvp_romlib_jmptbl_backup" "${tf_root:?}/plat/arm/board/fvp/jmptbl.i"
 }
 
+
+fvp_gen_bin_url() {
+    local bin_mode="${bin_mode:?}"
+    local bin="${1:?}"
+
+    if upon "$jenkins_run"; then
+        echo "$jenkins_url/job/$JOB_NAME/$BUILD_NUMBER/artifact/artefacts/$bin_mode/$bin"
+    else
+        echo "file://$workspace/artefacts/$bin_mode/$bin"
+    fi
+}
+
+gen_fvp_yaml_template() {
+    local yaml_template_file="$workspace/fvp_template.yaml"
+
+    # must parameters for yaml generation
+    local payload_type="${payload_type:?}"
+
+    "$ci_root/script/gen_fvp_${payload_type}_yaml.sh" > "$yaml_template_file"
+
+    archive_file "$yaml_template_file"
+}
+
+gen_fvp_yaml() {
+    local yaml_template_file="$workspace/fvp_template.yaml"
+    local yaml_file="$workspace/fvp.yaml"
+
+    # must parameters for yaml generation
+    local model="${model:?}"
+    local dtb="${dtb:?}"
+    local container_name="${container_name:?}"
+    local container_model_params="${container_model_params:?}"
+    local container_entrypoint="${container_entrypoint:?}"
+    local archive="${archive:?}"
+
+    # general artefacts
+    bl1="$(fvp_gen_bin_url bl1.bin)"
+    fip="$(fvp_gen_bin_url fip.bin)"
+
+    # linux artefacts
+    dtb="$(fvp_gen_bin_url $dtb)"
+    image="$(fvp_gen_bin_url kernel.bin)"
+    ramdisk="$(fvp_gen_bin_url initrd.bin)"
+
+    # tftf's ns_bl[1|2]u.bin artefacts
+    ns_bl1u="$(fvp_gen_bin_url ns_bl1u.bin)"
+    ns_bl2u="$(fvp_gen_bin_url ns_bl2u.bin)"
+
+    docker_registry="${docker_registry:-}"
+    docker_registry="$(docker_registry_append)"
+
+    docker_name="${docker_registry}$container_name"
+
+    version_string="\"ARM ${model}"' [^\\n]+'"\""
+
+    sed -e "s|\${ACTIONS_DEPLOY_IMAGES_BL1}|${bl1}|" \
+        -e "s|\${ACTIONS_DEPLOY_IMAGES_FIP}|${fip}|" \
+        -e "s|\${ACTIONS_DEPLOY_IMAGES_DTB}|${dtb}|" \
+        -e "s|\${ACTIONS_DEPLOY_IMAGES_IMAGE}|${image}|" \
+        -e "s|\${ACTIONS_DEPLOY_IMAGES_RAMDISK}|${ramdisk}|" \
+        -e "s|\${ACTIONS_DEPLOY_IMAGES_NS_BL1U}|${ns_bl1u}|" \
+        -e "s|\${ACTIONS_DEPLOY_IMAGES_NS_BL2U}|${ns_bl2u}|" \
+        -e "s|\${BOOT_DOCKER_NAME}|${docker_name}|" \
+        -e "s|\${BOOT_IMAGE}|${container_entrypoint}|" \
+        -e "s|\${BOOT_VERSION_STRING}|${version_string}|" \
+        < "$yaml_template_file" \
+        > "$yaml_file"
+
+    # include the model parameters
+    while read -r line; do
+        if [ -n "$line" ]; then
+	    yaml_line="- \"${line}\""
+            sed -i -e "/\${BOOT_ARGUMENTS}/i \ \ \ \ $yaml_line" "$yaml_file"
+        fi
+    done < "$archive/model_params"
+    sed -i -e '/\${BOOT_ARGUMENTS}/d' "$yaml_file"
+
+    archive_file "$yaml_file"
+}
+
+docker_registry_append() {
+    # if docker_registry is empty, just use local docker registry
+    [ -z "$docker_registry" ] && return
+
+    local last=-1
+    local last_char="${docker_registry:last}"
+
+    if [ "$last_char" != '/' ]; then
+        docker_registry="${docker_registry}/";
+    fi
+    echo "$docker_registry"
+}
+
 set +u
