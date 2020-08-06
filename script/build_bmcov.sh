@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
@@ -103,7 +103,7 @@ prepare_html_pages() {
     fi
     # to be run on the user locally
     cat <<EOF > "server.sh"
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "Running server..."
 type -a firefox || (echo "Please install Firefox..." && exit 1)

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 post_fetch_tf_resource() {
 	bmcov_plugin=1 bmcov_plugin_path="${coverage_trace_plugin}" \

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 post_fetch_tf_resource() {
 	model="hercules" \
