@@ -327,8 +327,8 @@ path_list=(
 ld_library_path_list=(
 )
 
-license_path_list=(
-)
+license_path_list=${license_path_list-(
+)}
 
 # Setup various paths
 if upon "$retain_paths"; then
