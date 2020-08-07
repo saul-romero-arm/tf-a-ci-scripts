@@ -16,6 +16,16 @@
 ci_root="${ci_root:-$CI_ROOT}"
 ci_root="${ci_root:?}"
 
+# Optionally source a file containing environmental settings.
+if [ -n "$host_env" ]; then
+  source "$host_env"
+else
+  # Are we running on Arm infrastructure?
+  if echo "$JENKINS_URL" | grep "arm.com"; then
+    source "$ci_root/arm-env.sh"
+  fi
+fi
+
 # Storage area to host toolchains, rootfs, tools, models, binaries, etc...
 nfs_volume="${nfs_volume:-$NFS_VOLUME}"
 nfs_volume="${nfs_volume:?}"
@@ -262,24 +272,15 @@ model_flavour="${model_flavour:-Linux64_GCC-6.4}"
 pinned_cortex="$(readlink -f ${pinned_cortex:-$project_filer/models/cortex})" || true
 pinned_css="$(readlink -f ${pinned_css:-$project_filer/models/css})" || true
 
-#arm_gerrit_url="gerrit.oss.arm.com"
 tforg_gerrit_url="review.trustedfirmware.org"
 
 # Repository URLs. We're using anonymous HTTP as they appear to be faster rather
 # than any scheme with authentication.
-#tf_ci_repo_url="http://$arm_gerrit_url/pdswinf/ci/pdcs-platforms/platform-ci"
 tf_src_repo_url="${tf_src_repo_url:-$TF_SRC_REPO_URL}"
 tf_src_repo_url="${tf_src_repo_url:-https://$tforg_gerrit_url/TF-A/trusted-firmware-a}"
-#tf_arm_gerrit_repo="ssh://$arm_gerrit_url:29418/pdcs-platforms/ap/tf-topics.git"
 tftf_src_repo_url="${tftf_src_repo_url:-$TFTF_SRC_REPO_URL}"
 tftf_src_repo_url="${tftf_src_repo_url:-https://$tforg_gerrit_url/TF-A/tf-a-tests}"
-#tftf_arm_gerrit_repo="ssh://$arm_gerrit_url:29418/trusted-firmware/tf-a-tests.git"
 scp_src_repo_url="${scp_src_repo_url:-$SCP_SRC_REPO_URL}"
-#cc_src_repo_url="${cc_src_repo_url:-https://$arm_gerrit_url/tests/lava/test-definitions.git}"
-#cc_src_repo_tag="${cc_src_repo_tag:-kernel-team-workflow_2019-09-20}"
-
-#scp_tools_src_repo_url="${scp_tools_src_repo_url:-http://$arm_gerrit_url/scp/tools-non-public}"
-#tf_for_scp_tools_src_repo_url="https://gerrit.oss.arm.com/scp/test-framework"
 
 # FIXME set a sane default for tfa_downloads
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"
@@ -295,7 +296,6 @@ mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/m
 mbedtls_repo_name="${mbedtls_repo_name:-mbedtls-mbedtls-2.18.0}"
 
 coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2019.09}"
-#coverity_host="${coverity_host:-coverity.cambridge.arm.com}"
 coverity_default_checkers=(
 "--all"
 "--checker-option DEADCODE:no_dead_default:true"
@@ -305,8 +305,6 @@ coverity_default_checkers=(
 "--ticker-mode none"
 "--hfa"
 )
-
-#export coverity_host
 
 # Define toolchain version and toolchain binary paths
 toolchain_version="9.2-2019.12"
