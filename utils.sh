@@ -21,7 +21,7 @@ if [ -n "$host_env" ]; then
   source "$host_env"
 else
   # Are we running on Arm infrastructure?
-  if echo "$JENKINS_URL" | grep "arm.com"; then
+  if echo "$JENKINS_URL" | grep -q "arm.com"; then
     source "$ci_root/arm-env.sh"
   fi
 fi
