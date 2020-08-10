@@ -15,9 +15,9 @@ pre_tf_build() {
 	pushd "$workspace"
 
 	if [ ! -d "mv-ddr-marvell" ]; then
-		# Archive from mv_ddr-armada-atf-mainline branch
+		# Archive from mv-ddr-marvell release 14.0.0
 		saveas="mv-ddr-marvell.tar.gz" \
-			url="$tfa_downloads/mv-ddr-marvell/mv-ddr-marvell-a881467ef0f0185e6570dd0483023fde93cbb5f5.tar.gz" \
+			url="$tfa_downloads/mv-ddr-marvell/mv-ddr-marvell-fae3f6c98230ae51a78e248af5de96fac97a8fca.tar.gz" \
 			fetch_file
 
 		tar -xzf "mv-ddr-marvell.tar.gz"

@@ -355,8 +355,8 @@ clean_build PLAT=stingray $(common_flags) BOARD_CFG=bcm958742t-ns3 INCLUDE_EMMC_
 make PLAT=a3700 $(common_flags) SCP_BL2=/dev/null all
 # Source files from mv-ddr-marvell repository are necessary
 # to build below four platforms
-wget http://files.oss.arm.com/downloads/tf-a/mv-ddr-marvell/mv-ddr-marvell-a881467ef0f0185e6570dd0483023fde93cbb5f5.tar.gz 2> /dev/null
-tar -xzf mv-ddr-marvell-a881467ef0f0185e6570dd0483023fde93cbb5f5.tar.gz 2> /dev/null
+wget http://files.oss.arm.com/downloads/tf-a/mv-ddr-marvell/mv-ddr-marvell-fae3f6c98230ae51a78e248af5de96fac97a8fca.tar.gz 2> /dev/null
+tar -xzf mv-ddr-marvell-fae3f6c98230ae51a78e248af5de96fac97a8fca.tar.gz 2> /dev/null
 mv mv-ddr-marvell drivers/marvell/mv_ddr
 
 # These platforms from Marvell have dependency on GCC-6.2.1 toolchain
