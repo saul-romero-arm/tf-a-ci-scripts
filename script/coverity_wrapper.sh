@@ -27,12 +27,23 @@ coverity_wrapper() {
 	local cov_dir="$workspace/coverity"
 	local cov_compiler="${cov_compiler:-${CROSS_COMPILE}gcc}"
 
-	local auth_file="${cov_auth_file:-$ci_root/coverity/tfcibot@$coverity_host}"
+	local auth_file="$cov_auth_file"
 	local makefile="$ci_root/script/coverity-Makefile"
 	local defects_summary="$workspace/defects-summary.txt"
 
 	local description
 	local need_compare
+
+	# If auth file is not provided and if on Arm infrastructure copy it
+	if [ -z "$auth_file" ] && echo "$JENKINS_URL" | grep -q "arm.com"; then
+		local auth_url="$project_filer/ci-files/coverity/tfcibot@$coverity_host"
+		url="$auth_url" saveas="$workspace/tfcibot@$coverity_host" fetch_file
+		auth_file="$workspace/tfcibot@$coverity_host"
+	fi
+
+	if [ -z "$auth_file" ]; then
+		die "Coverity authentication token not provided"
+	fi
 
 	echo_w
 	mkdir -p "$cov_dir"
