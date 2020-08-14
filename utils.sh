@@ -247,8 +247,34 @@ extract_tarball() {
 	popd "$target_dir"
 }
 
-# Assume running on Jenkins if JENKINS_HOME is set
-if [ "$JENKINS_HOME" ]; then
+# Check if execution is done by Jenkins. If called with a parameter,
+# representing a 'domain', i.e. arm.com, it will also check if
+# JENKINS_URL contains the latter.
+is_jenkins_env () {
+    local domain="${1-}"
+
+    # check if running under Jenkins, if not, return non-zero
+    # the checks assumes Jenkins executing if JENKINS_HOME is set
+    [ -z "$JENKINS_HOME" ] && return 1
+
+    # if no parameter passed, no more checks, quit
+    [ -z "$domain" ] && return 0
+
+    if echo "$JENKINS_URL" | grep -q "$domain"; then
+	return 0
+    fi
+
+    return 1
+}
+
+
+# Check if execution is under ARM's jenkins
+is_arm_jenkins_env() {
+    local arm_domain="arm.com"
+    return $(is_jenkins_env "$arm_domain")
+}
+
+if is_jenkins_env; then
 	jenkins_run=1
 	umask 0002
 else
