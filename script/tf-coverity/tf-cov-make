@@ -66,12 +66,14 @@ clean_build()
 # Defines common flags between platforms
 common_flags() {
     local release="${1:-}"
+    local num_cpus="$(/usr/bin/getconf _NPROCESSORS_ONLN)"
+    local parallel_make="-j $num_cpus"
 
     # default to debug mode, unless a parameter is passed to the function
     debug="DEBUG=1"
     [ -n "$release" ] && debug=""
 
-    echo " -j $debug -s "
+    echo " $parallel_make $debug -s "
 }
 
 #
