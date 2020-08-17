@@ -1,5 +1,5 @@
 # This is to be pasted on to websequencediagrams.com to get the sequence
-# diagram of current CI setup
+# diagram of current ARM CI setup
 
 title Trusted Firmware CI core jobs
 

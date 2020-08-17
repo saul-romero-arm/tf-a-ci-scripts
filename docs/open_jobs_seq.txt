@@ -1,0 +1,21 @@
+# This is to be pasted on to websequencediagrams.com to get the sequence
+# diagram of current CI setup
+
+title Trusted Firmware Open CI core jobs
+
+actor user/gerrit
+participant trigger-tf-a-builder
+user/gerrit->+trigger-tf-a-builder: trigger for each patchset
+trigger-tf-a-builder->+tf-a-builder:
+tf-a-builder->+builders.sh:
+builders.sh->+run_local_ci.sh: launch build
+note over run_local_ci.sh:  build/test for a single test file (makefile)
+run_local_ci.sh->+builders.sh: complete
+builders.sh->+tf-a-builder:
+note over tf-a-builder: generate LAVA Juno/FVP YAML
+tf-a-builder->+post-build-lava:
+post-build-lava->+LAVA: submit job
+note over LAVA: Juno/FVP boot test
+LAVA->+post-build-lava: completes
+post-build-lava->+tf-a-builder:
+tf-a-builder->+trigger-tf-a-builder:
