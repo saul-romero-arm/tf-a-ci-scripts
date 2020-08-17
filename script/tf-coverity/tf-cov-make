@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/env bash
 #
 # Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
@@ -26,17 +26,16 @@ fi
 
 export CROSS_COMPILE=aarch64-none-elf-
 
+containing_dir="$(readlink -f "$(dirname "$0")/")"
+. $containing_dir/common-def.sh
+
 # Get mbed TLS library code to build Trusted Firmware with Trusted Board Boot
 # support. The version of mbed TLS to use here must be the same as when
 # building TF in the usual context.
-if [ ! -d mbedtls ]; then
-    git clone https://github.com/ARMmbed/mbedtls.git
+if [ ! -d "$MBED_TLS_DIR" ]; then
+    git clone -q --depth 1 -b "$MBED_TLS_SOURCES_TAG" "$MBED_TLS_URL_REPO" "$MBED_TLS_DIR"
 fi
-cd mbedtls
-containing_dir="$(readlink -f "$(dirname "$0")/")"
-. $containing_dir/common-def.sh
-git checkout "$MBED_TLS_SOURCES_TAG"
-cd -
+
 TBB_OPTIONS="TRUSTED_BOARD_BOOT=1 GENERATE_COT=1 MBEDTLS_DIR=$(pwd)/mbedtls"
 ARM_TBB_OPTIONS="$TBB_OPTIONS ARM_ROTPK_LOCATION=devel_rsa"
 

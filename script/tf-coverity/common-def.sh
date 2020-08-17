@@ -7,6 +7,10 @@
 
 JENKINS_URL=https://jenkins.oss.arm.com/
 
+# mbed TLS variables
+MBED_TLS_DIR=mbedtls
+MBED_TLS_URL_REPO=https://github.com/ARMmbed/mbedtls.git
+
 # mbed TLS source tag to checkout when building Trusted Firmware with Trusted
 # Board Boot support.
 MBED_TLS_SOURCES_TAG="mbedtls-2.18.0"
