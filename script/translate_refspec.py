@@ -35,6 +35,7 @@ projects = {
     "tforg": {
         "trusted-firmware": gerrit.GerritProject("TF-A/trusted-firmware-a", gerrit_tforg),
         "trusted-firmware-tf": gerrit.GerritProject("TF-A/tf-a-tests", gerrit_tforg),
+        "trusted-firmware-ci": gerrit.GerritProject("ci/tf-a-ci-scripts", gerrit_tforg),
     },
 }
 

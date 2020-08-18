@@ -20,6 +20,15 @@
 
 set -e
 
+arm_gerrit_url="gerrit.oss.arm.com"
+tforg_gerrit_url="review.trustedfirmware.org"
+ci_url="${https://$arm_gerrit_url/pdswinf/ci/pdcs-platforms/platform-ci:-$CI_SRC_REPO_URL}"
+gerrit_server="arm"
+
+if [ "$ci_url" == *${tforg_gerrit_url}* ];then
+        gerrit_server="tforg"
+fi
+
 strip_var() {
 	local var="$1"
 	local val="$(echo "${!var}" | sed 's#^\s*\|\s*$##g')"
@@ -105,7 +114,7 @@ if [ ! -d "platform-ci" ]
 then
 git clone -q --depth 1 \
 	--reference /arm/projectscratch/ssg/trusted-fw/ref-repos/trusted-firmware-ci \
-	https://gerrit.oss.arm.com/pdswinf/ci/pdcs-platforms/platform-ci
+	$ci_url platform-ci
 else
 	pushd platform-ci
 	git fetch
@@ -130,7 +139,7 @@ if [ "$CI_REFSPEC" ]; then
 	# Translate refspec if supported
 	if [ -x "$ci_root/script/translate_refspec.py" ]; then
 		CI_REFSPEC="$("$ci_root/script/translate_refspec.py" \
-				-p trusted-firmware-ci -s arm "$CI_REFSPEC")"
+				-p trusted-firmware-ci -s $gerrit_server "$CI_REFSPEC")"
 	fi
 
 	pushd platform-ci &>/dev/null
