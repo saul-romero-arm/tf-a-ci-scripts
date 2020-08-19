@@ -125,7 +125,7 @@ actions:
     # Collect the final results.
     #
     - name: SCP-SCMI
-      start: 'Test Suite: SCMI 140'
+      start: 'Test Suite: SCMI 103'
       end: 'End of Test Suite: SCMI'
 
       pattern: "\\\[UT\\\] Test Case: (?P<test_case_id>\\\D*)(.*) Result: (?P<result>[0-9])"
