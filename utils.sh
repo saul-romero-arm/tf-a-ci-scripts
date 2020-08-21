@@ -307,7 +307,6 @@ tf_src_repo_url="${tf_src_repo_url:-https://$tforg_gerrit_url/TF-A/trusted-firmw
 tftf_src_repo_url="${tftf_src_repo_url:-$TFTF_SRC_REPO_URL}"
 tftf_src_repo_url="${tftf_src_repo_url:-https://$tforg_gerrit_url/TF-A/tf-a-tests}"
 scp_src_repo_url="${scp_src_repo_url:-$SCP_SRC_REPO_URL}"
-tf_ci_repo_url="${tf_ci_repo_url:-$CI_SRC_REPO_URL}"
 
 # FIXME set a sane default for tfa_downloads
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"

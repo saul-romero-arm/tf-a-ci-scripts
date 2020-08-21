@@ -22,7 +22,7 @@ set -e
 
 arm_gerrit_url="gerrit.oss.arm.com"
 tforg_gerrit_url="review.trustedfirmware.org"
-ci_url="${https://$arm_gerrit_url/pdswinf/ci/pdcs-platforms/platform-ci:-$CI_SRC_REPO_URL}"
+ci_url="${CI_SRC_REPO_URL:-https://$arm_gerrit_url/pdswinf/ci/pdcs-platforms/platform-ci}"
 gerrit_server="arm"
 
 if [ "$ci_url" == *${tforg_gerrit_url}* ];then
