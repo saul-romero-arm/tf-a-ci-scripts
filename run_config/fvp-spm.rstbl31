@@ -23,6 +23,7 @@ post_tf_build() {
 	url="${tf_build_root}/${plat}/${mode}/fdts/fvp_spmc_manifest.dtb" fetch_file
 	url="${tf_build_root}/${plat}/${mode}/cactus-primary.pkg" fetch_file
 	url="${tf_build_root}/${plat}/${mode}/cactus-secondary.pkg" fetch_file
+	url="${tf_build_root}/${plat}/${mode}/cactus-tertiary.pkg" fetch_file
 
 	archive_file "hafnium.bin"
 	archive_file "secure_hafnium.bin"
@@ -31,6 +32,7 @@ post_tf_build() {
 	archive_file "fvp_spmc_manifest.dtb"
 	archive_file "cactus-primary.pkg"
 	archive_file "cactus-secondary.pkg"
+	archive_file "cactus-tertiary.pkg"
 }
 
 post_fetch_tf_resource() {
@@ -43,6 +45,7 @@ post_fetch_tf_resource() {
 	spm_bin="secure_hafnium.bin" \
 	sp1_pkg="cactus-primary.pkg" \
 	sp2_pkg="cactus-secondary.pkg" \
+	sp3_pkg="cactus-tertiary.pkg" \
 	initrd_bin="initrd.img" \
 	el3_payload_bin="manifest.dtb" \
 		gen_model_params

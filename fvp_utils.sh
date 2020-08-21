@@ -22,6 +22,7 @@ spm_addr="${spm_addr:-0x6000000}"
 spmc_manifest_addr="${spmc_addr:-0x0403f000}"
 sp1_addr="${sp1_addr:-0x7000000}"
 sp2_addr="${sp2_addr:-0x7100000}"
+sp3_addr="${sp3_addr:-0x7200000}"
 
 ns_bl1u_addr="${ns_bl1u_addr:-0x0beb8000}"
 fwu_fip_addr="${fwu_fip_addr:-0x08400000}"
