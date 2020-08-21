@@ -306,6 +306,10 @@ make $(common_flags) PLAT=tc0 ${ARM_TBB_OPTIONS} all
 
 make PLAT=mt8173 $(common_flags) all
 make PLAT=mt8183 $(common_flags) all
+make PLAT=mt8192 $(common_flags) COREBOOT=1 all
+
+# Platforms from Qualcomm
+make PLAT=sc7180 $(common_flags) COREBOOT=1 all
 
 make PLAT=rk3288 CROSS_COMPILE=arm-none-eabi- \
     $(common_flags) ARCH=aarch32 AARCH32_SP=sp_min all
@@ -386,6 +390,8 @@ if is_arm_jenkins_env; then
         CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
     make PLAT=a80x0_puzzle DEBUG=1 SCP_BL2=/dev/null \
         CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+    make PLAT=t9130 DEBUG=1 SCP_BL2=/dev/null \
+        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
 
     # Removing the source files
     rm -rf drivers/marvell/mv_ddr 2> /dev/null
@@ -460,6 +466,10 @@ clean_build PLAT=qemu $(common_flags) ${TBB_OPTIONS} \
     ENCRYPT_BL32=1 FW_ENC_STATUS=0 SPD=opteed
 
 clean_build PLAT=qemu_sbsa $(common_flags)
+
+# QEMU with SPM support
+clean_build PLAT=qemu_sbsa $(common_flags) BL32=Makefile SPM_MM=1 \
+    EL3_EXCEPTION_HANDLING=1
 
 # For hikey enable PMF to include all files in the platform port
 make PLAT=hikey $(common_flags) ${TBB_OPTIONS} ENABLE_PMF=1 all
