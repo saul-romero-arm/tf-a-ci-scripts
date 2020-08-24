@@ -59,7 +59,7 @@ def gen_desc(group, test):
 
     # Create descriptor. Write the name of the original test config as its
     # content.
-    desc = os.path.join(workspace, "%".join([str(num_spawn).zfill(3), group,
+    desc = os.path.join(workspace, "%".join([str(num_spawn).zfill(3), os.path.basename(group),
         test_config + TEST_SUFFIX]))
     with open(desc, "wt") as fd:
         print(test, file=fd)
