@@ -422,7 +422,6 @@ if upon "$clone_scp"; then
 	# NOTE: currently scp/firmware:master is not tracking the upstream.
 	# Therefore, if the url is gerrit.oss.arm.com/scp/firmware and there is
 	# no ref_spec, then set the ref_spec to master-upstream.
-	scp_src_repo_default="http://gerrit.oss.arm.com/scp/firmware"
 	if [ "$scp_src_repo_url" = "$scp_src_repo_default" ]; then
 		SCP_REFSPEC="${SCP_REFSPEC:-master-upstream}"
 	fi
