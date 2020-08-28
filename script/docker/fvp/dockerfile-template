@@ -1,0 +1,23 @@
+FROM ${OS}:${OS_VER}
+
+ENV ARMLMD_LICENSE_FILE=27000@ci.trustedfirmware.org
+
+# Install package required
+RUN apt-get update && \
+    apt-get install --no-install-recommends --yes bc libatomic1 telnet libdbus-1-3 xterm && \
+    rm -rf /var/cache/apt
+
+# Create model directory
+RUN mkdir ${MODEL_DIR}
+
+# Add FVP Binaries
+ADD ${MODEL}_${MODEL_VER}.tgz ${MODEL_DIR}
+
+# Install the model
+RUN cd ${MODEL_DIR} && \
+    ${MODEL_DIR}/${MODEL}.sh \
+        --i-agree-to-the-contained-eula \
+        --verbose \
+        --destination ${MODEL_DIR}/${MODEL}
+
+WORKDIR /opt/model/${MODEL}/models/Linux64_GCC-6.4/
