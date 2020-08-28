@@ -86,6 +86,16 @@ if __name__ == "__main__":
         help="directory to store the job_output.log",
     )
     parser.add_argument(
+        "--username",
+        required=True,
+        help="the user name for lava server",
+    )
+    parser.add_argument(
+        "--token",
+        required=True,
+        help="the token for lava server",
+    )
+    parser.add_argument(
         "-v", action="count", default=0, help="Increase printing of debug ouptut"
     )
     args = parser.parse_args()
@@ -95,7 +105,8 @@ if __name__ == "__main__":
         logging.getLogger().setLevel(logging.INFO)
     logging.debug(args)
     try:
-        if not retry_job([args.script, args.job, args.save], args.retries):
+        if not retry_job([args.script, args.job, args.save, args.username, args.token],\
+                args.retries):
             logging.critical("All jobs failed with infra errors; retries exhausted")
             sys.exit(-1)
         else:
