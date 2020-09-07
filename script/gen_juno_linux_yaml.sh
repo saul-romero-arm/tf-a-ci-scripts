@@ -26,10 +26,18 @@ get_recovery_image_url() {
 }
 
 bootloader_prompt="${bootloader_prompt:-juno#}"
-juno_revision="${juno_revision:-juno-r0}"
 recovery_img_url="${recovery_img_url:-$(get_recovery_image_url)}"
 nfs_rootfs="${nfs_rootfs:-$juno_rootfs_url}"
 linux_prompt="${linux_prompt:-root@(.*):~#}"
+
+# Allow running juno tests on specific revision(r0/r1/r2).
+juno_revision="${juno_revision:-}"
+if [ ! -z "$juno_revision" ]; then
+        tags="tags:"
+        juno_revision="- ${juno_revision}"
+else
+        tags=""
+fi
 
 cat <<EOF
 device_type: juno
@@ -38,8 +46,8 @@ job_name: tf-juno
 context:
   bootloader_prompt: $bootloader_prompt
 
-tags:
-- $juno_revision
+$tags
+$juno_revision
 
 timeouts:
   # Global timeout value for the whole job.

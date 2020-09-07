@@ -24,15 +24,23 @@ get_recovery_image_url() {
 	fi
 }
 
-juno_revision="${juno_revision:-juno-r0}"
 recovery_img_url="${recovery_img_url:-$(get_recovery_image_url)}"
+
+# Allow running juno tests on specific revision(r0/r1/r2).
+juno_revision="${juno_revision:-}"
+if [ ! -z "$juno_revision" ]; then
+        tags="tags:"
+        juno_revision="- ${juno_revision}"
+else
+        tags=""
+fi
 
 cat <<EOF
 device_type: juno
 job_name: tf-juno
 
-tags:
-- $juno_revision
+$tags
+$juno_revision
 
 timeouts:
   # Global timeout value for the whole job.
