@@ -317,7 +317,7 @@ linaro_1906_release="$tfa_downloads/linaro/19.06"
 linaro_release="${linaro_release:-$linaro_1906_release}"
 
 # mbedTLS archive public hosting available at github.com
-mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-2.18.0.zip}"
+mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-2.18.0.tar.gz}"
 # The tar file contains mbedtls-mbedtls-2.18.0 repo which holds the necessary
 # source files of mbedTLS project
 mbedtls_repo_name="${mbedtls_repo_name:-mbedtls-mbedtls-2.18.0}"
