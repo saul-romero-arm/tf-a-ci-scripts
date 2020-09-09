@@ -234,14 +234,15 @@ extend_path() {
 extract_tarball() {
 	local archive="$1"
 	local target_dir="$2"
+	local extra_params="${3:-}"
 
 	pushd "$target_dir"
 	case $(file --mime-type -b "$archive") in
 		application/gzip)
-				tar -xzf $archive
+				tar -xz $extra_params -f $archive
 				;;
 		application/zip)
-				unzip -q $archive
+				unzip -q $extra_params $archive
 				;;
 	esac
 	popd "$target_dir"

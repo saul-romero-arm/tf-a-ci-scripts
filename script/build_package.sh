@@ -442,7 +442,7 @@ build_tf() {
 
 			url="$mbedtls_archive" saveas="$mbedtls_ar" fetch_file
 			mkdir "$mbedtls_dir"
-			extract_tarball $mbedtls_ar $mbedtls_dir
+			extract_tarball $mbedtls_ar $mbedtls_dir --strip-components=1
 		fi
 
 		emit_env "MBEDTLS_DIR" "$mbedtls_dir"
