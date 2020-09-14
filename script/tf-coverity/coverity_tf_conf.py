@@ -52,6 +52,7 @@ exclude_paths = [
 
     ("lib/compiler-rt/.*", "3rd party libraries will not be fixed"),
     ("lib/libfdt/.*", "3rd party libraries will not be fixed"),
+    ("lib/libc/strlcat.c", "Not used by any upstream platform"),
 
     ("tools/.*", "Host tools"),
 ]
