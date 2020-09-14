@@ -22,6 +22,8 @@ opts = parser.parse_args()
 if len(opts.args) != 1:
     raise Exception("Exactly one argument expected")
 
+exit_code = 0
+
 # Obtain path to run_config directory
 script_root = os.path.dirname(os.path.abspath(sys.argv[0]))
 run_config_dir = os.path.join(script_root, os.pardir, "run_config")
@@ -32,37 +34,34 @@ if not run_config:
     raise Exception("Couldn't extract run config from " + arg)
 
 if run_config == "nil":
-    sys.exit(0)
+    sys.exit(exit_code)
 
 fragments = run_config.split("-")
-if 'bmcov' in fragments:
-    fragments.remove('bmcov')
-exit_code = 0
 
-# Stems are fragments, except with everything after dot removed.
-stems = list(map(lambda f: f.split(".")[0], fragments))
+ignored_fragments      = ['bmcov']
+not_prefixed_fragments = ['debug']
 
-# Consider each fragment in turn
-for frag_idx, chosen_fragment in enumerate(fragments):
-    # Choose all stems upto the current fragment
-    chosen = ["-".join(stems[0:i] + [chosen_fragment])
-            for i in range(frag_idx + 1)]
+for f in fragments[1:]:
+    if f in ignored_fragments:
+        # these fragments are ignored
+        continue
+    elif f in not_prefixed_fragments:
+        # these fragments are NOT prefixed by first fragment
+        fragment = f
+    else:
+        # for the rest of the cases, prefix first fragment
+        fragment = "-".join([fragments[0],f])
 
-    for i, fragment in enumerate(reversed(chosen)):
-        if opts.print_only:
+    if opts.print_only:
+        print(fragment)
+    else:
+        # Output only if a matching run config exists
+        if os.path.isfile(os.path.join(run_config_dir, fragment)):
+            # Stop looking for generic once a specific fragment is found
             print(fragment)
         else:
-            # Output only if a matching run config exists
-            if os.path.isfile(os.path.join(run_config_dir, fragment)):
-                # Stop looking for generic once a specific fragment is found
-                print(fragment)
-                break
-    else:
-        # Ignore if the first fragment doesn't exist, which is usually the
-        # platform name. Otherwise, print a warning for not finding matches for
-        # the fragment.
-        if (not opts.print_only) and (i > 0):
             print("warning: {}: no matches for fragment '{}'".format(
                 arg, fragment), file=sys.stderr)
             exit_code = 1
+
 sys.exit(exit_code)
