@@ -6,10 +6,10 @@
 #
 
 post_tf_build() {
-	url="$project_filer/ci-files/spm-07-29-2020/hafnium.bin" fetch_file
-	url="$project_filer/ci-files/spm-07-29-2020/secure_hafnium.bin" fetch_file
-	url="$project_filer/ci-files/spm-07-29-2020/initrd.img" fetch_file
-	url="$project_filer/ci-files/spm-07-29-2020/manifest.dtb" fetch_file
+	url="$project_filer/ci-files/spm-09-16-2020/hafnium.bin" fetch_file
+	url="$project_filer/ci-files/spm-09-16-2020/secure_hafnium.bin" fetch_file
+	url="$project_filer/ci-files/spm-09-16-2020/initrd.img" fetch_file
+	url="$project_filer/ci-files/spm-09-16-2020/manifest.dtb" fetch_file
 
 	archive_file "hafnium.bin"
 	archive_file "secure_hafnium.bin"
