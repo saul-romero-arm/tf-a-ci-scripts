@@ -17,7 +17,10 @@ fetch_tf_resource() {
 }
 
 post_fetch_tf_resource() {
-	model="css-rde1edge" gen_model_params
+	model="css-rde1edge" \
+	model_version="11.9" \
+	model_build="41" \
+	gen_model_params
 	set_run_env "ports_script" "$ci_root/model/css-sgi575-ports.awk"
 	set_run_env "num_uarts" "2"
 	uart="0" set_expect_variable "num_cpus" "32"
