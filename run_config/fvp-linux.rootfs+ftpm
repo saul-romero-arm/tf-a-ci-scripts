@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+        # Get the images for the test.
+        edk_url="${nfs_volume}/pdsw/downloads/tf-a/ftpm/FVP_AARCH64_EFI.fd"
+        rootfs_url="${nfs_volume}/pdsw/downloads/tf-a/ftpm/boot-fat.uefi.img" get_rootfs
+        url="$edk_url" saveas="edk2.bin" fetch_file
+        archive_file "edk2.bin"
+
+        # Configure the uarts for tracking.
+        uart="0" timeout="300" file="linux-tpm.exp" track_expect
+        uart="1" timeout="300" file="tpm-logs.exp" track_expect
+        set_run_env "ports_script" "$ci_root/model/ftpm-ports.awk"
+        set_run_env "num_uarts" "2"
+}
