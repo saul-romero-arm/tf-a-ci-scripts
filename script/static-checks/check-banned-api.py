@@ -29,7 +29,7 @@ IGNORED_FILES = ()
 BANNED_APIS = ["strcpy", "wcscpy", "strncpy", "strcat", "wcscat", "strncat",
                "sprintf", "vsprintf", "strtok", "atoi", "atol", "atoll",
                "itoa", "ltoa", "lltoa"]
-BANNED_PATTERN = re.compile('|'.join(BANNED_APIS))
+BANNED_PATTERN = re.compile('\(|'.join(BANNED_APIS))
 
 COMMENTS_PATTERN = re.compile(r"//|/\*|\*/")
 
