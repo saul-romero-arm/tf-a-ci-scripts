@@ -307,6 +307,8 @@ tf_src_repo_url="${tf_src_repo_url:-$TF_SRC_REPO_URL}"
 tf_src_repo_url="${tf_src_repo_url:-https://$tforg_gerrit_url/TF-A/trusted-firmware-a}"
 tftf_src_repo_url="${tftf_src_repo_url:-$TFTF_SRC_REPO_URL}"
 tftf_src_repo_url="${tftf_src_repo_url:-https://$tforg_gerrit_url/TF-A/tf-a-tests}"
+ci_src_repo_url="${ci_src_repo_url:-$CI_SRC_REPO_URL}"
+ci_src_repo_url="${ci_src_repo_url:-https://$tforg_gerrit_url/ci/tf-a-ci-scripts}"
 scp_src_repo_url="${scp_src_repo_url:-$SCP_SRC_REPO_URL}"
 scp_src_repo_url="${scp_src_repo_url:-$scp_src_repo_default}"
 

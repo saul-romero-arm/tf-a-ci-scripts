@@ -44,6 +44,10 @@ clone_repo()
 			repo_url=$tftf_src_repo_url
 			repo_name="TF-A-Tests"
 			;;
+		tf-a-ci-scripts)
+			repo_url=$ci_src_repo_url
+			repo_name="TF-A-CI-Scripts"
+			;;
 		*)
 			echo "ERROR: Unknown repo to be cloned. sync.sh failed!"
 			exit 1
@@ -82,9 +86,11 @@ source "$CI_ROOT/utils.sh"
 
 clone_repo trusted-firmware-a
 clone_repo tf-a-tests
+clone_repo tf-a-ci-scripts
 
 pull_changes trusted-firmware-a
 pull_changes tf-a-tests
+pull_changes tf-a-ci-scripts
 
 # stop exiting automatically
 set +e
@@ -101,7 +107,11 @@ cd ../tf-a-tests
 sync_repo "internal TF-A-Tests Gerrit" $tftf_arm_gerrit_repo
 tftf_gerrit=$?
 
-if [ $github != 0 -o $tfa_gerrit != 0 -o $tftf_gerrit != 0 ]
+cd ../tf-a-ci-scripts
+sync_repo "internal TF-A-CI-Scripts Gerrit" $ci_arm_gerrit_repo
+ci_gerrit=$?
+
+if [ $github != 0 -o $tfa_gerrit != 0 -o $tftf_gerrit != 0 -o $ci_gerrit != 0 ]
 then
 	exit 1
 fi
