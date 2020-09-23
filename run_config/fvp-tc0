@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -12,15 +12,13 @@ fetch_tf_resource() {
 		archive_file "scp_romfw.bin"
 	fi
 
-	# Hold terminal_uart_aon
-	uart="2" file="hold_uart.exp" track_expect
+	# Hold scp terminal_s0
+	uart="0" file="hold_uart.exp" track_expect
 }
 
 post_fetch_tf_resource() {
-	# Needed by the Total Compute Fast Model
-	set_model_env "FASTSIM_CMN_INTERNAL_RNSAM" "1"
 	model="tc0" gen_model_params
 	set_run_env "ports_script" "$ci_root/model/tc0-ports.awk"
-	set_run_env "num_uarts" "3"
+	set_run_env "num_uarts" "2"
 	uart="1" set_expect_variable "num_cpus" "4"
 }
