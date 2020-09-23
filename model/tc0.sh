@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-set_model_path "$warehouse/SysGen/SubSystemModels/0.0/5903/models/$model_flavour/FVP_RD_TC_2020"
+set_model_path "$warehouse/SysGen/SubSystemModels/0.0/6114/models/$model_flavour/FVP_TC0"
 
 cat <<EOF >"$model_param_file"
 ${bl1_bin+-C css.trustedBootROMloader.fname=$bl1_bin}
