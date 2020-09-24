@@ -13,8 +13,8 @@ post_tf_build() {
         archive_file "edk2.bin"
 
         # Configure the uarts for tracking.
-        uart="0" timeout="300" file="linux-tpm.exp" track_expect
-        uart="1" timeout="300" file="tpm-logs.exp" track_expect
+        uart="0" timeout="600" file="linux-tpm.exp" track_expect
+        uart="1" timeout="600" file="tpm-logs.exp" track_expect
         set_run_env "ports_script" "$ci_root/model/ftpm-ports.awk"
         set_run_env "num_uarts" "2"
 }
