@@ -31,7 +31,7 @@ romlib_addr="${romlib_addr:-0x03ff2000}"
 
 uboot32_fip_url="$linaro_release/fvp32-latest-busybox-uboot/fip.bin"
 
-rootfs_url="$linaro_release/lt-vexpress64-openembedded_minimal-armv8-gcc-4.9_20150912-729.img.gz"
+rootfs_url="$linaro_release/lt-vexpress64-openembedded_minimal-armv8-gcc-5.2_20170127-761.img.gz"
 
 # FVP Kernel URLs
 declare -A fvp_kernels

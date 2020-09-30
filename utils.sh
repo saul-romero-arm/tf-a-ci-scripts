@@ -317,8 +317,8 @@ scp_src_repo_url="${scp_src_repo_url:-$scp_src_repo_default}"
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"
 css_downloads="${css_downloads:-$tfa_downloads/css}"
 
-linaro_1906_release="$tfa_downloads/linaro/19.06"
-linaro_release="${linaro_release:-$linaro_1906_release}"
+linaro_2001_release="$tfa_downloads/linaro/20.01"
+linaro_release="${linaro_release:-$linaro_2001_release}"
 
 # mbedTLS archive public hosting available at github.com
 mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-2.24.0.tar.gz}"
