@@ -23,6 +23,7 @@ mkdir -p "$pid_dir"
 mkdir -p "$run_root"
 
 archive="$artefacts"
+bootargs_file="bootargs_file"
 
 gen_fpga_params() {
 	local fpga_param_file="fpga_env.sh"
@@ -33,10 +34,26 @@ gen_fpga_params() {
 	echo "baudrate=$uart_baudrate" > $fpga_param_file
 	echo "fpga=$fpga" >> $fpga_param_file
 	echo "fpga_bitfile=$fpga_bitfile" >> $fpga_param_file
-	echo "fpga_payload=$fpga_payload" >> $fpga_param_file
 	echo "project_name=$project_name" >> $fpga_param_file
 	echo "port=$uart_port" >> $fpga_param_file
 	echo "uart=$uart_descriptor" >> $fpga_param_file
+
+	if [ -n "$bl33_img" ]; then
+        	echo "bl33_img=$bl33_img" >> $fpga_param_file
+		echo "bl33_addr=$bl33_addr" >> $fpga_param_file
+	fi
+
+	if [ -n "$initrd_img" ]; then
+        	echo "initrd_img=$initrd_img" >> $fpga_param_file
+		echo "initrd_addr=$initrd_addr" >> $fpga_param_file
+	fi
+
+	if [ -n "$bootargs" ]; then
+		echo "CMD:$bootargs" > $bootargs_file
+		archive_file "$bootargs_file"
+		echo "cmdline_file=$bootargs_file" >> $fpga_param_file
+		echo "cmdline_addr=$bootargs_addr" >> $fpga_param_file
+	fi
 
 	archive_file "$fpga_param_file"
 }
@@ -169,8 +186,18 @@ echo "Copying artefacts to $remote_host as user $remote_user"
 echo
 
 # Copy the image to the remote host.
-scp "$artefacts_wd/$fpga_payload" "$remote_user@$remote_host:./$fpga_payload" > \
-							/dev/null
+if [ -n "$bl33_img" ]; then
+	scp "$artefacts_wd/$bl33_img" "$remote_user@$remote_host:." > /dev/null
+fi
+
+if [ -n "$initrd_img" ]; then
+	scp "$artefacts_wd/$initrd_img" "$remote_user@$remote_host:." > /dev/null
+fi
+
+if [ -n "$bootargs" ]; then
+	scp "$artefacts_wd/$bootargs_file" "$remote_user@$remote_host:." > /dev/null
+fi
+scp "$artefacts_wd/bl31.axf" "$remote_user@$remote_host:." > /dev/null
 
 # Copy the env and run scripts to the remote host.
 scp "$artefacts_wd/fpga_env.sh" "$remote_user@$remote_host:." > /dev/null
@@ -178,7 +205,12 @@ scp "$ci_root/script/$fpga_run_script" "$remote_user@$remote_host:." > /dev/null
 
 echo "FPGA configuration options:"
 echo
-cat "$artefacts_wd/fpga_env.sh"
+while read conf_option; do
+	echo -e "\t$conf_option"
+done <$artefacts/fpga_env.sh
+if [ -n "$bootargs" ]; then
+echo -e "\tKernel bootargs: $bootargs"
+fi
 
 # For an automated run, export a known variable so that we can identify stale
 # processes spawned by Trusted Firmware CI by inspecting its environment.
@@ -194,7 +226,7 @@ name="fpga_run" launch ssh "$remote_user@$remote_host" "bash ./$fpga_run_script"
 
 # Wait enough time for the UART to show up on the FPGA host so the connection
 # can be stablished.
-sleep 35
+sleep 65
 
 # If it's a test run, skip all the hoops and start a telnet connection to the FPGA.
 if upon "$test_run"; then
@@ -298,6 +330,8 @@ while :; do
 		break
 	fi
 done
+
+ssh "$remote_user@$remote_host" "rm ./$fpga_run_script"
 
 cleanup
 
