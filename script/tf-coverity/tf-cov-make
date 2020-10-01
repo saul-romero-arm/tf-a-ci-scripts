@@ -302,6 +302,11 @@ make PLAT=arm_fpga $(common_flags) CROSS_COMPILE=aarch64-none-elf- \
 #
 make $(common_flags) PLAT=tc0 ${ARM_TBB_OPTIONS} all
 
+#
+# Morello platform
+#
+make $(common_flags) PLAT=morello all
+
 # Partners' platforms.
 # Enable as many features as possible.
 # We don't need to clean between each build here because we only do one build
