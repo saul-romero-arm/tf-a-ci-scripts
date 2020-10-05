@@ -14,6 +14,8 @@ default_var cluster_3_num_cores 4
 
 reset_var gicv3_gicv2_only
 
+reset_var ccn502_cache_size_in_kbytes
+
 reset_var aarch64_only
 
 source "$ci_root/model/fvp_common.sh"
@@ -48,5 +50,7 @@ ${aarch64_only+-C cluster2.max_32bit_el=-1}
 ${aarch64_only+-C cluster3.max_32bit_el=-1}
 
 ${gicv3_gicv2_only+-C gicv3.gicv2-only=$gicv3_gicv2_only}
+
+${ccn502_cache_size_in_kbytes+-C ccn502.cache_size_in_kbytes=$ccn502_cache_size_in_kbytes}
 
 EOF
