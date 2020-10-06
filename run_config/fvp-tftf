@@ -8,6 +8,4 @@
 fetch_tf_resource() {
 	uart="0" file="tftf.exp" track_expect
 	uart="1" file="hold_uart.exp" track_expect
-
-	payload_type="tftf" gen_fvp_yaml_template
 }
