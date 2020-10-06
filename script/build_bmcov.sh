@@ -65,6 +65,7 @@ EOM
                     "type": "http",
                     "URL":  "$mbedtls_archive",
                     "COMPRESSION": "xz",
+                    "EXTRA_PARAMS": "--strip-components=1",
                     "LOCATION": "mbedtls"
                     }
                 ]
