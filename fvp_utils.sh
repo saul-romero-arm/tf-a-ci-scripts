@@ -234,6 +234,11 @@ gen_fvp_yaml() {
     local yaml_template_file="$workspace/fvp_template.yaml"
     local yaml_file="$workspace/fvp.yaml"
 
+    # this function expects a template, quit if it is not present
+    if [ ! -f "$yaml_template_file" ]; then
+	return
+    fi
+
     # must parameters for yaml generation
     local model="${model:?}"
     local dtb="${dtb:?}"
