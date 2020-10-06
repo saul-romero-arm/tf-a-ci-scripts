@@ -337,6 +337,8 @@ coverity_default_checkers=(
 "--hfa"
 )
 
+docker_registry="${docker_registry:-}"
+
 # Define toolchain version and toolchain binary paths
 toolchain_version="9.2-2019.12"
 
