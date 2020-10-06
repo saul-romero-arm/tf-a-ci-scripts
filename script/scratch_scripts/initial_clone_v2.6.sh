@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -22,11 +22,11 @@ set -e
 
 arm_gerrit_url="gerrit.oss.arm.com"
 tforg_gerrit_url="review.trustedfirmware.org"
-ci_url="${CI_SRC_REPO_URL:-https://$arm_gerrit_url/pdswinf/ci/pdcs-platforms/platform-ci}"
-gerrit_server="arm"
+ci_url="${CI_SRC_REPO_URL:-https://$tforg_gerrit_url/ci/tf-a-ci-scripts}"
+gerrit_server="tforg"
 
-if [ "$ci_url" == *${tforg_gerrit_url}* ];then
-        gerrit_server="tforg"
+if [ "$ci_url" == *${arm_gerrit_url}* ];then
+        gerrit_server="arm"
 fi
 
 strip_var() {
@@ -36,7 +36,7 @@ strip_var() {
 }
 
 set_ci_root() {
-	ci_root=`pwd`/"platform-ci"
+	ci_root=`pwd`/"trusted-firmware-ci"
 	CI_ROOT=$ci_root
 }
 
@@ -64,7 +64,7 @@ if [ "$GERRIT_REFSPEC" ]; then
 			export REPO_UNDER_TEST="trusted-firmware-tf"
 			echo "REPO_UNDER_TEST is blank, setting REPO_UNDER_TEST based on GERRIT_PROJECT"
 
-		elif [ $GERRIT_PROJECT == "pdswinf/ci/pdcs-platforms/platform-ci" ]; then
+		elif [ $GERRIT_PROJECT == "pdswinf/ci/pdcs-platforms/platform-ci" ] || [ $GERRIT_PROJECT == "ci/tf-a-ci-scripts" ]; then
 			export REPO_UNDER_TEST="trusted-firmware-ci"
 			echo "REPO_UNDER_TEST is blank, setting REPO_UNDER_TEST based on GERRIT_PROJECT"
 		fi
@@ -110,13 +110,13 @@ if [ -z "$CI_REFSPEC" ] && [ "$REPO_UNDER_TEST" = "trusted-firmware-ci" ] && \
 fi
 
 # Clone CI repository and move to the refspec
-if [ ! -d "platform-ci" ]
+if [ ! -d "trusted-firmware-ci" ]
 then
 git clone -q --depth 1 \
 	--reference /arm/projectscratch/ssg/trusted-fw/ref-repos/trusted-firmware-ci \
-	$ci_url platform-ci
+	$ci_url trusted-firmware-ci
 else
-	pushd platform-ci
+	pushd trusted-firmware-ci
 	git fetch
 	git checkout origin/master
 	popd
@@ -142,7 +142,7 @@ if [ "$CI_REFSPEC" ]; then
 				-p trusted-firmware-ci -s $gerrit_server "$CI_REFSPEC")"
 	fi
 
-	pushd platform-ci &>/dev/null
+	pushd trusted-firmware-ci &>/dev/null
 	git fetch -q --depth 1 origin "$CI_REFSPEC"
 	git checkout -q FETCH_HEAD
 	echo

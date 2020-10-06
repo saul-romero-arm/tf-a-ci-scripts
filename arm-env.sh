@@ -15,7 +15,6 @@ tfa_downloads="http://files.oss.arm.com/downloads/tf-a"
 
 # Source repositories.
 arm_gerrit_url="gerrit.oss.arm.com"
-tf_ci_repo_url="${CI_SRC_REPO_URL:-http://$arm_gerrit_url/pdswinf/ci/pdcs-platforms/platform-ci}"
 tf_arm_gerrit_repo="ssh://$arm_gerrit_url:29418/pdcs-platforms/ap/tf-topics.git"
 tftf_arm_gerrit_repo="ssh://$arm_gerrit_url:29418/trusted-firmware/tf-a-tests.git"
 ci_arm_gerrit_repo="ssh://$arm_gerrit_url:29418/pdswinf/ci/pdcs-platforms/platform-ci.git"
