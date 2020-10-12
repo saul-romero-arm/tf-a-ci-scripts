@@ -33,6 +33,18 @@ uboot32_fip_url="$linaro_release/fvp32-latest-busybox-uboot/fip.bin"
 
 rootfs_url="$linaro_release/lt-vexpress64-openembedded_minimal-armv8-gcc-5.2_20170127-761.img.gz"
 
+# Default FVP model variables
+default_model_dtb="fvp-base-gicv3-psci.dtb"
+
+# default to the fvp container containing most of the models and its corresponding base
+# directory
+default_model_name="fvp:fvp_arm_std_library_11.12_38"
+default_model_dir="/opt/model/FVP_ARM_Std_Library/models/Linux64_GCC-6.4"
+
+# This is intentionally black, so a the run config snippet MUST pass this the parameter
+# indicating the model's binary
+default_model_bin=""
+
 # FVP Kernel URLs
 declare -A fvp_kernels
 fvp_kernels=(
@@ -233,8 +245,8 @@ gen_fvp_yaml_template() {
 gen_fvp_yaml() {
     local yaml_template_file="$workspace/fvp_template.yaml"
     local yaml_file="$workspace/fvp.yaml"
-    local job_file="$workspace/job.yaml"
-    lava_model_params="$workspace/lava_model_params"
+    local yaml_job_file="$workspace/job.yaml"
+    local lava_model_params="$workspace/lava_model_params"
 
     # this function expects a template, quit if it is not present
     if [ ! -f "$yaml_template_file" ]; then
@@ -243,18 +255,18 @@ gen_fvp_yaml() {
 
     # must parameters for yaml generation
     local model="${model:?}"
-    local dtb="${dtb:?}"
-    local container_name="${container_name:?}"
-    local container_model_params="${container_model_params:?}"
-    local container_entrypoint="${container_entrypoint:?}"
-    local archive="${archive:?}"
+
+    # optional parameters, defaults to globals
+    local model_name="${model_name:-$default_model_name}"
+    local model_dtb="${model_dtb:-$default_model_dtb}"
+    local model_dir="${model_dir:-$default_model_dir}"
+    local model_bin="${model_bin:-$default_model_bin}"
 
     # general artefacts
     bl1="$(fvp_gen_bin_url bl1.bin)"
     fip="$(fvp_gen_bin_url fip.bin)"
 
-    # linux artefacts
-    dtb="$(fvp_gen_bin_url $dtb)"
+    dtb="$(fvp_gen_bin_url ${model_dtb})"
     image="$(fvp_gen_bin_url kernel.bin)"
     ramdisk="$(fvp_gen_bin_url initrd.bin)"
 
@@ -265,7 +277,7 @@ gen_fvp_yaml() {
     docker_registry="${docker_registry:-}"
     docker_registry="$(docker_registry_append)"
 
-    docker_name="${docker_registry}$container_name"
+    docker_name="${docker_registry}$model_name"
 
     # generic version string
     local version_string="\"Fast Models"' [^\\n]+'"\""
@@ -279,7 +291,8 @@ gen_fvp_yaml() {
         -e "s|\${ACTIONS_DEPLOY_IMAGES_NS_BL1U}|${ns_bl1u}|" \
         -e "s|\${ACTIONS_DEPLOY_IMAGES_NS_BL2U}|${ns_bl2u}|" \
         -e "s|\${BOOT_DOCKER_NAME}|${docker_name}|" \
-        -e "s|\${BOOT_IMAGE}|${container_entrypoint}|" \
+        -e "s|\${BOOT_IMAGE_DIR}|${model_dir}|" \
+        -e "s|\${BOOT_IMAGE_BIN}|${model_bin}|" \
         -e "s|\${BOOT_VERSION_STRING}|${version_string}|" \
         < "$yaml_template_file" \
         > "$yaml_file"
@@ -302,10 +315,10 @@ gen_fvp_yaml() {
     done < "$lava_model_params"
 
     sed -i -e '/\${BOOT_ARGUMENTS}/d' "$yaml_file"
-    cp "$yaml_file" "$job_file"
+    cp "$yaml_file" "$yaml_job_file"
 
     archive_file "$yaml_file"
-    archive_file "$job_file"
+    archive_file "$yaml_job_file"
 }
 
 docker_registry_append() {

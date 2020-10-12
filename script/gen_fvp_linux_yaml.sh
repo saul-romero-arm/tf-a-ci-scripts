@@ -52,7 +52,7 @@ actions:
     docker:
       name: \${BOOT_DOCKER_NAME}
       local: true
-    image: \${BOOT_IMAGE}
+    image: \${BOOT_IMAGE_DIR}/\${BOOT_IMAGE_BIN}
     version_string: \${BOOT_VERSION_STRING}
     timeout:
       minutes: 7
