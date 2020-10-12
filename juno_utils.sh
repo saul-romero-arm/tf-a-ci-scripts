@@ -18,8 +18,8 @@ uboot32_fip_url="$linaro_release/juno32-latest-oe-uboot/SOFTWARE/fip.bin"
 juno32_recovery_root="$linaro_release/juno32-latest-busybox-uboot"
 juno32_recovery_root_oe="$linaro_release/juno32-latest-oe-uboot"
 
-juno_rootfs_url="$linaro_release/linaro-image-minimal-genericarmv8-20170127-888.rootfs.tar.gz"
-juno32_rootfs_url="$linaro_release/linaro-image-alip-genericarmv7a-20150710-336.rootfs.tar.gz"
+juno_rootfs_url="${juno_rootfs_url:-$linaro_release/linaro-image-minimal-genericarmv8-20170127-888.rootfs.tar.gz}"
+juno32_rootfs_url="${juno32_rootfs_url:-$linaro_release/linaro-image-alip-genericarmv7a-20150710-336.rootfs.tar.gz}"
 
 get_optee_bin() {
 	local tmpdir="$(mktempdir)"
@@ -85,13 +85,16 @@ gen_recovery_image() {
 }
 
 gen_juno_yaml() {
-	local yaml_file="$workspace/juno.yaml"
+        local yaml_file="$workspace/juno.yaml"
+        local job_file="$workspace/job.yaml"
 	local payload_type="${payload_type:?}"
 
 	bin_mode="$mode" \
 		"$ci_root/script/gen_juno_${payload_type}_yaml.sh" > "$yaml_file"
 
+        cp "$yaml_file" "$job_file"
 	archive_file "$yaml_file"
+        archive_file "$job_file"
 }
 
 juno_aarch32_runtime() {

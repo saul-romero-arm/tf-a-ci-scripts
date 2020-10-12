@@ -29,7 +29,7 @@ get_recovery_image_url() {
 
 bootloader_prompt="${bootloader_prompt:-juno#}"
 recovery_img_url="${recovery_img_url:-$(get_recovery_image_url)}"
-nfs_rootfs="${nfs_rootfs:-$juno_rootfs_url}"
+nfs_rootfs="${juno_rootfs_url:-$nfs_rootfs}"
 linux_prompt="${linux_prompt:-root@(.*):~#}"
 os="${os:-debian}"
 

@@ -233,6 +233,8 @@ gen_fvp_yaml_template() {
 gen_fvp_yaml() {
     local yaml_template_file="$workspace/fvp_template.yaml"
     local yaml_file="$workspace/fvp.yaml"
+    local job_file="$workspace/job.yaml"
+    lava_model_params="$workspace/lava_model_params"
 
     # this function expects a template, quit if it is not present
     if [ ! -f "$yaml_template_file" ]; then
@@ -265,9 +267,11 @@ gen_fvp_yaml() {
 
     docker_name="${docker_registry}$container_name"
 
-    version_string="\"ARM ${model}"' [^\\n]+'"\""
+    # generic version string
+    local version_string="\"Fast Models"' [^\\n]+'"\""
 
-    sed -e "s|\${ACTIONS_DEPLOY_IMAGES_BL1}|${bl1}|" \
+    sed -e "s|\${ARMLMD_LICENSE_FILE}|${armlmd_license_file}|" \
+	-e "s|\${ACTIONS_DEPLOY_IMAGES_BL1}|${bl1}|" \
         -e "s|\${ACTIONS_DEPLOY_IMAGES_FIP}|${fip}|" \
         -e "s|\${ACTIONS_DEPLOY_IMAGES_DTB}|${dtb}|" \
         -e "s|\${ACTIONS_DEPLOY_IMAGES_IMAGE}|${image}|" \
@@ -280,16 +284,28 @@ gen_fvp_yaml() {
         < "$yaml_template_file" \
         > "$yaml_file"
 
+    # LAVA expects 'macro' names for binaries, so replace them
+    sed -e "s|bl1.bin|{BL1}|" \
+	-e "s|fip.bin|{FIP}|" \
+	-e "s|kernel.bin|{IMAGE}|" \
+	-e "s|initrd.bin|{RAMDISK}|" \
+	< "$archive/model_params" \
+	> "$lava_model_params"
+
+
     # include the model parameters
     while read -r line; do
         if [ -n "$line" ]; then
 	    yaml_line="- \"${line}\""
             sed -i -e "/\${BOOT_ARGUMENTS}/i \ \ \ \ $yaml_line" "$yaml_file"
         fi
-    done < "$archive/model_params"
+    done < "$lava_model_params"
+
     sed -i -e '/\${BOOT_ARGUMENTS}/d' "$yaml_file"
+    cp "$yaml_file" "$job_file"
 
     archive_file "$yaml_file"
+    archive_file "$job_file"
 }
 
 docker_registry_append() {

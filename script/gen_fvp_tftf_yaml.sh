@@ -46,6 +46,7 @@ actions:
 
 - boot:
     method: fvp
+    license_variable: ARMLMD_LICENSE_FILE=\${ARMLMD_LICENSE_FILE}
     docker:
       name: \${BOOT_DOCKER_NAME}
       local: true
