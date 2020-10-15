@@ -53,16 +53,14 @@ clone_repo()
 			exit 1
 			;;
 	esac
-
-	# Check if the repo clone exists in the job's workspace
-	if [ ! -d $1 ]
-	then
-		# Fresh clone
-		echo Cloning $repo_name from trustedfirmware.org...
-		git clone $repo_url
-	else
-		echo Will use existing repo for "$repo_name"...
+	
+	# Remove old tree if it exists
+	if [ -d $1 ]; then
+		rm -rf "$1"
 	fi
+	# Fresh clone
+	echo Cloning $repo_name from trustedfirmware.org...
+	git clone $repo_url
 }
 
 # Pull changes from tf.org to the local repo
