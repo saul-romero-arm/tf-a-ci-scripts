@@ -326,7 +326,7 @@ for u in $(seq 0 $(( $num_uarts - 1 )) | tac); do
 	else
 		timeout=
 	fi
-	timeout="${timeout-600}"
+	timeout="${timeout-1200}"
 
 	full_log="$run_root/uart${u}_full.txt"
 
