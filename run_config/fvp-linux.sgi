@@ -15,4 +15,6 @@ fetch_tf_resource() {
 
 	archive_file "busybox.bin"
 	archive_file "ramdisk.bin"
+
+	payload_type="linux" gen_fvp_yaml_template
 }

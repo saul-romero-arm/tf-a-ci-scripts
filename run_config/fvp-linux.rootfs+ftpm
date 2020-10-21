@@ -17,4 +17,6 @@ post_tf_build() {
         uart="1" timeout="600" file="tpm-logs.exp" track_expect
         set_run_env "ports_script" "$ci_root/model/ftpm-ports.awk"
         set_run_env "num_uarts" "2"
+
+	payload_type="linux" gen_fvp_yaml_template
 }

@@ -12,4 +12,6 @@ fetch_tf_resource() {
 
 	tmp_dir="$(mktempdir)"
 	ln -s "${img_file:?}" "$archive/rootfs.bin"
+
+	payload_type="linux" gen_fvp_yaml_template
 }

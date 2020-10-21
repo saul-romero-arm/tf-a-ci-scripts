@@ -11,4 +11,6 @@ fetch_tf_resource() {
 	busybox_prebuilt=$css_downloads/sgi/sgi575
 	url="$busybox_prebuilt/grub-busybox.img" saveas="rootfs.bin" fetch_file
 	archive_file "rootfs.bin"
+
+	payload_type="linux" gen_fvp_yaml_template
 }

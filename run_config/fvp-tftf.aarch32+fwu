@@ -25,4 +25,6 @@ post_tf_archive() {
 
 fetch_tf_resource() {
 	uart="0" timeout="900" file="tftf-aarch32.exp" track_expect
+
+	payload_type="tftf" gen_fvp_yaml_template
 }

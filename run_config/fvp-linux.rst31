@@ -10,4 +10,6 @@ fetch_tf_resource() {
 	initrd_type="default" get_initrd
 	uart="0" file="linux-rd-busybox.exp" track_expect
 	uart="0" set_expect_variable "skip_early_boot_msgs" "1"
+
+	payload_type="linux" gen_fvp_yaml_template
 }
