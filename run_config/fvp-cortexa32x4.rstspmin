@@ -9,4 +9,8 @@ post_fetch_tf_resource() {
 	reset_to_spmin="1" \
 		model="cortex-a32x4" gen_model_params
 	uart="0" set_expect_variable "num_cpus" "4"
+
+	model="cortex-a32x4" \
+	model_bin="FVP_Base_Cortex-A32x4" \
+	       gen_fvp_yaml
 }
