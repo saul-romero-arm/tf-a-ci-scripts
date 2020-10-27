@@ -8,4 +8,8 @@
 post_fetch_tf_resource() {
 	model="cortex-a57x2-a53x4" gen_model_params
         uart="0" set_expect_variable "num_cpus" "6"
+
+	model="cortex-a57x2-a53x4" \
+	model_bin="FVP_Base_Cortex-A57x2-A53x4" \
+	       gen_fvp_yaml
 }

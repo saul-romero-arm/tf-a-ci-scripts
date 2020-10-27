@@ -7,4 +7,8 @@
 
 post_fetch_tf_resource() {
 	model="cortex-a57x4-a53x4" gen_model_params
+
+	model="cortex-a57x4-a53x4" \
+	model_bin="FVP_Base_Cortex-A57x4-A53x4" \
+	       gen_fvp_yaml
 }
