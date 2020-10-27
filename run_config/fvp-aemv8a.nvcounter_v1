@@ -9,4 +9,8 @@ post_fetch_tf_resource() {
 	# Version 1 of the non-volatile counter may be incremented in a
 	# monotonic fashion (unlike version 0, which is fixed).
 	model="base-aemv8a" nvcounter_version="r1" nvcounter_diag="4" gen_model_params
+
+	model="base-aemv8a" \
+	model_bin="FVP_Base_AEMv8A-AEMv8A" \
+	       gen_fvp_yaml
 }
