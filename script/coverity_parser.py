@@ -170,7 +170,7 @@ class Issues(object):
         if group["occurrences"][0]["checker"] in _rule_exclusions:
             return False
         for skip_dir in IGNORED_DIRS:
-            if group["file"].lstrip("/").startswith(skip_dir):
+            if group["occurrences"][0]["file"].lstrip("/").startswith(skip_dir):
                 return False
         # unless we're showing all groups, remove the groups that are in both
         # golden and branch
