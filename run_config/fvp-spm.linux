@@ -6,13 +6,19 @@
 #
 
 post_tf_build() {
-	url="$project_filer/ci-files/spm-10-23-2020/initrd.img" fetch_file
-	url="$project_filer/ci-files/spm-10-23-2020/manifest.dtb" fetch_file
+	build_fip BL33="$archive/hafnium.bin" BL32="$archive/secure_hafnium.bin"
+}
+
+fetch_tf_resource() {
+	url="$tfa_downloads/spm/12-03-2020/initrd.img" fetch_file
+	url="$tfa_downloads/spm/12-03-2020/manifest.dtb" fetch_file
 
 	archive_file "initrd.img"
 	archive_file "manifest.dtb"
 
-	build_fip BL33="$archive/hafnium.bin" BL32="$archive/secure_hafnium.bin"
+	# Expect scripts
+	uart="0" file="spm-linux-uart0.exp" track_expect
+	uart="2" file="spm-uart2.exp" track_expect
 }
 
 post_fetch_tf_resource() {
@@ -25,10 +31,4 @@ post_fetch_tf_resource() {
 	model="base-aemv8a" \
 	model_bin="FVP_Base_AEMv8A-AEMv8A" \
 	       gen_fvp_yaml
-}
-
-fetch_tf_resource() {
-	# Expect scripts
-	uart="0" file="spm-linux-uart0.exp" track_expect
-	uart="2" file="spm-uart2.exp" track_expect
 }

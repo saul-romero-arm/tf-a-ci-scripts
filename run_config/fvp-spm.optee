@@ -6,11 +6,17 @@
 #
 
 post_tf_build() {
-	url="$project_filer/ci-files/spm-10-23-2020/spmc_sel1_optee_sel1.bin" fetch_file
+	url="$tfa_downloads/spm/12-03-2020/spmc_sel1_optee_sel1.bin" fetch_file
 
 	archive_file "spmc_sel1_optee_sel1.bin"
 
 	build_fip BL33="$archive/tftf.bin" BL32="$archive/spmc_sel1_optee_sel1.bin"
+}
+
+fetch_tf_resource() {
+	# Expect scripts
+	uart="0" file="tftf.exp" track_expect
+	uart="1" file="hold_uart.exp" track_expect
 }
 
 post_fetch_tf_resource() {
@@ -20,9 +26,4 @@ post_fetch_tf_resource() {
 	model="base-aemv8a" \
 	model_bin="FVP_Base_AEMv8A-AEMv8A" \
 	       gen_fvp_yaml
-}
-
-fetch_tf_resource() {
-	# Expect scripts
-	uart="0" file="tftf.exp" track_expect
 }

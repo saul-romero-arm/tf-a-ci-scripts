@@ -9,6 +9,12 @@ post_tf_build() {
 	build_fip BL33="$archive/tftf.bin" BL32="$archive/secure_hafnium.bin"
 }
 
+fetch_tf_resource() {
+	# Expect scripts
+	uart="0" file="tftf.exp" track_expect
+	uart="2" file="spm-uart2.exp" track_expect
+}
+
 post_fetch_tf_resource() {
 	model="base-aemv8a" \
 	arch_version="8.4" \
@@ -17,10 +23,4 @@ post_fetch_tf_resource() {
 	model="base-aemv8a" \
 	model_bin="FVP_Base_AEMv8A-AEMv8A" \
 	       gen_fvp_yaml
-}
-
-fetch_tf_resource() {
-	# Expect scripts
-	uart="0" file="tftf.exp" track_expect
-	uart="2" file="spm-uart2.exp" track_expect
 }

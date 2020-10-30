@@ -1345,7 +1345,6 @@ for mode in $modes; do
 		build_spm
 
 		# Show SPM/Hafnium binary details
-		ls -lart $spm_build_root/hafnium.bin $hafnium_build_root/hafnium.bin
 		cksum $spm_build_root/hafnium.bin $hafnium_build_root/hafnium.bin
 
 		secure_from="$spm_build_root" non_secure_from="$hafnium_build_root" to="$archive" collect_spm_artefacts
