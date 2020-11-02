@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2020 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+	model="neoverse_n2" \
+	cache_state_modelled="0" \
+	gen_model_params
+	uart="0" set_expect_variable "num_cpus" "4"
+}
