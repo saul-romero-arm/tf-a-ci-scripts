@@ -37,7 +37,7 @@ scan_build_wrapper(){
 			| awk 'BEGIN {FS = " to examine bug reports"}{print $1}' \
 			| awk '{ gsub("[:\47]" , ""); print $0}')
 
-	if [ -d $result_loc ]; then
+	if [ -d "$result_loc" ]; then
 		local defects="$(find $result_loc -iname 'report*.html'| wc -l)"
 		if [ $defects -ge 1 ]; then
 			echo_w "$defects defect(s) found in build \"$build_config\" "
