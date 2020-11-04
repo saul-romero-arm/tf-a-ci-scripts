@@ -7,7 +7,12 @@
 
 source "$ci_root/fvp_utils.sh"
 
-sgi_prebuilts="${sgi_prebuilts:-$css_downloads/sgi/sgi575}"
+# Pre-built SCP/MCP v2.7.0 release binaries
+# Files from
+# https://releases.linaro.org/members/arm/platforms/20.01/sgi575-latest-busybox-uefi.zip
+# Tianocore/EDK2 firmware version 2321f49f07 copied from
+# http://files.oss.arm.com/downloads/tf-a/css/sgi/sgi575
+sgi_prebuilts="${sgi_prebuilts:-$css_downloads_270/sgi/sgi575}"
 
 fvp_kernels[fvp-sgi-busybox]="$sgi_prebuilts/Image"
 fvp_initrd_urls[fvp-sgi-ramdisk]="$sgi_prebuilts/ramdisk-busybox.img"

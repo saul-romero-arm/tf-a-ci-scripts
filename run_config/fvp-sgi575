@@ -6,7 +6,7 @@
 #
 
 fetch_tf_resource() {
-	#Fetch the pre-built SCP/MCP binaries if they haven't been built
+	# Fetch the pre-built SCP/MCP binaries if they haven't been built
 	if [ ! -f "$archive/mcp_rom.bin" ]; then
 		url="$sgi_prebuilts/mcp_rom.bin" fetch_file
 		archive_file "mcp_rom.bin"

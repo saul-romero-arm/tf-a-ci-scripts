@@ -11,7 +11,7 @@ post_tf_build() {
 
 	# Use SCP binary from SCP build if it exists, or fetch pre-built ones.
 	if [ ! -f "$archive/scp_ramfw.bin" ]; then
-		url="$tc_prebuilts/scp_ramfw.bin" fetch_file
+		url="$scp_prebuilts/scp_ramfw.bin" fetch_file
 		archive_file "scp_ramfw.bin"
 	fi
 
