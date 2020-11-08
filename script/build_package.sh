@@ -1194,9 +1194,17 @@ for mode in $modes; do
 		(
 		echo "##########"
 
-		# Source platform-specific utilities
-		plat="$(get_tftf_opt PLAT)"
-		plat_utils="$ci_root/${plat}_utils.sh"
+		plat_utils="$(get_tf_opt PLAT_UTILS)"
+		if [ -z ${plat_utils} ]; then
+			# Source platform-specific utilities.
+			plat="$(get_tftf_opt PLAT)"
+			plat_utils="$ci_root/${plat}_utils.sh"
+		else
+			# Source platform-specific utilities by
+			# using plat_utils name.
+			plat_utils="$ci_root/${plat_utils}.sh"
+		fi
+
 		if [ -f "$plat_utils" ]; then
 			source "$plat_utils"
 		fi
@@ -1226,9 +1234,17 @@ for mode in $modes; do
 		(
 		echo "##########"
 
-		# Source platform-specific utilities
-		plat="$(get_tf_opt PLAT)"
-		plat_utils="$ci_root/${plat}_utils.sh"
+		plat_utils="$(get_tf_opt PLAT_UTILS)"
+		if [ -z ${plat_utils} ]; then
+			# Source platform-specific utilities.
+			plat="$(get_tf_opt PLAT)"
+			plat_utils="$ci_root/${plat}_utils.sh"
+		else
+			# Source platform-specific utilities by
+			# using plat_utils name.
+			plat_utils="$ci_root/${plat_utils}.sh"
+		fi
+
 		if [ -f "$plat_utils" ]; then
 			source "$plat_utils"
 		fi
