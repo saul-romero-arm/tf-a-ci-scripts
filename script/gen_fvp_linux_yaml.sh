@@ -11,7 +11,7 @@
 
 cat <<EOF
 device_type: fvp
-job_name: tf-fvp
+job_name: fvp-linux
 
 timeouts:
   connection:
@@ -54,9 +54,9 @@ actions:
       local: true
     image: \${BOOT_IMAGE_DIR}/\${BOOT_IMAGE_BIN}
     version_string: \${BOOT_VERSION_STRING}
-    timeout:
-      minutes: 7
     console_string: 'terminal_0: Listening for serial connection on port (?P<PORT>\d+)'
+    timeout:
+      minutes: 30
     arguments:
 \${BOOT_ARGUMENTS}
     prompts:

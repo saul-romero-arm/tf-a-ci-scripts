@@ -11,7 +11,7 @@
 
 cat <<EOF
 device_type: fvp
-job_name: tf-fvp
+job_name: fvp-tftf
 
 timeouts:
   connection:
@@ -43,6 +43,8 @@ actions:
         url: \${ACTIONS_DEPLOY_IMAGES_NS_BL1U}
       ns_bl2u:
         url: \${ACTIONS_DEPLOY_IMAGES_NS_BL2U}
+      el3_payload:
+        url: \${ACTIONS_DEPLOY_IMAGES_EL3_PAYLOAD}
 
 - boot:
     method: fvp
@@ -52,6 +54,14 @@ actions:
       local: true
     image: \${BOOT_IMAGE_DIR}/\${BOOT_IMAGE_BIN}
     version_string: \${BOOT_VERSION_STRING}
+    console_string: 'terminal_0: Listening for serial connection on port (?P<PORT>\d+)'
+    timeout:
+      minutes: 30
+
+    arguments:
+\${BOOT_ARGUMENTS}
+
+- test:
     timeout:
       minutes: 30
 
@@ -72,8 +82,5 @@ actions:
         Failed: fail
         Crashed: fail
         Skipped: skip
-
-    arguments:
-\${BOOT_ARGUMENTS}
 
 EOF

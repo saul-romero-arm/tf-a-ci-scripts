@@ -270,9 +270,10 @@ gen_fvp_yaml() {
     image="$(fvp_gen_bin_url kernel.bin)"
     ramdisk="$(fvp_gen_bin_url initrd.bin)"
 
-    # tftf's ns_bl[1|2]u.bin artefacts
+    # tftf's ns_bl[1|2]u.bin and el3_payload artefacts
     ns_bl1u="$(fvp_gen_bin_url ns_bl1u.bin)"
     ns_bl2u="$(fvp_gen_bin_url ns_bl2u.bin)"
+    el3_payload="$(fvp_gen_bin_url el3_payload.bin)"
 
     docker_registry="${docker_registry:-}"
     docker_registry="$(docker_registry_append)"
@@ -290,6 +291,7 @@ gen_fvp_yaml() {
         -e "s|\${ACTIONS_DEPLOY_IMAGES_RAMDISK}|${ramdisk}|" \
         -e "s|\${ACTIONS_DEPLOY_IMAGES_NS_BL1U}|${ns_bl1u}|" \
         -e "s|\${ACTIONS_DEPLOY_IMAGES_NS_BL2U}|${ns_bl2u}|" \
+        -e "s|\${ACTIONS_DEPLOY_IMAGES_EL3_PAYLOAD}|${el3_payload}|" \
         -e "s|\${BOOT_DOCKER_NAME}|${docker_name}|" \
         -e "s|\${BOOT_IMAGE_DIR}|${model_dir}|" \
         -e "s|\${BOOT_IMAGE_BIN}|${model_bin}|" \
@@ -300,6 +302,9 @@ gen_fvp_yaml() {
     # LAVA expects 'macro' names for binaries, so replace them
     sed -e "s|bl1.bin|{BL1}|" \
 	-e "s|fip.bin|{FIP}|" \
+	-e "s|ns_bl1u.bin|{NS_BL1U}|" \
+	-e "s|ns_bl2u.bin|{NS_BL2U}|" \
+	-e "s|el3_payload.bin|{EL3_PAYLOAD}|" \
 	-e "s|kernel.bin|{IMAGE}|" \
 	-e "s|initrd.bin|{RAMDISK}|" \
 	< "$archive/model_params" \
