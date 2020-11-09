@@ -23,6 +23,9 @@ spmc_manifest_addr="${spmc_addr:-0x0403f000}"
 sp1_addr="${sp1_addr:-0x7000000}"
 sp2_addr="${sp2_addr:-0x7100000}"
 sp3_addr="${sp3_addr:-0x7200000}"
+# SPM out directories
+export spm_secure_out_dir="${spm_secure_out_dir:-secure_aem_v8a_fvp_clang}"
+export spm_non_secure_out_dir="${spm_non_secure_out_dir:-aem_v8a_fvp_clang}"
 
 ns_bl1u_addr="${ns_bl1u_addr:-0x0beb8000}"
 fwu_fip_addr="${fwu_fip_addr:-0x08400000}"

@@ -6,10 +6,6 @@
 #
 
 post_tf_build() {
-	url="$project_filer/ci-files/spm-10-23-2020/secure_hafnium.bin" fetch_file
-
-	archive_file "secure_hafnium.bin"
-
 	build_fip BL33="$archive/tftf.bin" BL32="$archive/secure_hafnium.bin"
 }
 

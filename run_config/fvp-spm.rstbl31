@@ -16,8 +16,6 @@ post_tf_build() {
 
 	build_fip BL33="$dummy_file" BL32="$dummy_file"
 
-	url="$project_filer/ci-files/spm-10-23-2020/hafnium.bin" fetch_file
-	url="$project_filer/ci-files/spm-10-23-2020/secure_hafnium.bin" fetch_file
 	url="$project_filer/ci-files/spm-10-23-2020/initrd.img" fetch_file
 	url="$project_filer/ci-files/spm-10-23-2020/manifest.dtb" fetch_file
 	url="${tf_build_root}/${plat}/${mode}/fdts/fvp_spmc_manifest.dtb" fetch_file
@@ -25,8 +23,6 @@ post_tf_build() {
 	url="${tf_build_root}/${plat}/${mode}/cactus-secondary.pkg" fetch_file
 	url="${tf_build_root}/${plat}/${mode}/cactus-tertiary.pkg" fetch_file
 
-	archive_file "hafnium.bin"
-	archive_file "secure_hafnium.bin"
 	archive_file "initrd.img"
 	archive_file "manifest.dtb"
 	archive_file "fvp_spmc_manifest.dtb"
@@ -40,9 +36,9 @@ post_fetch_tf_resource() {
 	arch_version="8.4" \
 	reset_to_bl31="1" \
 	preload_bl33="1" \
-	preload_bl33_bin="hafnium.bin" \
+	preload_bl33_bin="$archive/hafnium.bin" \
 	spmc_manifest="fvp_spmc_manifest.dtb" \
-	spm_bin="secure_hafnium.bin" \
+	spm_bin="$archive/secure_hafnium.bin" \
 	sp1_pkg="cactus-primary.pkg" \
 	sp2_pkg="cactus-secondary.pkg" \
 	sp3_pkg="cactus-tertiary.pkg" \

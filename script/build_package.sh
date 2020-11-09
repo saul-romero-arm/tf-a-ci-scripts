@@ -198,6 +198,18 @@ collect_scp_artefacts() {
 	' bash '{}' +
 }
 
+# Collect SPM/hafnium artefacts with "secure_" appended to the files
+# generated for SPM(secure hafnium).
+collect_spm_artefacts() {
+	if [ ! -d "${non_secure_from:?}" ] || [ ! -d "${secure_from:?}" ]; then
+		return
+	fi
+
+	find "$non_secure_from" \( -name "*.bin" -o -name '*.elf' \) -exec cp -t "${to:?}" '{}' +
+
+	for f in $(find "$secure_from" \( -name "*.bin" -o -name '*.elf' \)); do cp -- "$f" "${to:?}"/secure_$(basename $f); done
+}
+
 # Map the UART ID used for expect with the UART descriptor and port
 # used by the FPGA automation tools.
 map_uart() {
@@ -1319,8 +1331,11 @@ for mode in $modes; do
 			source "$plat_utils"
 		fi
 
+		# SPM build generates two sets of binaries, one for normal and other
+		# for Secure world. We need both set of binaries for CI.
 		archive="$build_archive"
-		spm_build_root="$spm_root/out/reference/secure_aem_v8a_fvp_clang"
+		spm_build_root="$spm_root/out/reference/$spm_secure_out_dir"
+		hafnium_build_root="$spm_root/out/reference/$spm_non_secure_out_dir"
 
 		echo "Building SPM ($mode) ..." |& log_separator
 
@@ -1330,10 +1345,10 @@ for mode in $modes; do
 		build_spm
 
 		# Show SPM/Hafnium binary details
-		ls -lart $spm_build_root/hafnium.bin
-		cksum $spm_build_root/hafnium.bin
+		ls -lart $spm_build_root/hafnium.bin $hafnium_build_root/hafnium.bin
+		cksum $spm_build_root/hafnium.bin $hafnium_build_root/hafnium.bin
 
-		from="$spm_build_root" to="$archive" collect_build_artefacts
+		secure_from="$spm_build_root" non_secure_from="$hafnium_build_root" to="$archive" collect_spm_artefacts
 
 		echo "##########"
 		echo
