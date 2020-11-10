@@ -489,10 +489,14 @@ Build command line:
 
 EOF
 
+	if not_upon "$local_ci"; then
+		connect_debugger=0
+	fi
+
 	# Build TF. Since build output is being directed to the build log, have
 	# descriptor 3 point to the current terminal for build wrappers to vent.
 	$tf_build_wrapper make $make_j_opts $(cat "$config_file") \
-		DEBUG="$DEBUG" V=1 \
+		DEBUG="$DEBUG" V=1 SPIN_ON_BL1_EXIT="$connect_debugger" \
 		$build_targets 3>&1 &>>"$build_log" || fail_build
 	)
 }
@@ -795,6 +799,7 @@ set_default_bin_paths() {
 
 gen_model_params() {
 	local model_param_file="$archive/model_params"
+	[ "$connect_debugger" ] && [ "$connect_debugger" -eq 1 ] && wait_debugger=1
 
 	set_default_bin_paths
 	echo "Generating model parameter for $model..."

@@ -337,10 +337,12 @@ else
 fi
 
 # User preferences
-user_test_run="$test_run"
+[ "$connect_debugger" ] && [ "$connect_debugger" -eq 1 ] && user_connect_debugger=1
+user_test_run="${user_connect_debugger:-$test_run}"
 user_dont_clean="$dont_clean"
 user_keep_going="$keep_going"
 user_primary_live="$primary_live"
+user_connect_debugger="${user_connect_debugger:-0}"
 
 export ci_root
 export dont_clean=0
@@ -350,6 +352,7 @@ export test_run=0
 export primary_live=0
 export cc_path_spec
 export import_cc
+export connect_debugger="$user_connect_debugger"
 
 rm -rf "$workspace"
 mkdir -p "$workspace"

@@ -20,6 +20,7 @@ reset_var reset_to_bl31
 reset_var reset_to_spmin
 reset_var secure_memory
 reset_var secure_ram_fill
+reset_var wait_debugger
 
 
 if [ "$bl2_at_el3" ]; then
@@ -33,6 +34,8 @@ cat <<EOF >"$model_param_file"
 
 -C bp.ve_sysregs.exit_on_shutdown=1
 -C pctl.startup=$pctl_startup
+
+${wait_debugger+-S}
 
 ${secure_memory+-C bp.secure_memory=$secure_memory}
 ${cache_state_modelled+-C cache_state_modelled=$cache_state_modelled}
