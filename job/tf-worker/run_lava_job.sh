@@ -38,7 +38,7 @@ virtualenv -p $(which python3) venv
 source venv/bin/activate
 pip install -q lavacli
 
-rm ~/.config/lavacli.yaml
+rm -f ~/.config/lavacli.yaml
 
 # Configure lavacli
 lavacli identities add \
