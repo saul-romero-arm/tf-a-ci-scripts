@@ -275,10 +275,10 @@ fail_build() {
 	fi
 
 	echo
-	echo "Build failed! Tail of build log below:"
+	echo "Build failed! Full build log below:"
 	echo "[...]"
 	echo
-	tail -n15 "$build_log"
+	cat "$build_log"
 	echo
 	echo "See $log_path for full output"
 	echo
