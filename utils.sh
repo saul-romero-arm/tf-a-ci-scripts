@@ -392,7 +392,6 @@ fi
 
 export LD_LIBRARY_PATH
 export LM_LICENSE_FILE
-export ARMLMD_LICENSE_FILE="$LM_LICENSE_FILE"
 export ARM_TOOL_VARIANT=ult
 
 # vim: set tw=80 sw=8 noet:
