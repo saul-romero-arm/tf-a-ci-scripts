@@ -617,7 +617,7 @@ build_scmi_lib_scp_tools() {
 
 	scp_tools_arm_tf="$scp_tools_root/arm-tf"
 
-	cross_compile="/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
+	cross_compile="$(set_cross_compile_gcc_linaro_toolchain)"
 
 	std_libs="-I$scp_tools_arm_tf/include/common"
 	std_libs="$std_libs -I$scp_tools_arm_tf/include/common/tbbr"
@@ -663,7 +663,7 @@ build_tf_for_scp_tools() {
 
 	cd "$scp_tools_root/arm-tf"
 
-	cross_compile="/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
+	cross_compile="$(set_cross_compile_gcc_linaro_toolchain)"
 
 	if [ "$1" = "release" ]; then
 		echo "Build TF-4-SCP-Tools rls..."
@@ -694,7 +694,7 @@ build_fip_for_scp_tools() {
 
 	cd "$scp_tools_root/arm-tf"
 
-	cross_compile="/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
+	cross_compile="$(set_cross_compile_gcc_linaro_toolchain)"
 
 	if [ ! -d "$scp_root/build/product/juno/scp_ramfw/debug" ]; then
 		make fiptool

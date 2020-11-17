@@ -86,6 +86,15 @@ is_arm_jenkins_env() {
     return 1
 }
 
+set_cross_compile_gcc_linaro_toolchain() {
+    local cross_compile_path="/home/buildslave/tools"
+
+    # if under arm enviroment, overide cross-compilation path
+    is_arm_jenkins_env && cross_compile_path="/arm/pdsw/tools"
+
+    echo "${cross_compile_path}/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
+}
+
 #
 # FVP platform
 # We'll use the following flags for all FVP builds.
@@ -389,17 +398,17 @@ if is_arm_jenkins_env; then
 
     # These platforms from Marvell have dependency on GCC-6.2.1 toolchain
     make PLAT=a80x0 DEBUG=1 SCP_BL2=/dev/null \
-        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+        CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all
     make PLAT=a80x0_mcbin DEBUG=1 SCP_BL2=/dev/null \
-        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+        CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all
     make PLAT=a70x0 DEBUG=1 SCP_BL2=/dev/null \
-        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+        CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all
     make PLAT=a70x0_amc DEBUG=1 SCP_BL2=/dev/null \
-        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+        CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all
     make PLAT=a80x0_puzzle DEBUG=1 SCP_BL2=/dev/null \
-        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+        CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all
     make PLAT=t9130 DEBUG=1 SCP_BL2=/dev/null \
-        CROSS_COMPILE=/arm/pdsw/tools/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- all
+        CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all
 
     # Removing the source files
     rm -rf drivers/marvell/mv_ddr 2> /dev/null

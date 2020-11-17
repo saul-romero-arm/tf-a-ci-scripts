@@ -275,6 +275,17 @@ is_arm_jenkins_env() {
     return $(is_jenkins_env "$arm_domain")
 }
 
+
+# Provide correct linaro cross toolchain based on environment
+set_cross_compile_gcc_linaro_toolchain() {
+    local cross_compile_path="/home/buildslave/tools"
+
+    # if under arm enviroment, overide cross-compilation path
+    is_arm_jenkins_env && cross_compile_path="/arm/pdsw/tools"
+
+    echo "${cross_compile_path}/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
+}
+
 if is_jenkins_env; then
 	jenkins_run=1
 	umask 0002
