@@ -20,6 +20,8 @@ set -e
 
 source "$CI_ROOT/utils.sh"
 
+export XDG_CONFIG_HOME="${WORKSPACE}"
+
 JOB_FILE="$1"
 SAVE_OUTPUT="$2"
 
@@ -37,8 +39,6 @@ fi
 virtualenv -p $(which python3) venv
 source venv/bin/activate
 pip install -q lavacli
-
-rm -f ~/.config/lavacli.yaml
 
 # Configure lavacli
 lavacli identities add \
