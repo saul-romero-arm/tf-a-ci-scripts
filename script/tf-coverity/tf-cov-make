@@ -24,8 +24,6 @@ if [ ! -d "$TF_SOURCES" ]; then
     exit 1
 fi
 
-export CROSS_COMPILE=aarch64-none-elf-
-
 containing_dir="$(readlink -f "$(dirname "$0")/")"
 . $containing_dir/common-def.sh
 
@@ -36,9 +34,6 @@ if [ ! -d "$MBED_TLS_DIR" ]; then
     git clone -q --depth 1 -b "$MBED_TLS_SOURCES_TAG" "$MBED_TLS_URL_REPO" "$MBED_TLS_DIR"
 fi
 
-TBB_OPTIONS="TRUSTED_BOARD_BOOT=1 GENERATE_COT=1 MBEDTLS_DIR=$(pwd)/mbedtls"
-ARM_TBB_OPTIONS="$TBB_OPTIONS ARM_ROTPK_LOCATION=devel_rsa"
-
 cd "$TF_SOURCES"
 
 # Clean TF source dir to make sure we don't analyse temporary files.
@@ -47,53 +42,6 @@ make distclean
 #
 # Build TF in different configurations to get as much coverage as possible
 #
-
-# We need to clean the platform build between each configuration because Trusted
-# Firmware's build system doesn't track build options dependencies and won't
-# rebuild the files affected by build options changes.
-clean_build()
-{
-    local flags="$*"
-    echo "Building TF with the following build flags:"
-    echo "  $flags"
-    make $flags clean
-    make $flags all
-    echo "Build config complete."
-    echo
-}
-
-# Defines common flags between platforms
-common_flags() {
-    local release="${1:-}"
-    local num_cpus="$(/usr/bin/getconf _NPROCESSORS_ONLN)"
-    local parallel_make="-j $num_cpus"
-
-    # default to debug mode, unless a parameter is passed to the function
-    debug="DEBUG=1"
-    [ -n "$release" ] && debug=""
-
-    echo " $parallel_make $debug -s "
-}
-
-# Check if execution environment is ARM's jenkins (Jenkins running under ARM
-# infraestructure)
-is_arm_jenkins_env() {
-    if [ "$JENKINS_HOME" ]; then
-	if echo "$JENKINS_URL" | grep "arm.com"; then
-	    return 0;
-	fi
-    fi
-    return 1
-}
-
-set_cross_compile_gcc_linaro_toolchain() {
-    local cross_compile_path="/home/buildslave/tools"
-
-    # if under arm enviroment, overide cross-compilation path
-    is_arm_jenkins_env && cross_compile_path="/arm/pdsw/tools"
-
-    echo "${cross_compile_path}/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
-}
 
 #
 # FVP platform
