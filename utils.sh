@@ -332,7 +332,7 @@ css_downloads="${css_downloads:-$tfa_downloads/css}"
 # Linux files from https://releases.linaro.org/members/arm/platforms/20.01
 css_downloads_270="${css_downloads_270:-$tfa_downloads/css_scp_2.7.0}"
 
-linaro_2001_release="$tfa_downloads/linaro/20.01"
+linaro_2001_release="${linaro_2001_release:-$tfa_downloads/linaro/20.01}"
 linaro_release="${linaro_release:-$linaro_2001_release}"
 
 # mbedTLS archive public hosting available at github.com
