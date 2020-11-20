@@ -1,21 +1,23 @@
 # This is to be pasted on to websequencediagrams.com to get the sequence
 # diagram of current CI setup
 
-title Trusted Firmware Open CI core jobs
+title Trusted Firmware Open CI core jobs/scripts
 
-actor user/gerrit
-participant trigger-tf-a-builder
-user/gerrit->+trigger-tf-a-builder: trigger for each patchset
-trigger-tf-a-builder->+tf-a-builder:
+actor gerrit reviewer
+participant tf-gerrit-tforg-l1
+gerrit reviewer->+tf-gerrit-tforg-l1: "Allow-CI" manual trigger from gerrit
+tf-gerrit-tforg-l1->+tf-ci-gateway: Pass TEST_GROUPS
+tf-ci-gateway->+tf-a-parameterized-builder: Split TEST_GROUPS into TEST_DESC
+tf-a-parameterized-builder->+tf-a-builder: Pass TEST_DESC
 tf-a-builder->+builders.sh:
-builders.sh->+run_local_ci.sh: launch build
-note over run_local_ci.sh:  build/test for a single test file (makefile)
+builders.sh->+run_local_ci.sh: Prepare environment and launch build
+note over run_local_ci.sh: Build TEST_DESC
+note over run_local_ci.sh: Generate LAVA [Juno/FVP] YAML
 run_local_ci.sh->+builders.sh: complete
 builders.sh->+tf-a-builder:
-note over tf-a-builder: generate LAVA Juno/FVP YAML
 tf-a-builder->+post-build-lava:
 post-build-lava->+LAVA: submit job
-note over LAVA: Juno/FVP boot test
+note over LAVA: Juno/FVP Linux/TFTF boot and test
 LAVA->+post-build-lava: completes
 post-build-lava->+tf-a-builder:
-tf-a-builder->+trigger-tf-a-builder:
+tf-a-builder->+tf-gerrit-tforg-l1:
