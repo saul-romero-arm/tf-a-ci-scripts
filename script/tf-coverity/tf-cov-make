@@ -204,6 +204,11 @@ make $(common_flags) PLAT=rddaniel ${ARM_TBB_OPTIONS} all
 make $(common_flags) PLAT=rddanielxlr ${ARM_TBB_OPTIONS} CSS_SGI_CHIP_COUNT=4 all
 
 #
+# Reference Design Platform RD-N2
+#
+make $(common_flags) PLAT=rdn2 ${ARM_TBB_OPTIONS} all
+
+#
 # Neoverse N1 SDP platform
 #
 make $(common_flags) PLAT=n1sdp ${ARM_TBB_OPTIONS} all
