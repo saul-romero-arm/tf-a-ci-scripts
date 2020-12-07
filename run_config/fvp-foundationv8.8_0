@@ -6,12 +6,9 @@
 #
 
 post_fetch_tf_resource() {
-	model="foundationv8" arch_version="8.0" gen_model_params
-	uart="0" set_expect_variable "num_cpus" "4"
+        local model="foundationv8"
 
-	model="foundationv8" \
-	model_name="fvp:foundation_platform_11.12_38" \
-	model_dir="/opt/model/Foundation_Platformpkg/models/Linux64_GCC-6.4" \
-	model_bin="Foundation_Platform" \
-	       gen_fvp_yaml
+	model="$model" arch_version="8.0" gen_model_params
+	uart="0" set_expect_variable "num_cpus" "4"
+	model="$model" gen_fvp_yaml
 }

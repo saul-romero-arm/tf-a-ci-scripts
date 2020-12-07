@@ -10,6 +10,8 @@ post_tf_build() {
 }
 
 post_fetch_tf_resource() {
+        local model="base-aemv8a"
+
 	image="$(mktempfile)"
 	printf '\1\0\0\0' > "$image"
 
@@ -19,9 +21,7 @@ post_fetch_tf_resource() {
 	cache_state_modelled="0" \
 	memprotect="$image" \
 	memprotect_addr="0xBFC0000" \
-		model="base-aemv8a" gen_model_params
+		model="$model" gen_model_params
 
-	model="base-aemv8a" \
-	model_bin="FVP_Base_AEMv8A-AEMv8A" \
-	       gen_fvp_yaml
+	model="$model" gen_fvp_yaml
 }

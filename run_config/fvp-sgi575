@@ -28,7 +28,10 @@ fetch_tf_resource() {
 }
 
 post_fetch_tf_resource() {
-	model="css-sgi575" gen_model_params
+        local model="css-sgi575"
+
+	model="$model" gen_model_params
 	set_run_env "ports_script" "$ci_root/model/css-sgi575-ports.awk"
 	set_run_env "num_uarts" "3"
+	model="$model" gen_fvp_yaml
 }

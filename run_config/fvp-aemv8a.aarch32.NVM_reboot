@@ -18,12 +18,14 @@ post_tf_archive() {
 }
 
 post_fetch_tf_resource() {
+        local model="base-aemv8a"
+
 	uart0_log=$(echo uart-0-`date "+%H:%M:%S"`.log)
 	uart1_log=$(echo uart-1-`date "+%H:%M:%S"`.log)
 	set_run_env "uart0_file" "$uart0_log"
 	set_run_env "uart1_file" "$uart1_log"
 
-	aarch32="1" model="base-aemv8a" retain_flash="1" \
+	aarch32="1" model="$model" retain_flash="1" \
 	cluster_0_num_cores="1" cluster_1_num_cores="1" \
 	cache_state_modelled="0" secure_memory="0" \
 	uart0_out="$uart0_log" \
@@ -32,7 +34,5 @@ post_fetch_tf_resource() {
 	flashloader1_fwrite="flash1" \
 		gen_model_params
 
-	model="base-aemv8a" \
-	model_bin="FVP_Base_AEMv8A-AEMv8A" \
-	       gen_fvp_yaml
+	model="$model" gen_fvp_yaml
 }

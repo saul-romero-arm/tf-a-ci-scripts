@@ -6,5 +6,8 @@
 #
 
 post_fetch_tf_resource() {
-	aarch32="1" model="base-aemva" gen_model_params
+        local model="base-aemva"
+
+	aarch32="1" model="$model" gen_model_params
+	model="$model" gen_fvp_yaml
 }

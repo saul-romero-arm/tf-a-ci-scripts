@@ -6,7 +6,9 @@
 #
 
 post_fetch_tf_resource() {
-	model="base-aemv8a" \
+        local model="base-aemv8a"
+
+	model="$model" \
 	gicd_are_fixed_one="1" \
 	gicd_ext_ppi_count="64" \
 	gicd_ext_spi_count="1024" \
@@ -17,7 +19,5 @@ post_fetch_tf_resource() {
 	has_gicv4_1="0" \
 	gen_model_params
 
-	model="base-aemv8a" \
-	model_bin="FVP_Base_AEMv8A-AEMv8A" \
-	       gen_fvp_yaml
+	model="$model" gen_fvp_yaml
 }

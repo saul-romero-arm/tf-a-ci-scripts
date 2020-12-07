@@ -12,11 +12,10 @@ pre_tf_build() {
 }
 
 post_tf_archive() {
-	model="base-aemv8a" gen_model_params
+        local model="base-aemv8a"
 
-	model="base-aemv8a" \
-	model_bin="FVP_Base_AEMv8A-AEMv8A" \
-	       gen_fvp_yaml
+	model="$model" gen_model_params
+	model="$model" gen_fvp_yaml
 }
 
 fetch_tf_resource() {

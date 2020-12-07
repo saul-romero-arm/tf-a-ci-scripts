@@ -6,10 +6,10 @@
 #
 
 post_fetch_tf_resource() {
-	bmcov_plugin=1 bmcov_plugin_path="${coverage_trace_plugin}" \
-        model="base-aemv8a" gen_model_params
+        local model="base-aemv8a"
 
-	model="base-aemv8a" \
-	model_bin="FVP_Base_AEMv8A-AEMv8A" \
-	       gen_fvp_yaml
+	bmcov_plugin=1 bmcov_plugin_path="${coverage_trace_plugin}" \
+        model="$model" gen_model_params
+
+	model="$model" gen_fvp_yaml
 }

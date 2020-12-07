@@ -6,11 +6,8 @@
 #
 
 post_fetch_tf_resource() {
-	model="cortex-a55x4-a75x4" \
-	cache_state_modelled="0" \
-	gen_model_params
+        local model="cortex-a55x4-a75x4"
 
-	model="cortex-a55x4-a75x4" \
-	model_bin="FVP_Base_Cortex-A55x4+Cortex-A75x4" \
-	       gen_fvp_yaml
+	model="$model" cache_state_modelled="0" gen_model_params
+	model="$model"  gen_fvp_yaml
 }

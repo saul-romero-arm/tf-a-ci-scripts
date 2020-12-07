@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -39,14 +39,59 @@ rootfs_url="$linaro_release/lt-vexpress64-openembedded_minimal-armv8-gcc-5.2_201
 # Default FVP model variables
 default_model_dtb="fvp-base-gicv3-psci.dtb"
 
-# default to the fvp container containing most of the models and its corresponding base
-# directory
-default_model_name="fvp:fvp_arm_std_library_11.12_38"
-default_model_dir="/opt/model/FVP_ARM_Std_Library/models/Linux64_GCC-6.4"
+# FVP containers and model paths
+fvp_arm_std_library="fvp:fvp_arm_std_library_${model_version}_${model_build};/opt/model/FVP_ARM_Std_Library/models/${model_flavour}"
+fvp_base_revc_2xaemv8a="fvp:fvp_base_revc-2xaemv8a_${model_version}_${model_build};/opt/model/Base_RevC_AEMv8A_pkg/models/${model_flavour}"
+foundation_platform="fvp:foundation_platform_${model_version}_${model_build};/opt/model/Foundation_Platformpkg/models/${model_flavour}"
 
-# This is intentionally black, so a the run config snippet MUST pass this the parameter
-# indicating the model's binary
-default_model_bin=""
+# FVP associate array, run_config are keys and fvp container parameters are the values
+#   Container parameters syntax: <model name>;<model dir>;<model bin>
+# FIXMEs: fix those ;;; values with real values
+
+declare -A fvp_models
+fvp_models=(
+[base-aemv8a-quad]=";;;"
+[base-aemv8a-revb]=";;;"
+[base-aemv8a-latest-revb]=";;;"
+[base-aemva]=";;;"
+[foundationv8]="${foundation_platform};Foundation_Platform"
+[base-aemv8a]="${fvp_base_revc_2xaemv8a};FVP_Base_RevC-2xAEMv8A"
+[cortex-a32x4]="${fvp_arm_std_library};FVP_Base_Cortex-A32x4"
+[cortex-a35x4]="${fvp_arm_std_library};FVP_Base_Cortex-A35x4"
+[cortex-a53x4]="${fvp_arm_std_library};FVP_Base_Cortex-A53x4"
+[cortex-a55x4-a75x4]="${fvp_arm_std_library};FVP_Base_Cortex-A55x4-A75x4"
+[cortex-a55x4-a76x2]="${fvp_arm_std_library};FVP_Base_Cortex-A55x4-A76x2"
+[cortex-a57x1-a53x1]="${fvp_arm_std_library};FVP_Base_Cortex-A57x1-A53x1"
+[cortex-a57x2-a53x4]="${fvp_arm_std_library};FVP_Base_Cortex-A57x2-A53x4"
+[cortex-a57x4]="${fvp_arm_std_library};FVP_Base_Cortex-A57x4"
+[cortex-a57x4-a53x4]="${fvp_arm_std_library};FVP_Base_Cortex-A57x4-A53x4"
+[cortex-a65aex8]="${fvp_arm_std_library};FVP_Base_Cortex-A65AEx8"
+[cortex-a65x4]="${fvp_arm_std_library};FVP_Base_Cortex-A65x4"
+[cortex-a72x4]="${fvp_arm_std_library};FVP_Base_Cortex-A72x4"
+[cortex-a72x4-a53x4]="${fvp_arm_std_library};FVP_Base_Cortex-A72x4-A53x4"
+[cortex-a73x4]="${fvp_arm_std_library};FVP_Base_Cortex-A73x4"
+[cortex-a73x4-a53x4]="${fvp_arm_std_library};FVP_Base_Cortex-A73x4-A53x4"
+[cortex-a75x4]="${fvp_arm_std_library};FVP_Base_Cortex-A75x4"
+[cortex-a76aex4]="${fvp_arm_std_library};FVP_Base_Cortex-A76AEx4"
+[cortex-a76aex2]="${fvp_arm_std_library};FVP_Base_Cortex-A76AEx2"
+[cortex-a76x4]="${fvp_arm_std_library};FVP_Base_Cortex-A76x4"
+[cortex-a77x4]="${fvp_arm_std_library};FVP_Base_Cortex-A77x4"
+[cortex-a78x4]="${fvp_arm_std_library};FVP_Base_Cortex-A78x4"
+[neoverse_e1x1]="${fvp_arm_std_library};FVP_Base_Neoverse-E1x1"
+[neoverse_e1x2]="${fvp_arm_std_library};FVP_Base_Neoverse-E1x2"
+[neoverse_e1x4]="${fvp_arm_std_library};FVP_Base_Neoverse-E1x4"
+[neoverse_n1]="${fvp_arm_std_library};FVP_Base_Neoverse-N1x1"
+[neoverse_n2]=";;;"
+[neoverse-v1x4]=";;;"
+[css-rdv1]=";;;"
+[css-rde1edge]=";;;"
+[css-rdn1edge]=";;;"
+[css-rdn1edgex2]=";;;"
+[css-sgi575]=";;;"
+[css-sgm775]=";;;"
+[tc0]=";;;"
+)
+
 
 # FVP Kernel URLs
 declare -A fvp_kernels
@@ -246,6 +291,8 @@ gen_fvp_yaml_template() {
 }
 
 gen_fvp_yaml() {
+    local model="${model:?}"
+
     local yaml_template_file="$workspace/fvp_template.yaml"
     local yaml_file="$workspace/fvp.yaml"
     local yaml_job_file="$workspace/job.yaml"
@@ -256,8 +303,24 @@ gen_fvp_yaml() {
 	return
     fi
 
-    # must parameters for yaml generation
-    local model="${model:?}"
+    local model_params="${fvp_models[$model]}"
+    local model_name="$(echo "${model_params}" | awk -F ';' '{print $1}')"
+    local model_dir="$(echo "${model_params}"  | awk -F ';' '{print $2}')"
+    local model_bin="$(echo "${model_params}"  | awk -F ';' '{print $3}')"
+
+    # model params are required for correct yaml creation, quit if empty
+    if [ -z "${model_name}" ]; then
+       echo "FVP model param 'model_name' variable empty, yaml not produced"
+       return
+    elif [ -z "${model_dir}" ]; then
+       echo "FVP model param 'model_dir' variable empty, yaml not produced"
+       return
+    elif [ -z "${model_bin}"  ]; then
+       echo "FVP model param 'model_bin' variable empty, yaml not produced"
+       return
+    fi
+
+    echo "FVP model params: model_name=$model_name model_dir=$model_dir model_bin=$model_bin"
 
     # FIXME: Foundation plaforms (model=foundationv8) are failing because LAVA [1]
     # should read two ports, 5000 and 5002, but LAVA does not support this
@@ -271,10 +334,7 @@ gen_fvp_yaml() {
     fi
 
     # optional parameters, defaults to globals
-    local model_name="${model_name:-$default_model_name}"
     local model_dtb="${model_dtb:-$default_model_dtb}"
-    local model_dir="${model_dir:-$default_model_dir}"
-    local model_bin="${model_bin:-$default_model_bin}"
 
     # general artefacts
     bl1="$(fvp_gen_bin_url bl1.bin)"

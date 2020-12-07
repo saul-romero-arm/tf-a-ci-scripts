@@ -6,14 +6,13 @@
 #
 
 post_fetch_tf_resource() {
+        local model="base-aemv8a"
 	bl2_at_el3="1" \
 	aarch32="1" \
 	bl2_addr="0x4022000" \
-		model="base-aemv8a" gen_model_params
+		model="$model" gen_model_params
 
 	uart="0" set_expect_variable "skip_early_boot_msgs" "1"
 
-	model="base-aemv8a" \
-	model_bin="FVP_Base_AEMv8A-AEMv8A" \
-	       gen_fvp_yaml
+	model="$model" gen_fvp_yaml
 }

@@ -6,10 +6,9 @@
 #
 
 post_fetch_tf_resource() {
-	model="cortex-a57x1-a53x1" gen_model_params
-        uart="0" set_expect_variable "num_cpus" "2"
+        local model="cortex-a57x1-a53x1"
 
-	model="cortex-a57x1-a53x1" \
-	model_bin="FVP_Base_Cortex-A57x1-A53x1" \
-	       gen_fvp_yaml
+	model="$model" gen_model_params
+        uart="0" set_expect_variable "num_cpus" "2"
+	model="$model" gen_fvp_yaml
 }

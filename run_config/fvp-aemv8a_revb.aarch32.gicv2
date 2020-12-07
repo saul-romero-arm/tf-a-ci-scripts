@@ -6,5 +6,8 @@
 #
 
 post_fetch_tf_resource() {
-	gicv3_gicv2_only="1" cache_state_modelled=0 model="base-aemv8a-revb" aarch32="1" gen_model_params
+        local model="base-aemv8a-revb"
+
+	gicv3_gicv2_only="1" cache_state_modelled=0 model="$model" aarch32="1" gen_model_params
+        model="$model" gen_fvp_yaml
 }

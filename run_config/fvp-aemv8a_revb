@@ -6,5 +6,8 @@
 #
 
 post_fetch_tf_resource() {
-	model="base-aemv8a-revb" gen_model_params
+	local model="base-aemv8a-revb"
+
+        model="$model" gen_model_params
+	model="$model" gen_fvp_yaml
 }
