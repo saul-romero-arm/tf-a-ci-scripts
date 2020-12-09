@@ -343,7 +343,7 @@ mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/m
 # source files of mbedTLS project
 mbedtls_repo_name="${mbedtls_repo_name:-mbedtls-mbedtls-2.24.0}"
 
-coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2019.09}"
+coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2020.06}"
 coverity_default_checkers=(
 "--all"
 "--checker-option DEADCODE:no_dead_default:true"
