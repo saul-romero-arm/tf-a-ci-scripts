@@ -259,6 +259,15 @@ gen_fvp_yaml() {
     # must parameters for yaml generation
     local model="${model:?}"
 
+    # FIXME: Foundation plaforms (model=foundationv8) are failing because LAVA [1]
+    # should read two ports, 5000 and 5002, but LAVA does not support this
+    # feature, so for the moment avoid creating any LAVA test job definition
+    # for this model until a solution is found.
+    # [1] https://tf.validation.linaro.org/scheduler/job/33871
+    if echo "$JENKINS_URL" | grep -q -v "arm.com" && [ "${model}" = "foundationv8" ]; then
+        return
+    fi
+
     # optional parameters, defaults to globals
     local model_name="${model_name:-$default_model_name}"
     local model_dtb="${model_dtb:-$default_model_dtb}"
