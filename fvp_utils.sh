@@ -299,6 +299,7 @@ gen_fvp_yaml() {
         -e "s|\${BOOT_IMAGE_DIR}|${model_dir}|" \
         -e "s|\${BOOT_IMAGE_BIN}|${model_bin}|" \
         -e "s|\${BOOT_VERSION_STRING}|${version_string}|" \
+        -e "s|\${MODEL}|${model}|" \
         < "$yaml_template_file" \
         > "$yaml_file"
 

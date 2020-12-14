@@ -11,7 +11,7 @@
 
 cat <<EOF
 device_type: fvp
-job_name: fvp-linux
+job_name: fvp-linux-\${MODEL}
 
 timeouts:
   connection:
