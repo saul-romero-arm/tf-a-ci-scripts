@@ -82,6 +82,25 @@ ${no_quantum--Q ${quantum}}
 
 EOF
 
+if echo "$JENKINS_URL" | grep -q -v "arm.com"; then
+	cat <<EOF >>"$model_param_file"
+-C bp.pl011_uart0.untimed_fifos=1
+-C bp.pl011_uart1.untimed_fifos=1
+-C bp.pl011_uart2.untimed_fifos=1
+-C bp.pl011_uart3.untimed_fifos=1
+
+-C bp.pl011_uart0.unbuffered_output=1
+-C bp.pl011_uart1.unbuffered_output=1
+-C bp.pl011_uart2.unbuffered_output=1
+-C bp.pl011_uart3.unbuffered_output=1
+
+-C bp.terminal_0.start_telnet=1
+-C bp.terminal_1.start_telnet=0
+-C bp.terminal_2.start_telnet=0
+-C bp.terminal_3.start_telnet=0
+EOF
+fi
+
 if [ "$print_stat" = "1" ]; then
 	cat <<EOF >>"$model_param_file"
 --stat
