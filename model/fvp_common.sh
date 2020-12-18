@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -104,5 +104,13 @@ fi
 if [ "$print_stat" = "1" ]; then
 	cat <<EOF >>"$model_param_file"
 --stat
+EOF
+fi
+
+# TFTF: When running in non-Jenkins environment,
+# shutdown simulation when EOT (ASCII 4) char is transmitted.
+if not_upon "$jenkins_run" && echo "$RUN_CONFIG" | grep -iq 'tftf'; then
+	cat <<EOF >>"$model_param_file"
+-C bp.pl011_uart0.shutdown_on_eot=1
 EOF
 fi
