@@ -20,5 +20,5 @@ post_tf_archive() {
 }
 
 fetch_tf_resource() {
-	uart="0" timeout="60" file="disable_dyn_auth.exp" track_expect
+	uart="0" file="disable_dyn_auth.exp" track_expect
 }
