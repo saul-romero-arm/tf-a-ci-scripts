@@ -357,7 +357,7 @@ coverity_default_checkers=(
 docker_registry="${docker_registry:-}"
 
 # Define toolchain version and toolchain binary paths
-toolchain_version="9.2-2019.12"
+toolchain_version="10.2-2020.11"
 
 aarch64_none_elf_dir="${nfs_volume}/pdsw/tools/gcc-arm-${toolchain_version}-x86_64-aarch64-none-elf"
 aarch64_none_elf_prefix="aarch64-none-elf-"
