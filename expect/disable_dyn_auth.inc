@@ -29,5 +29,7 @@ expect {
 		puts "<<Dynamic Authentication not disabled>>"
 		exit_uart -1
 	}
+	"BL1: Booting BL31" {
+		puts "BL31 Booting"
+	}
     }
-exit_uart 0
