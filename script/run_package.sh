@@ -19,6 +19,13 @@ artefacts="${artefacts-$workspace/artefacts}"
 run_root="$workspace/run"
 pid_dir="$workspace/pids"
 
+# This variable avoids graceful termination of the model when
+# launched with the parameter 'bp.pl011_uart0.shutdown_on_eot=1'
+exit_on_model_param=0
+
+# Model exit parameter string
+model_exit_param_string="bp.pl011_uart0.shutdown_on_eot=1"
+
 mkdir -p "$pid_dir"
 mkdir -p "$run_root"
 
@@ -46,26 +53,37 @@ kill_and_reap() {
 # Perform clean up and ignore errors
 cleanup() {
 	local pid
+	local sig
 
-	# Test success. Kill all background processes so far and wait for them
 	pushd "$pid_dir"
 	set +e
-	while read pid; do
-		pid="$(cat $pid)"
-		# Forcefully killing model process does not show statistical
-		# data (Host CPU time spent running in User and System). Safely
-		# kill the model by using SIGINT(^C) that helps in printing
-		# statistical data.
-		if [ "$pid" == "$model_pid" ] && [ "${COVERAGE_ON}" != "1" ]; then
-			model_cid=$(pgrep -P "$model_pid" | xargs)
-			# ignore errors
-			kill -SIGINT "$model_cid" &>/dev/null || true
-		# Allow some time to print data
-			sleep 2
-		else
-			kill_and_reap "$pid"
-		fi
-	done < <(find -name '*.pid')
+
+	sig=${1:-SIGINT}
+	echo "signal received: $sig"
+
+	# Avoid the model termination gracefully when the parameter 'exit_on_model_param'
+        # is set and test if exited successfully.
+	if [ "$exit_on_model_param" -eq 0 ] || [ "$sig" != "EXIT" ]; then
+		# Kill all background processes so far and wait for them
+		while read pid; do
+			pid="$(cat $pid)"
+			echo $pid
+			# Forcefully killing model process does not show statistical
+			# data (Host CPU time spent running in User and System). Safely
+			# kill the model by using SIGINT(^C) that helps in printing
+			# statistical data.
+			if [ "$pid" == "$model_pid" ] && [ "${COVERAGE_ON}" != "1" ]; then
+				model_cid=$(pgrep -P "$model_pid" | xargs)
+				# ignore errors
+				kill -SIGINT "$model_cid" &>/dev/null || true
+				# Allow some time to print data
+				sleep 2
+			else
+				kill_and_reap "$pid"
+			fi
+		done < <(find -name '*.pid')
+	fi
+
 	popd
 }
 
@@ -87,8 +105,18 @@ launch() {
 	fi
 }
 
+# Provide signal as an argument to the trap function.
+trap_with_sig() {
+	local func
+
+	func="$1" ; shift
+	for sig ; do
+		trap "$func $sig" "$sig"
+	done
+}
+
 # Cleanup actions
-trap cleanup SIGINT SIGHUP SIGTERM EXIT
+trap_with_sig cleanup SIGINT SIGHUP SIGTERM EXIT
 
 # Prevent xterm windows from untracked terminals from popping up, especially
 # when running locally
@@ -388,7 +416,8 @@ while :; do
 done
 popd
 
-cleanup
+# Capture whether the model is running with the 'exit model parameter' or not.
+exit_on_model_param=$(grep -wc "$model_exit_param_string" "$run_cwd/model_params")
 
 if [ "$result" -eq 0 ]; then
 	echo "Test success!"
