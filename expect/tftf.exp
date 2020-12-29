@@ -15,7 +15,7 @@ expect_re "Running at NS-EL(1|2)"
 
 expect {
 	"Tests Failed  : 0" {
-		puts "<<TFTF Success>>"
+		expect_string "Exiting tests." "<<TFTF Success>>"
 		exit_uart 0
 	}
 	"Tests Passed  : 0" {
