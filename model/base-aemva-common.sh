@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -54,6 +54,9 @@ reset_var retain_flash
 
 reset_var nvcounter_version
 reset_var nvcounter_diag
+
+# Enable SMMUv3 functionality
+reset_var has_smmuv3_params
 
 source "$ci_root/model/fvp_common.sh"
 
@@ -131,7 +134,31 @@ ${memory_tagging_support_level+-C cluster0.memory_tagging_support_level=$memory_
 ${has_branch_target_exception+-C cluster0.has_branch_target_exception=$has_branch_target_exception}
 
 ${gicv3_ext_interrupt_range+-C cluster0.gicv3.extended-interrupt-range-support=$gicv3_ext_interrupt_range}
+
 EOF
+
+if [ "$has_smmuv3_params" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C pci.pci_smmuv3.mmu.SMMU_AIDR=2
+-C pci.pci_smmuv3.mmu.SMMU_IDR0=0x0046123B
+-C pci.pci_smmuv3.mmu.SMMU_IDR1=0x00600002
+-C pci.pci_smmuv3.mmu.SMMU_IDR3=0x1714
+-C pci.pci_smmuv3.mmu.SMMU_IDR5=0xFFFF0472
+-C pci.pci_smmuv3.mmu.SMMU_S_IDR1=0xA0000002
+-C pci.pci_smmuv3.mmu.SMMU_S_IDR2=0
+-C pci.pci_smmuv3.mmu.SMMU_S_IDR3=0
+-C pci.smmulogger.trace_debug=1
+-C pci.smmulogger.trace_snoops=1
+-C pci.tbu0_pre_smmu_logger.trace_snoops=1
+-C pci.tbu0_pre_smmu_logger.trace_debug=1
+-C pci.pci_smmuv3.mmu.all_error_messages_through_trace=1
+-C pci.pci_smmuv3.mmu.howto_identify=use-identify
+-C pci.pci_smmuv3.enable_device_id_checks=1
+
+-C TRACE.GenericTrace.trace-sources=verbose_commentary,smmu_initial_transaction,smmu_final_transaction,*.pci.pci_smmuv3.mmu.*.*,*.pci.smmulogger.*,*.pci.tbu0_pre_smmu_logger.*,FVP_Base_RevC_2xAEMv8A.pci.pci_smmuv3,smmu_poison_tw_data
+--plugin $warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/GenericTrace.so
+EOF
+fi
 
 # Parameters to select architecture version
 if [ "$arch_version" = "8.3" ]; then
