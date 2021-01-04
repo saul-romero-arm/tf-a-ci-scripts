@@ -58,6 +58,13 @@ reset_var nvcounter_diag
 # Enable SMMUv3 functionality
 reset_var has_smmuv3_params
 
+# Layout of MPIDR. 0=AFF0 is CPUID, 1=AFF1 is CPUID
+reset_var mpidr_layout
+
+# Sets the MPIDR.MT bit. Setting this to true hints the cluster
+# is multi-threading compatible
+reset_var supports_multi_threading
+
 source "$ci_root/model/fvp_common.sh"
 
 #------------ Common configuration --------------
@@ -136,6 +143,10 @@ ${has_branch_target_exception+-C cluster0.has_branch_target_exception=$has_branc
 ${restriction_on_speculative_execution+-C cluster0.restriction_on_speculative_execution=$restriction_on_speculative_execution}
 
 ${gicv3_ext_interrupt_range+-C cluster0.gicv3.extended-interrupt-range-support=$gicv3_ext_interrupt_range}
+
+${mpidr_layout+-C cluster0.mpidr_layout=$mpidr_layout}
+
+${supports_multi_threading+-C cluster0.supports_multi_threading=$supports_multi_threading}
 
 EOF
 
@@ -235,6 +246,10 @@ ${has_branch_target_exception+-C cluster1.has_branch_target_exception=$has_branc
 ${restriction_on_speculative_execution+-C cluster1.restriction_on_speculative_execution=$restriction_on_speculative_execution}
 
 ${gicv3_ext_interrupt_range+-C cluster1.gicv3.extended-interrupt-range-support=$gicv3_ext_interrupt_range}
+
+${mpidr_layout+-C cluster1.mpidr_layout=$mpidr_layout}
+
+${supports_multi_threading+-C cluster1.supports_multi_threading=$supports_multi_threading}
 EOF
 
 # Parameters to select architecture version
