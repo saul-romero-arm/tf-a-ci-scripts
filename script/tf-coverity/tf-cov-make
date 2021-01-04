@@ -194,9 +194,9 @@ make $(common_flags) PLAT=rdn1edge CSS_SGI_CHIP_COUNT=2 ${ARM_TBB_OPTIONS} all
 make $(common_flags) PLAT=rde1edge ${ARM_TBB_OPTIONS} CSS_SGI_CHIP_COUNT=1 all
 
 #
-# System Guidance for Infrastructure platform RD-Daniel
+# Reference Design platform RD-V1
 #
-make $(common_flags) PLAT=rddaniel ${ARM_TBB_OPTIONS} all
+make $(common_flags) PLAT=rdv1 ${ARM_TBB_OPTIONS} all
 
 #
 # System Guidance for Infrastructure platform RD-Danielxlr

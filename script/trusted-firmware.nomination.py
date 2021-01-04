@@ -17,10 +17,10 @@ nomination_rules = {
              "tf-l3-boot-tests-css/fvp-rdn1edgex2-tbb:fvp-linux.sgi-fip.sgi-rdn1edgex2-debug",
              "tf-l2-coverity-misra-nominated/fvp-rdn1edgex2-tbb:coverity-tf-misra.diff"],
 
-        # Run RD-Daniel TF-A Tests and MISRA checks for any platform changes
-        "path:plat/arm/board/rddaniel":
-            ["tf-l3-boot-tests-css/fvp-rddaniel-tbb:fvp-linux.sgi-fip.sgi-rddaniel-debug",
-             "tf-l2-coverity-misra-nominated/fvp-rddaniel-tbb:coverity-tf-misra.diff"],
+        # Run RD-V1 TF-A Tests and MISRA checks for any platform changes
+        "path:plat/arm/board/rdv1":
+            ["tf-l3-boot-tests-css/fvp-rdv1-tbb:fvp-linux.sgi-fip.sgi-rdv1-debug",
+             "tf-l2-coverity-misra-nominated/fvp-rdv1-tbb:coverity-tf-misra.diff"],
 
         # Run SGI575 boot test, TF-A Tests and MISRA checks for any changes with "sgi" in the path
         "pathre:sgi":

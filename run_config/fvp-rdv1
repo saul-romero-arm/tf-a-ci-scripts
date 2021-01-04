@@ -25,7 +25,7 @@ fetch_tf_resource() {
 }
 
 post_fetch_tf_resource() {
-	model="css-rddaniel" gen_model_params
+	model="css-rdv1" gen_model_params
 	set_run_env "ports_script" "$ci_root/model/css-sgi575-ports.awk"
 	set_run_env "num_uarts" "3"
 	uart="0" set_expect_variable "num_cpus" "16"
