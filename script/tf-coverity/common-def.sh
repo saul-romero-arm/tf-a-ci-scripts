@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -71,7 +71,7 @@ MBED_TLS_URL_REPO=https://github.com/ARMmbed/mbedtls.git
 
 # mbed TLS source tag to checkout when building Trusted Firmware with Trusted
 # Board Boot support.
-MBED_TLS_SOURCES_TAG="mbedtls-2.24.0"
+MBED_TLS_SOURCES_TAG="mbedtls-2.25.0"
 
 ARMCLANG_PATH="$(set_armclang_toolchain)"
 

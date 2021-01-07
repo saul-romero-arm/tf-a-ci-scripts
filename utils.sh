@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -338,10 +338,10 @@ linaro_2001_release="${linaro_2001_release:-$tfa_downloads/linaro/20.01}"
 linaro_release="${linaro_release:-$linaro_2001_release}"
 
 # mbedTLS archive public hosting available at github.com
-mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-2.24.0.tar.gz}"
-# The tar file contains mbedtls-mbedtls-2.24.0 repo which holds the necessary
+mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-2.25.0.tar.gz}"
+# The tar file contains mbedtls-mbedtls-2.25.0 repo which holds the necessary
 # source files of mbedTLS project
-mbedtls_repo_name="${mbedtls_repo_name:-mbedtls-mbedtls-2.24.0}"
+mbedtls_repo_name="${mbedtls_repo_name:-mbedtls-mbedtls-2.25.0}"
 
 coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2020.06}"
 coverity_default_checkers=(

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -25,7 +25,7 @@ scp_tools_src_repo_url="${scp_tools_src_repo_url:-http://$arm_gerrit_url/scp/too
 tf_for_scp_tools_src_repo_url="https://gerrit.oss.arm.com/scp/test-framework"
 
 # If not set, the OpenCI would download the tarball from Github every time.
-mbedtls_archive="${mbedtls_archive:-$tfa_downloads/mbedtls/mbedtls-2.24.0.tar.gz}"
+mbedtls_archive="${mbedtls_archive:-$tfa_downloads/mbedtls/mbedtls-2.25.0.tar.gz}"
 
 # Arm Coverity server.
 export coverity_host="${coverity_host:-coverity.cambridge.arm.com}"
