@@ -264,8 +264,10 @@ gen_fvp_yaml() {
     # feature, so for the moment avoid creating any LAVA test job definition
     # for this model until a solution is found.
     # [1] https://tf.validation.linaro.org/scheduler/job/33871
-    if echo "$JENKINS_URL" | grep -q -v "arm.com" && [ "${model}" = "foundationv8" ]; then
-        return
+    if ! is_arm_jenkins_env; then
+     if [ "${model}" = "foundationv8" ]; then
+         return
+     fi
     fi
 
     # optional parameters, defaults to globals

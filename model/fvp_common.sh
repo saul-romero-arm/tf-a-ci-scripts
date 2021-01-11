@@ -82,7 +82,7 @@ ${no_quantum--Q ${quantum}}
 
 EOF
 
-if echo "$JENKINS_URL" | grep -q -v "arm.com"; then
+if ! is_arm_jenkins_env; then
 	cat <<EOF >>"$model_param_file"
 -C bp.pl011_uart0.untimed_fifos=1
 -C bp.pl011_uart1.untimed_fifos=1
