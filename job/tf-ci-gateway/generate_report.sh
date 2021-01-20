@@ -16,9 +16,18 @@ if [ "$CI_ROOT" ]; then
 		fi
 	fi
 
+	# set proper jobs names for test generation report script
+	if echo "$JENKINS_URL" | grep -q "arm.com"; then
+		worker_job="${worker_job:-tf-worker}"
+		lava_job="${lava_job:-tf-build-for-lava}"
+	else
+		worker_job="${worker_job:-tf-a-builder}"
+		lava_job="${lava_job:-tf-a-builder}"
+        fi
+
 	"$CI_ROOT/script/gen_test_report.py" \
-		--job "${worker_job:-tf-worker}" \
-		--build-job "${lava_job:-tf-build-for-lava}" \
+		--job "${worker_job}" \
+		--build-job "${lava_job}" \
 		--meta-data clone.data \
 		--meta-data override.data \
 		--meta-data inject.data \
