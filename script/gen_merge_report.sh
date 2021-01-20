@@ -5,7 +5,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-source $CI_ROOT/utils.sh
 REPORT_JSON=$1
 REPORT_HTML=$2
 TEST_DEF_FOLDER="${WORKSPACE}/test-definitions"
