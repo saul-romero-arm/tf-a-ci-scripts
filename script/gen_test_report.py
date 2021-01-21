@@ -238,33 +238,6 @@ def begin_table(results, fd):
     print(open_element("tbody"), file=fd)
 
 
-# Parse the console output of the sub job to identify the build job number. Once
-# build job number is identified, return the link to job console. Upon error,
-# return None.
-def get_build_job_console_link(job_link):
-    job_console_text_link = job_link + "consoleText"
-    try:
-        with urllib.request.urlopen(job_console_text_link) as console_fd:
-            for line in console_fd:
-                # Look for lines like:
-                # tf-build #1356 completed. Result was SUCCESS
-                line = line.decode()
-                if line.find("completed. Result was") < 0:
-                    continue
-
-                build_job, build_job_number, *_ = line.split()
-                if build_job != Build_job:
-                    continue
-
-                build_job_number = build_job_number.replace("#", "")
-                return (jenkins_job_link(Build_job, build_job_number) +
-                        "console")
-    except:
-        pass
-
-    return None
-
-
 # Given the node stack, reconstruct the original config name
 def reconstruct_config(node_stack):
     group = node_stack[0][0]
@@ -332,7 +305,7 @@ def result_to_html(node_stack):
             job_link = jenkins_job_link(Job, child_node.build_number)
             result_link = wrap_link(child_node.result, job_link,
                     class_="result")
-            build_job_console_link = get_build_job_console_link(job_link)
+            build_job_console_link = job_link + "console"
 
             # Add selection checkbox
             selection = make_element("input", type="checkbox")
