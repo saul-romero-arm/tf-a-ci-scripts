@@ -17,11 +17,17 @@ expect {
 
 expect {
 	"FFA_VERSION returned 1.0"  {
-		puts "<<SP exit>>"
+		puts "<<SP checked FF-A version>>"
 	}
 	timeout {
 		exit_uart -1
 	}
 }
 
-exit_uart 0
+# UART2 captures prints from SP0. If we exit from here, expect script will stop
+# capturing the output from telnet process spawned for tracking uart2 console.
+# Hence, we need to hold the uart such that the expect script captures the
+# outputs to uart log. We do this by configuring timeout to never expire and
+# expecting an unexpected string such as "FOOBAR". Refer uart-hold.inc
+
+source [file join [file dirname [info script]] uart-hold.inc]
