@@ -2,3 +2,4 @@ CROSS_COMPILE=aarch64-none-elf-
 LOG_LEVEL=0
 PLAT=ls1043
 SPD=opteed
+DEBUG=0
