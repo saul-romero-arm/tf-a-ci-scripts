@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -36,7 +36,7 @@ assert tarball_name("baz.tar.bz2") == "baz"
 
 
 def get_coverity_tool():
-    coverity_tarball = "cov-analysis-linux64-2019.03.tar.gz"
+    coverity_tarball = "cov-analysis-linux64-2020.09.tar.gz"
     url = "http://files.oss.arm.com/downloads/tf-a/" + coverity_tarball
     print("Downloading Coverity Build tool from %s..." % url)
     file_handle = urllib.request.urlopen(url)
@@ -54,15 +54,6 @@ def get_coverity_tool():
     cov_dir_name = tarball_name(coverity_tarball)
     cov_dir_path = os.path.abspath(os.path.join(cov_dir_name, "bin"))
     print("  export PATH=%s$PATH" % (cov_dir_path + os.pathsep))
-
-    # Patch is needed for coverity version 2019.03
-    patch_file = os.path.abspath(os.path.join(__file__, os.pardir, "cov-2019.03-fix.patch"))
-    cov_file = os.path.abspath(os.path.join(cov_dir_name, "config",
-                               "templates", "gnu", "compiler-compat-arm-intrin.h"))
-    print("Patching file")
-    print(cov_file)
-    utils.exec_prog("patch", [cov_file, "-i", patch_file],
-                            out=subprocess.PIPE, out_text_mode=True)
 
 def print_coverage(coverity_dir, tf_dir, exclude_paths=[], log_filename=None):
     analyzed = []
