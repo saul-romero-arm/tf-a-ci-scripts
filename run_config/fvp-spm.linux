@@ -10,8 +10,8 @@ post_tf_build() {
 }
 
 fetch_tf_resource() {
-	url="$tfa_downloads/spm/12-03-2020/initrd.img" fetch_file
-	url="$tfa_downloads/spm/12-03-2020/manifest.dtb" fetch_file
+	url="$tfa_downloads/spm/02-05-2021/initrd.img" fetch_file
+	url="$tfa_downloads/spm/02-05-2021/manifest.dtb" fetch_file
 
 	archive_file "initrd.img"
 	archive_file "manifest.dtb"
