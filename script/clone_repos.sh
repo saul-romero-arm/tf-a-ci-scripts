@@ -405,7 +405,7 @@ if not_upon "$no_tftf"; then
 	# Clone Trusted Firmware TF repository
 	url="$tftf_src_repo_url" name="trusted-firmware-tf" ref="TFTF_REFSPEC" \
 		loc="TFTF_CHECKOUT_LOC" \
-		gerrit_test_groups="tftf-l1-build tftf-l1-fvp tftf-l1-spm" \
+		gerrit_test_groups="tftf-l1-build tftf-l1-fvp" \
 		clone_and_sync
 fi
 
