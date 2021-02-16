@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -11,11 +11,14 @@
 
 cat <<EOF
 device_type: fvp
-job_name: fvp-tftf-\${MODEL}
+job_name: fvp-tftf-{MODEL}
 
 timeouts:
   connection:
     minutes: 3
+  connections:
+    lava-test-monitor:
+      minutes: 10
   job:
     minutes: 60
   actions:
@@ -35,31 +38,60 @@ actions:
 - deploy:
     to: fvp
     images:
+      backup_fip:
+        url: {BACKUP_FIP}
       bl1:
-        url: \${ACTIONS_DEPLOY_IMAGES_BL1}
-      fip:
-        url: \${ACTIONS_DEPLOY_IMAGES_FIP}
-      ns_bl1u:
-        url: \${ACTIONS_DEPLOY_IMAGES_NS_BL1U}
-      ns_bl2u:
-        url: \${ACTIONS_DEPLOY_IMAGES_NS_BL2U}
+        url: {BL1}
+      bl2:
+        url: {BL2}
+      bl31:
+        url: {BL31}
+      bl32:
+        url: {BL32}
+      dtb:
+        url: {DTB}
       el3_payload:
-        url: \${ACTIONS_DEPLOY_IMAGES_EL3_PAYLOAD}
+        url: {EL3_PAYLOAD}
+      fip:
+        url: {FIP}
+      fwu_fip:
+        url: {FWU_FIP}
+      image:
+        url: {IMAGE}
+      ns_bl1u:
+        url: {NS_BL1U}
+      ns_bl2u:
+        url: {NS_BL2U}
+      ramdisk:
+        url: {RAMDISK}
+      romlib:
+        url: {ROMLIB}
+      rootfs:
+        url: {ROOTFS}
+        compression: gz
+      spm:
+        url: {SPM}
+      tftf:
+        url: {TFTF}
+      tmp:
+        url: {TMP}
+      uboot:
+        url: {UBOOT}
 
 - boot:
     method: fvp
-    license_variable: ARMLMD_LICENSE_FILE=\${ARMLMD_LICENSE_FILE}
+    license_variable: ARMLMD_LICENSE_FILE={ARMLMD_LICENSE_FILE}
     docker:
-      name: \${BOOT_DOCKER_NAME}
+      name: {BOOT_DOCKER_NAME}
       local: true
-    image: \${BOOT_IMAGE_DIR}/\${BOOT_IMAGE_BIN}
-    version_string: \${BOOT_VERSION_STRING}
+    image: {BOOT_IMAGE_DIR}/{BOOT_IMAGE_BIN}
+    version_string: {BOOT_VERSION_STRING}
     console_string: 'terminal_0: Listening for serial connection on port (?P<PORT>\d+)'
     timeout:
       minutes: 30
 
     arguments:
-\${BOOT_ARGUMENTS}
+{BOOT_ARGUMENTS}
 
 - test:
     timeout:

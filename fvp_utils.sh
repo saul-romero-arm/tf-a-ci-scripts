@@ -337,67 +337,152 @@ gen_fvp_yaml() {
     # optional parameters, defaults to globals
     local model_dtb="${model_dtb:-$default_model_dtb}"
 
-    # general artefacts
+    # possible artefacts
+    backup_fip="$(fvp_gen_bin_url backup_fip.bin)"
     bl1="$(fvp_gen_bin_url bl1.bin)"
-    fip="$(fvp_gen_bin_url fip.bin)"
-
+    bl2="$(fvp_gen_bin_url bl2.bin)"
+    bl31="$(fvp_gen_bin_url bl31.bin)"
+    bl32="$(fvp_gen_bin_url bl32.bin)"
     dtb="$(fvp_gen_bin_url ${model_dtb})"
+    el3_payload="$(fvp_gen_bin_url el3_payload.bin)"
+    fip="$(fvp_gen_bin_url fip.bin)"
+    fwu_fip="$(fvp_gen_bin_url fwu_fip.bin)"
     image="$(fvp_gen_bin_url kernel.bin)"
-    ramdisk="$(fvp_gen_bin_url initrd.bin)"
-
-    # tftf's ns_bl[1|2]u.bin and el3_payload artefacts
     ns_bl1u="$(fvp_gen_bin_url ns_bl1u.bin)"
     ns_bl2u="$(fvp_gen_bin_url ns_bl2u.bin)"
-    el3_payload="$(fvp_gen_bin_url el3_payload.bin)"
+    ramdisk="$(fvp_gen_bin_url initrd.bin)"
+    romlib="$(fvp_gen_bin_url romlib.bin)"
+    rootfs="$(fvp_gen_bin_url rootfs.bin.gz)"
+    spm="$(fvp_gen_bin_url spm.bin)"
+    tftf="$(fvp_gen_bin_url tftf.bin)"
+    tmp="$(fvp_gen_bin_url tmp.bin)"
+    uboot="$(fvp_gen_bin_url uboot.bin)"
 
     docker_registry="${docker_registry:-}"
     docker_registry="$(docker_registry_append)"
-
     docker_name="${docker_registry}$model_name"
+    prompt1='/ #'
+    prompt2='root@genericarmv8:~#'
+    version_string="\"Fast Models"' [^\\n]+'"\""
 
-    # generic version string
-    local version_string="\"Fast Models"' [^\\n]+'"\""
+    # arrays that relates variables and template macros
+    # NOTE: any addition on these arrays, requires an addition in the
+    # fvp templates
+    declare -A yaml_macros
+    declare -A artefacts_macros
+    yaml_macros=(
+        [armlmd_license_file]="{ARMLMD_LICENSE_FILE}"
+        [docker_name]="{BOOT_DOCKER_NAME}"
+        [model]="{MODEL}"
+        [model_bin]="{BOOT_IMAGE_BIN}"
+        [model_dir]="{BOOT_IMAGE_DIR}"
+        [prompt1]="{PROMPT1}"
+        [prompt2]="{PROMPT2}"
+        [version_string]="{BOOT_VERSION_STRING}"
+    )
+    artefacts_macros=(
+        [backup_fip]="{BACKUP_FIP}"
+        [bl1]="{BL1}"
+        [bl2]="{BL2}"
+        [bl31]="{BL31}"
+        [bl32]="{BL32}"
+        [dtb]="{DTB}"
+        [el3_payload]="{EL3_PAYLOAD}"
+        [fwu_fip]="{FWU_FIP}"
+        [fip]="{FIP}"
+        [image]="{IMAGE}"
+        [ns_bl1u]="{NS_BL1U}"
+        [ns_bl2u]="{NS_BL2U}"
+        [ramdisk]="{RAMDISK}"
+        [romlib]="{ROMLIB}"
+        [rootfs]="{ROOTFS}"
+	[spm]="{SPM}"
+	[tftf]="{TFTF}"
+	[tmp]="{TMP}"
+	[uboot]="{UBOOT}"
+    )
 
-    sed -e "s|\${ARMLMD_LICENSE_FILE}|${armlmd_license_file}|" \
-	-e "s|\${ACTIONS_DEPLOY_IMAGES_BL1}|${bl1}|" \
-        -e "s|\${ACTIONS_DEPLOY_IMAGES_FIP}|${fip}|" \
-        -e "s|\${ACTIONS_DEPLOY_IMAGES_DTB}|${dtb}|" \
-        -e "s|\${ACTIONS_DEPLOY_IMAGES_IMAGE}|${image}|" \
-        -e "s|\${ACTIONS_DEPLOY_IMAGES_RAMDISK}|${ramdisk}|" \
-        -e "s|\${ACTIONS_DEPLOY_IMAGES_NS_BL1U}|${ns_bl1u}|" \
-        -e "s|\${ACTIONS_DEPLOY_IMAGES_NS_BL2U}|${ns_bl2u}|" \
-        -e "s|\${ACTIONS_DEPLOY_IMAGES_EL3_PAYLOAD}|${el3_payload}|" \
-        -e "s|\${BOOT_DOCKER_NAME}|${docker_name}|" \
-        -e "s|\${BOOT_IMAGE_DIR}|${model_dir}|" \
-        -e "s|\${BOOT_IMAGE_BIN}|${model_bin}|" \
-        -e "s|\${BOOT_VERSION_STRING}|${version_string}|" \
-        -e "s|\${MODEL}|${model}|" \
-        < "$yaml_template_file" \
-        > "$yaml_file"
+    # templates cover all possible artefacts, but model parameters may
+    # not required all, i.e. romlib.bin, so delete those irrelevant from
+    # the template
+    for m in "${!artefacts_macros[@]}"; do
+	# image and ramdisk are special cases: binaries names do not match (job) images names
+	case "$m" in
+	    image)
+		if ! grep -q "kernel.bin" "$archive/model_params"; then
+		    sed -i "/$m:\$/d" "${yaml_template_file}"
+		    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+		fi
+		;;
+	    ramdisk)
+		if ! grep -q "initrd.bin" "$archive/model_params"; then
+		    sed -i "/$m:\$/d" "${yaml_template_file}"
+		    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+		fi
+		;;
+	    rootfs)
+		if ! grep -q "rootfs.bin" "$archive/model_params"; then
+		    sed -i "/$m:\$/d" "${yaml_template_file}"
+		    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+		    sed -i "/compression: gz\$/d" "${yaml_template_file}"
+		fi
+		;;
 
-    # LAVA expects 'macro' names for binaries, so replace them
-    sed -e "s|bl1.bin|{BL1}|" \
-	-e "s|fip.bin|{FIP}|" \
-	-e "s|ns_bl1u.bin|{NS_BL1U}|" \
-	-e "s|ns_bl2u.bin|{NS_BL2U}|" \
-	-e "s|el3_payload.bin|{EL3_PAYLOAD}|" \
-	-e "s|kernel.bin|{IMAGE}|" \
-	-e "s|initrd.bin|{RAMDISK}|" \
-	< "$archive/model_params" \
-	> "$lava_model_params"
+	    *)
+		if ! grep -q "${m}.bin" "$archive/model_params"; then
+		    sed -i "/$m:\$/d" "${yaml_template_file}"
+		    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+		fi
+		;;
+	esac
+    done
 
+    # copied files are the working files
+    cp "${yaml_template_file}" "${yaml_file}"
+    cp "$archive/model_params" "$lava_model_params"
+
+    # replace yaml macros with real values
+    for m in "${!yaml_macros[@]}"; do
+	sed -i -e "s|${yaml_macros[$m]}|${!m}|" "$yaml_file"
+    done
+
+    # replace artefact macros with real values
+    for m in "${!artefacts_macros[@]}"; do
+	sed -i -e "s|${artefacts_macros[$m]}|${!m}|" "$yaml_file"
+    done
+
+    # LAVA expects parameters as 'macros', i.e. {X} instead of x.bin, so
+    # replace them
+    for m in "${!artefacts_macros[@]}"; do
+	case "$m" in
+	    image)
+		sed -i -e "s|=kernel.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+		;;
+	    ramdisk)
+		sed -i -e "s|=initrd.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+		;;
+	    tmp)
+		sed -i -e "s|=.*/${m}.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+		;;
+	    *)
+		sed -i -e "s|=${m}.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+		;;
+	esac
+    done
 
     # include the model parameters
     while read -r line; do
         if [ -n "$line" ]; then
-	    yaml_line="- \"${line}\""
-            sed -i -e "/\${BOOT_ARGUMENTS}/i \ \ \ \ $yaml_line" "$yaml_file"
+            yaml_line="- \"${line}\""
+            sed -i -e "/{BOOT_ARGUMENTS}/i \ \ \ \ $yaml_line" "$yaml_file"
         fi
     done < "$lava_model_params"
+    sed -i -e '/{BOOT_ARGUMENTS}/d' "$yaml_file"
 
-    sed -i -e '/\${BOOT_ARGUMENTS}/d' "$yaml_file"
+    # create job.yaml
     cp "$yaml_file" "$yaml_job_file"
 
+    # archive both yamls
     archive_file "$yaml_file"
     archive_file "$yaml_job_file"
 }
