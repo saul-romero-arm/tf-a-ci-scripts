@@ -116,7 +116,7 @@ clean_build $fvp_common_flags SPD=spmd SPMD_SPM_AT_SEL2=0
 # SP_LAYOUT_FILE is used only during FIP creation but build won't progress
 # if we have NULL value to it, so passing a dummy string.
 clean_build $fvp_common_flags SPD=spmd SPMD_SPM_AT_SEL2=1 ARM_ARCH_MINOR=4 \
-	CTX_INCLUDE_EL2_REGS=1 CTX_INCLUDE_FPREGS=1 SP_LAYOUT_FILE=dummy
+	CTX_INCLUDE_EL2_REGS=1 SP_LAYOUT_FILE=dummy
 
 #BL2 at EL3 support
 clean_build $fvp_common_flags BL2_AT_EL3=1
