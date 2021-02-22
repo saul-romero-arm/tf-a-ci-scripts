@@ -54,6 +54,7 @@ fvp_models=(
 [base-aemv8a-revb]=";;;"
 [base-aemv8a-latest-revb]=";;;"
 [base-aemva]=";;;"
+[base-aemv8a-gic600ae]=";;;"
 [foundationv8]="${foundation_platform};Foundation_Platform"
 [base-aemv8a]="${fvp_base_revc_2xaemv8a};FVP_Base_RevC-2xAEMv8A"
 [cortex-a32x4]="${fvp_arm_std_library};FVP_Base_Cortex-A32x4"

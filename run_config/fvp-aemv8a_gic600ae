@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+        local model="base-aemv8a-gic600ae"
+        model="$model" gen_model_params
+
+        model="$model" gen_fvp_yaml
+}
