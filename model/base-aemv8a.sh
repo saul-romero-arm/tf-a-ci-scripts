@@ -6,9 +6,21 @@
 #
 
 # Use revc model
-set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/models/$model_flavour/FVP_Base_RevC-2xAEMv8A"
+if  is_arm_jenkins_env; then
+        set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/models/$model_flavour/FVP_Base_RevC-2xAEMv8A"
+        default_var sve_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/sve2-HEAD/ScalableVectorExtension.so"
+else
+        # OpenCI enviroment
+        source "$ci_root/fvp_utils.sh"
 
-default_var sve_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/sve2-HEAD/ScalableVectorExtension.so"
+        # fvp_models variable contains the information for FVP paths, where 2nd field
+	# points to the /opt/model/*/models/${model_flavour}
+	models_dir="$(echo ${fvp_models[$model]} | awk -F ';' '{print $2}')"
+        set_model_path "$models_dir"
+
+        # ScalableVectorExtension is located at /opt/model/*/plugins/${model_flavour}
+        default_var sve_plugin_path "${models_dir/models/plugins}/ScalableVectorExtension.so"
+fi
 
 default_var is_dual_cluster 1
 
