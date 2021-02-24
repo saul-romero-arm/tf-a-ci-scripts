@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	uart="1" set_primary="1" file="linux-rd-busybox.exp" track_expect
+
+	url="$morello_prebuilts/grub-busybox.img" saveas="busybox.bin" fetch_file
+
+	archive_file "busybox.bin"
+
+	payload_type="linux" gen_fvp_yaml_template
+}

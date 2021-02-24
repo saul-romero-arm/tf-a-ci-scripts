@@ -178,11 +178,17 @@ collect_scp_artefacts() {
 				*/scp_ramfw/*)
 					cp $file $to/scp_ram.$ext
 					;;
+				*/scp_ramfw_fvp/*)
+					cp $file $to/scp_ramfw_fvp.$ext
+					;;
 				*/scp_romfw/*)
 					cp $file $to/scp_rom.$ext
 					;;
 				*/mcp_ramfw/*)
 					cp $file $to/mcp_ram.$ext
+					;;
+				*/mcp_ramfw_fvp/*)
+					cp $file $to/mcp_ramfw_fvp.$ext
 					;;
 				*/mcp_romfw/*)
 					cp $file $to/mcp_rom.$ext
