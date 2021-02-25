@@ -137,7 +137,7 @@ fetch_file() {
 		sa="${saveas+-o $saveas}"
 		echo "Fetch: $url -> $saveas"
 		# Use curl to support file protocol
-		curl -sLS $sa "$url"
+		curl --fail -sLS $sa "$url"
 	else
 		sa="${saveas-.}"
 		echo "Fetch: $url -> $sa"
