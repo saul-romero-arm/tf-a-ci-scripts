@@ -113,8 +113,8 @@ fvp_initrd_urls=(
 )
 
 get_optee_bin() {
-	url="$jenkins_url/job/tf-optee-build/PLATFORM_FLAVOR=fvp,label=arch-dev/lastSuccessfulBuild/artifact/artefacts/tee.bin" \
-               saveas="bl32.bin" fetch_file
+	url="$tfa_downloads/optee/tee.bin" \
+           saveas="bl32.bin" fetch_file
 	archive_file "bl32.bin"
 }
 
