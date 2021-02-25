@@ -32,8 +32,6 @@ fwu_fip_addr="${fwu_fip_addr:-0x08400000}"
 backup_fip_addr="${backup_fip_addr:-0x09000000}"
 romlib_addr="${romlib_addr:-0x03ff2000}"
 
-optee_fip_url="$linaro_release/fvp-ack-busybox-uboot/fip.bin"
-
 uboot32_fip_url="$linaro_release/fvp32-latest-busybox-uboot/fip.bin"
 
 rootfs_url="$linaro_release/lt-vexpress64-openembedded_minimal-armv8-gcc-5.2_20170127-761.img.gz"
@@ -115,13 +113,9 @@ fvp_initrd_urls=(
 )
 
 get_optee_bin() {
-	local tmpdir="$(mktempdir)"
-
-	pushd "$tmpdir"
-	extract_fip "$optee_fip_url"
-	mv "tos-fw.bin" "bl32.bin"
+	url="$jenkins_url/job/tf-optee-build/PLATFORM_FLAVOR=fvp,label=arch-dev/lastSuccessfulBuild/artifact/artefacts/tee.bin" \
+               saveas="bl32.bin" fetch_file
 	archive_file "bl32.bin"
-	popd
 }
 
 # For Measured Boot tests using a TA based on OPTEE, it is necessary to use a
