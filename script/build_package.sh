@@ -175,29 +175,29 @@ collect_build_artefacts() {
 # collect_build_artefacts function.
 collect_scp_artefacts() {
 	to="${to:?}" \
-	find "$scp_root" \( -name "*.bin" -o -name '*.elf' \) -exec bash -c '
+	find "$scp_root" \( \( -name "*.bin" -o -name '*.elf' \) -and ! -name 'CMake*' \) -exec bash -c '
 		for file; do
 			ext="$(echo $file | awk -F. "{print \$NF}")"
 			case $file in
-				*/scp_ramfw/*)
+				*/firmware-scp_ramfw/bin/*)
 					cp $file $to/scp_ram.$ext
 					;;
-				*/scp_ramfw_fvp/*)
+				*/firmware-scp_ramfw_fvp/bin/*)
 					cp $file $to/scp_ramfw_fvp.$ext
 					;;
-				*/scp_romfw/*)
+				*/firmware-scp_romfw/bin/*)
 					cp $file $to/scp_rom.$ext
 					;;
-				*/mcp_ramfw/*)
+				*/firmware-mcp_ramfw/bin/*)
 					cp $file $to/mcp_ram.$ext
 					;;
-				*/mcp_ramfw_fvp/*)
+				*/firmware-mcp_ramfw_fvp/bin/*)
 					cp $file $to/mcp_ramfw_fvp.$ext
 					;;
-				*/mcp_romfw/*)
+				*/firmware-mcp_romfw/bin/*)
 					cp $file $to/mcp_rom.$ext
 					;;
-				*/scp_romfw_bypass/*)
+				*/firmware-scp_romfw_bypass/bin/*)
 					cp $file $to/scp_rom_bypass.$ext
 					;;
 				*)
@@ -583,17 +583,29 @@ build_scp() {
 		make clean &>>"$build_log" || fail_build
 	fi
 
+	python3 -m venv .venv
+	. .venv/bin/activate
+
+	# Install extra tools used by CMake build system
+	pip install -r requirements.txt --timeout 30 --retries 15
+
 	# Log build command line. It is left unfolded on purpose to assist
 	# copying to clipboard.
 	cat <<EOF | log_separator >/dev/null
 
 SCP build command line:
-	make $(cat "$config_file" | tr '\n' ' ') MODE=$mode V=1
+	make -f Makefile.cmake $(cat "$config_file" | tr '\n' ' ') \
+		TOOLCHAIN=GNU \
+		MODE="$mode" \
+		V=1 &>>"$build_log"
 
 EOF
 
 	# Build SCP
-	make $(cat "$config_file") MODE="$mode" V=1 &>>"$build_log" \
+	make -f Makefile.cmake $(cat "$config_file" | tr '\n' ' ') \
+		TOOLCHAIN=GNU \
+		MODE="$mode" \
+		V=1 &>>"$build_log" \
 		|| fail_build
 	)
 }
@@ -740,7 +752,7 @@ build_fip_for_scp_tools() {
 
 	cross_compile="$(set_cross_compile_gcc_linaro_toolchain)"
 
-	if [ ! -d "$scp_root/build/product/juno/scp_ramfw/debug" ]; then
+	if [ ! -d "$scp_root/build/juno/GNU/debug/firmware-scp_ramfw" ]; then
 		make fiptool
 		echo "Make FIP 4 SCP-Tools rls..."
 
@@ -755,7 +767,7 @@ build_fip_for_scp_tools() {
 			"CROSS_COMPILE=$cross_compile" \
 			"BL31=$scp_tools_root/arm-tf/build/juno/debug/bl31.bin" \
 			"BL33=$scp_tools_root/baremetal/dummy_bl33" \
-			"SCP_BL2=$scp_root/build/product/juno/scp_ramfw/debug/bin/firmware.bin"
+			"SCP_BL2=$scp_root/build/juno/GNU/$mode/firmware-scp_ramfw/bin/juno-bl2.bin"
 
 		archive_file "$scp_tools_root/arm-tf/build/juno/debug/fip.bin"
 	fi
