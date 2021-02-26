@@ -8,7 +8,7 @@
 post_fetch_tf_resource() {
         local model="base-aemv8a"
 
-	image=$(mktempfile)
+	image=${archive}/tmp.bin
 	printf '\1\0\0\0' > "$image"
 
 	aarch32="1" \
