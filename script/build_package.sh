@@ -412,9 +412,12 @@ fip_update() {
 # Update hw-config in FIP, and remove the original DTB afterwards.
 update_fip_hw_config() {
 	# The DTB needs to be loaded by the model (and not updated in the FIP)
-	# in configs where BL2 isn't present
+	# in configs:
+	#            1. Where BL2 isn't present
+	#            2. Where we boot to Linux directly as BL33
 	case "1" in
 		"$(get_tf_opt RESET_TO_BL31)" | \
+		"$(get_tf_opt ARM_LINUX_KERNEL_AS_BL33)" | \
 		"$(get_tf_opt RESET_TO_SP_MIN)" | \
 		"$(get_tf_opt BL2_AT_EL3)")
 			return 0;;
