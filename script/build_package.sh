@@ -1136,10 +1136,8 @@ if [ "$scp_config" ] && assert_can_git_clone "scp_root"; then
 
 	pushd "$scp_root"
 
-	eval cmsis_dir="$(git submodule status | awk 'NR==1{print $2}')"
-
 	# Use filer submodule as a reference if it exists
-	if [ -d "$SCP_CHECKOUT_LOC/$cmsis_dir" ]; then
+	if [ -d "$SCP_CHECKOUT_LOC/cmsis" ]; then
 		cmsis_reference="--reference $SCP_CHECKOUT_LOC/cmsis"
 	fi
 
