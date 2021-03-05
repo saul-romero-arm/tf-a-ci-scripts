@@ -84,6 +84,10 @@ actions:
     image: {BOOT_IMAGE_DIR}/{BOOT_IMAGE_BIN}
     version_string: {BOOT_VERSION_STRING}
     console_string: 'terminal_0: Listening for serial connection on port (?P<PORT>\d+)'
+    feedbacks:
+      - '(?P<NAME>terminal_1): Listening for serial connection on port (?P<PORT>\d+)'
+      - '(?P<NAME>terminal_2): Listening for serial connection on port (?P<PORT>\d+)'
+      - '(?P<NAME>terminal_3): Listening for serial connection on port (?P<PORT>\d+)'
     timeout:
       minutes: 30
     arguments:

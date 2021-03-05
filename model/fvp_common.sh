@@ -82,22 +82,14 @@ ${no_quantum--Q ${quantum}}
 
 EOF
 
+# OpenCI uses LAVA to launch models, the latter requiring (uart) unbuffered output,
+# otherwise these may get full and models hang.
 if ! is_arm_jenkins_env && not_upon "$local_ci"; then
 	cat <<EOF >>"$model_param_file"
--C bp.pl011_uart0.untimed_fifos=1
--C bp.pl011_uart1.untimed_fifos=1
--C bp.pl011_uart2.untimed_fifos=1
--C bp.pl011_uart3.untimed_fifos=1
-
 -C bp.pl011_uart0.unbuffered_output=1
 -C bp.pl011_uart1.unbuffered_output=1
 -C bp.pl011_uart2.unbuffered_output=1
 -C bp.pl011_uart3.unbuffered_output=1
-
--C bp.terminal_0.start_telnet=1
--C bp.terminal_1.start_telnet=0
--C bp.terminal_2.start_telnet=0
--C bp.terminal_3.start_telnet=0
 EOF
 fi
 
