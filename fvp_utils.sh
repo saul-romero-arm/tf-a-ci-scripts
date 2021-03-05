@@ -620,4 +620,40 @@ docker_registry_append() {
     echo "$docker_registry"
 }
 
+# generate GPT image and archive it
+gen_gpt_bin() {
+    raw_image="fip_gpt.bin"
+    img_uuid="FB90808A-BA9A-4D42-B9A2-A7A937144AEE"
+    img_bank_uuid=`uuidgen`
+    disk_uuid=`uuidgen`
+    bin="${1:?}"
+
+    # maximum FIP size 2MB
+    fip_max_size=2097152
+    start_sector=34
+    sector_size=512
+    num_sectors=$(($fip_max_size/$sector_size))
+    bin_size=$(stat -c %s $bin)
+
+    if [[ $fip_max_size -lt $bin_size ]]
+    then
+           echo "FIP binary ($bin_size bytes) larger than max partition 1"
+                "size ($fip_max_size byte)"
+           return
+    fi
+
+    # create raw 5MB image
+    dd if=/dev/zero of=$raw_image bs=5M count=1
+
+    # create GPT image
+    sgdisk -a 1 -U $disk_uuid -n 1:$start_sector:+$num_sectors \
+           -c 1:FIP_A -t 1:$img_uuid $raw_image -u $img_bank_uuid
+
+    echo "write binary $bin at sector $start_sector"
+    dd if=$bin of=$raw_image bs=$sector_size seek=$start_sector \
+       count=$num_sectors conv=notrunc
+
+    archive_file "fip_gpt.bin"
+}
+
 set +u

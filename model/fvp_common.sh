@@ -25,6 +25,8 @@ reset_var wait_debugger
 
 if [ "$bl2_at_el3" ]; then
 	has_fip=1
+elif [ "$fip_as_gpt" ]; then
+	has_bl1=1
 elif [ -z "$reset_to_spmin" -a -z "$reset_to_bl31" ]; then
 	has_bl1=1
 	has_fip=1
@@ -56,6 +58,7 @@ ${romlib_bin+--data ${data_instance}=$romlib_bin@${romlib_addr:?}}
 
 ${has_bl1+-C bp.secureflashloader.fname=$bl1_bin}
 ${has_fip+-C bp.flashloader0.fname=$fip_bin}
+${fip_as_gpt+-C bp.flashloader0.fname=$fip_gpt_bin}
 
 ${dtb_bin+--data ${data_instance}=$dtb_bin@${dtb_addr:?}}
 ${kernel_bin+--data ${data_instance}=$kernel_bin@${kernel_addr:?}}
