@@ -281,7 +281,7 @@ set_cross_compile_gcc_linaro_toolchain() {
     local cross_compile_path="/home/buildslave/tools"
 
     # if under arm enviroment, overide cross-compilation path
-    is_arm_jenkins_env && cross_compile_path="/arm/pdsw/tools"
+    is_arm_jenkins_env || upon "$local_ci" && cross_compile_path="/arm/pdsw/tools"
 
     echo "${cross_compile_path}/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-"
 }
