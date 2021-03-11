@@ -38,7 +38,7 @@ def reply_to_issues(repo, bots, dry_run):
     """Reply to all new issues without a bot reply"""
     body = readfile("issue_comment.md")
     logging.info("Replying to new issues on {}/{}".format(repo.owner.login, repo.name))
-    for issue in repo.get_issues(since=datetime.datetime(2019-2020 10, 17, 12)):
+    for issue in repo.get_issues(since=datetime.datetime(2019, 10, 17, 12)):
         if not commented_already(issue.get_comments(), bots):
             logging.info("Repliyng to issue #{}: {}".format(issue.number, issue.title))
             if not dry_run:
