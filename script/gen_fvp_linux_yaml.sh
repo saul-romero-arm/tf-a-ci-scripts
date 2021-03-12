@@ -45,6 +45,15 @@ actions:
         url: {BL31}
       bl32:
         url: {BL32}
+      busybox:
+        url: {BUSYBOX}
+        compression: gz
+      cactus_primary:
+        url: {CACTUS_PRIMARY}
+      cactus_secondary:
+        url: {CACTUS_SECONDARY}
+      cactus_tertiary:
+        url: {CACTUS_TERTIARY}
       dtb:
         url: {DTB}
       el3_payload:
@@ -53,8 +62,16 @@ actions:
         url: {FIP}
       fwu_fip:
         url: {FWU_FIP}
+      generic_trace:
+        url: {GENERIC_TRACE}
+      hafnium:
+        url: {HAFNIUM}
       image:
         url: {IMAGE}
+      mcp_rom:
+        url: {MCP_ROM}
+      mcp_rom_hyphen:
+        url: {MCP_ROM_HYPHEN}
       ns_bl1u:
         url: {NS_BL1U}
       ns_bl2u:
@@ -66,6 +83,16 @@ actions:
       rootfs:
         url: {ROOTFS}
         compression: gz
+      secure_hafnium:
+        url: {SECURE_HAFNIUM}
+      scp_ram:
+        url: {SCP_RAM}
+      scp_ram_hyphen:
+        url: {SCP_RAM_HYPHEN}
+      scp_rom:
+        url: {SCP_ROM}
+      scp_rom_hyphen:
+        url: {SCP_ROM_HYPHEN}
       spm:
         url: {SPM}
       tftf:

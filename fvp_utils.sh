@@ -343,16 +343,29 @@ gen_fvp_yaml() {
     bl2="$(fvp_gen_bin_url bl2.bin)"
     bl31="$(fvp_gen_bin_url bl31.bin)"
     bl32="$(fvp_gen_bin_url bl32.bin)"
+    busybox="$(fvp_gen_bin_url busybox.bin.gz)"
+    cactus_primary="$(fvp_gen_bin_url cactus-primary.pkg)"
+    cactus_secondary="$(fvp_gen_bin_url cactus-secondary.pkg)"
+    cactus_tertiary="$(fvp_gen_bin_url cactus-tertiary.pkg)"
     dtb="$(fvp_gen_bin_url ${model_dtb})"
     el3_payload="$(fvp_gen_bin_url el3_payload.bin)"
     fip="$(fvp_gen_bin_url fip.bin)"
     fwu_fip="$(fvp_gen_bin_url fwu_fip.bin)"
+    generic_trace="${tfa_downloads}/FastModelsPortfolio_${model_version}/plugins/${model_flavour}/GenericTrace.so"
+    hafnium="$(fvp_gen_bin_url hafnium.bin)"
     image="$(fvp_gen_bin_url kernel.bin)"
+    mcp_rom="$(fvp_gen_bin_url mcp_rom.bin)"
+    mcp_rom_hyphen="$(fvp_gen_bin_url mcp-rom.bin)"
     ns_bl1u="$(fvp_gen_bin_url ns_bl1u.bin)"
     ns_bl2u="$(fvp_gen_bin_url ns_bl2u.bin)"
     ramdisk="$(fvp_gen_bin_url initrd.bin)"
     romlib="$(fvp_gen_bin_url romlib.bin)"
     rootfs="$(fvp_gen_bin_url rootfs.bin.gz)"
+    secure_hafnium="$(fvp_gen_bin_url secure_hafnium.bin)"
+    scp_ram="$(fvp_gen_bin_url scp_ram.bin)"
+    scp_ram_hyphen="$(fvp_gen_bin_url scp-ram.bin)"
+    scp_rom="$(fvp_gen_bin_url scp_rom.bin)"
+    scp_rom_hyphen="$(fvp_gen_bin_url scp-rom.bin)"
     spm="$(fvp_gen_bin_url spm.bin)"
     tftf="$(fvp_gen_bin_url tftf.bin)"
     tmp="$(fvp_gen_bin_url tmp.bin)"
@@ -386,55 +399,133 @@ gen_fvp_yaml() {
         [bl2]="{BL2}"
         [bl31]="{BL31}"
         [bl32]="{BL32}"
+        [cactus_primary]="{CACTUS_PRIMARY}"
+        [cactus_secondary]="{CACTUS_SECONDARY}"
+        [cactus_tertiary]="{CACTUS_TERTIARY}"
+        [busybox]="{BUSYBOX}"
         [dtb]="{DTB}"
         [el3_payload]="{EL3_PAYLOAD}"
         [fwu_fip]="{FWU_FIP}"
         [fip]="{FIP}"
+        [generic_trace]="{GENERIC_TRACE}"
+        [hafnium]="{HAFNIUM}"
         [image]="{IMAGE}"
+        [mcp_rom]="{MCP_ROM}"
+        [mcp_rom_hyphen]="{MCP_ROM_HYPHEN}"
         [ns_bl1u]="{NS_BL1U}"
         [ns_bl2u]="{NS_BL2U}"
         [ramdisk]="{RAMDISK}"
         [romlib]="{ROMLIB}"
         [rootfs]="{ROOTFS}"
-	[spm]="{SPM}"
-	[tftf]="{TFTF}"
-	[tmp]="{TMP}"
-	[uboot]="{UBOOT}"
+        [secure_hafnium]="{SECURE_HAFNIUM}"
+        [scp_ram]="{SCP_RAM}"
+        [scp_ram_hyphen]="{SCP_RAM_HYPHEN}"
+        [scp_rom]="{SCP_ROM}"
+        [scp_rom_hyphen]="{SCP_ROM_HYPHEN}"
+        [spm]="{SPM}"
+        [tftf]="{TFTF}"
+        [tmp]="{TMP}"
+        [uboot]="{UBOOT}"
     )
 
     # templates cover all possible artefacts, but model parameters may
     # not required all, i.e. romlib.bin, so delete those irrelevant from
     # the template
     for m in "${!artefacts_macros[@]}"; do
-	# image and ramdisk are special cases: binaries names do not match (job) images names
-	case "$m" in
-	    image)
-		if ! grep -q "kernel.bin" "$archive/model_params"; then
-		    sed -i "/$m:\$/d" "${yaml_template_file}"
-		    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-		fi
-		;;
-	    ramdisk)
-		if ! grep -q "initrd.bin" "$archive/model_params"; then
-		    sed -i "/$m:\$/d" "${yaml_template_file}"
-		    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-		fi
-		;;
-	    rootfs)
-		if ! grep -q "rootfs.bin" "$archive/model_params"; then
-		    sed -i "/$m:\$/d" "${yaml_template_file}"
-		    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-		    sed -i "/compression: gz\$/d" "${yaml_template_file}"
-		fi
-		;;
-
-	    *)
-		if ! grep -q "${m}.bin" "$archive/model_params"; then
-		    sed -i "/$m:\$/d" "${yaml_template_file}"
-		    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-		fi
-		;;
-	esac
+        # there are artefacts where deletion is handled in special case, so treat them accordingly
+        case "$m" in
+            busybox)
+                # besides the macro removal, remove the compression field
+                if ! grep -q "${m}.bin" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/,/compression: gz\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            cactus_primary)
+                # cactus packages have a hyphen, not an underscore
+                if ! grep -E -q "cactus-primary.pkg" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            cactus_secondary)
+                # cactus packages have a hyphen, not an underscore
+                if ! grep -E -q "cactus-secondary.pkg" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            cactus_tertiary)
+                # cactus packages have a hyphen, not an underscore
+                if ! grep -E -q "cactus-tertiary.pkg" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            dtb)
+                # dtb can come in different names, i.e.  dtb.bin, manifest.dtb,
+                # so handle with regex
+                if ! grep -E -q "=.*dtb.*@" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            generic_trace)
+                # the image (Linux Kernel) is named as kernel.bin
+                if ! grep -q "GenericTrace.so" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            image)
+                # the image (Linux Kernel) is named as kernel.bin
+                if ! grep -q "kernel.bin" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            mcp_rom_hyphen)
+                # mcp rom is either present as mcp-rom or mcp_rom, handle the former case
+                if ! grep -q "mcp-rom.bin" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            ramdisk)
+                # ramdisk is named initrd and is present with to extensions: bin or img
+                if ! grep -E -q "initrd.bin|initrd.img" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            rootfs)
+                # besides the macro removal, remove the compression field
+                if ! grep -q "rootfs.bin" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/,/compression: gz\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            scp_ram_hyphen)
+                # scp ram is either present as scp-ram or scp_ram, handle the former case
+                if ! grep -q "scp-ram.bin" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            scp_rom_hyphen)
+                # scp rom is either present as scp-rom or scp_rom, handle the former case
+                if ! grep -q "scp-rom.bin" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            *)
+                if ! grep -q "${m}.bin" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+        esac
     done
 
     # copied files are the working files
@@ -443,31 +534,58 @@ gen_fvp_yaml() {
 
     # replace yaml macros with real values
     for m in "${!yaml_macros[@]}"; do
-	sed -i -e "s|${yaml_macros[$m]}|${!m}|" "$yaml_file"
+        sed -i -e "s|${yaml_macros[$m]}|${!m}|" "$yaml_file"
     done
 
     # replace artefact macros with real values
     for m in "${!artefacts_macros[@]}"; do
-	sed -i -e "s|${artefacts_macros[$m]}|${!m}|" "$yaml_file"
+        sed -i -e "s|${artefacts_macros[$m]}|${!m}|" "$yaml_file"
     done
 
     # LAVA expects parameters as 'macros', i.e. {X} instead of x.bin, so
-    # replace them
+    # replace them. As in the macro removal above, handle special cases for several
+    # artefacts
     for m in "${!artefacts_macros[@]}"; do
-	case "$m" in
-	    image)
-		sed -i -e "s|=kernel.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-		;;
-	    ramdisk)
-		sed -i -e "s|=initrd.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-		;;
-	    tmp)
-		sed -i -e "s|=.*/${m}.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-		;;
-	    *)
-		sed -i -e "s|=${m}.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-		;;
-	esac
+        case "$m" in
+            dtb)
+                sed -i -e "s|=.*dtb.*@|=${artefacts_macros[$m]}@|" "$lava_model_params"
+                ;;
+            cactus_primary)
+                sed -i -e "s|=cactus-primary.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            cactus_secondary)
+                sed -i -e "s|=cactus-secondary.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            cactus_tertiary)
+                sed -i -e "s|=cactus-tertiary.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            generic_trace)
+                sed -i -e "s|--plugin .*GenericTrace.so|--plugin ${artefacts_macros[$m]}|" "$lava_model_params"
+		sed -i -e "s|--plugin=.*GenericTrace.so|--plugin=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            image)
+                sed -i -e "s|=kernel.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            mcp_rom_hyphen)
+                sed -i -e "s|=mcp-rom.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            ramdisk)
+                sed -i -e "s|=initrd.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+                sed -i -e "s|=initrd.img|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            scp_ram_hyphen)
+                sed -i -e "s|=scp-ram.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            scp_rom_hyphen)
+                sed -i -e "s|=scp-rom.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            tmp | hafnium | secure_hafnium)
+                sed -i -e "s|=.*/${m}.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            *)
+                sed -i -e "s|=${m}.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+        esac
     done
 
     # include the model parameters
