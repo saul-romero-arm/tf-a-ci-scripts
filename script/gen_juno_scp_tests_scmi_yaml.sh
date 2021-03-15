@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -78,78 +78,18 @@ actions:
     monitors:
     #
     # Monitor no.1
-    # Monitor the results from all the protocols but sensor
+    # Monitor the results from all the protocols
     #
-    - name: SCP-SCMI-NON-SENSOR-PROTOCOL
+    - name: SCP-SCMI-ALL-PROTOCOL
       start: 'BL31: Baremetal test suite: scmi'
-      end: 'Protocol Sensor'
+      end: '\*\*\*\* SCMI tests complete \*\*\*\*'
 
-      pattern: "\\\[(base|power|system_power|performance)\\\](-|_){(?P<test_case_id>\\\D*)(.*)}(-|_)(query|power|system_power|performance|precondition)_(.*)-01: (?P<result>(CONFORMANT|NON CONFORMANT))"
-
-      fixupdict:
-        "CONFORMANT": pass
-        "NON CONFORMANT": fail
-
-    #
-    # Monitor no.2
-    # Monitor the results from the sensor protocols but for reading_get
-    #
-    - name: SCP-SCMI-SENSOR-PROTOCOL
-      start: 'SENSOR_DISCOVERY:'
-      end: 'query_sensor_description_get_non_existant_sensorid'
-
-      pattern: "\\\[(sensor)\\\](-|_){(?P<test_case_id>\\\D*)(.*)}(-|_)(query|sensor)_(.*)-01: (?P<result>(CONFORMANT|NON CONFORMANT))"
+      pattern: '(?P<test_case_id>\d{3}):[\w ]+[\w\n\r[\] :<>&=]*?: (?P<result>CONFORMANT|NON CONFORMANT|SKIPPED)'
 
       fixupdict:
         "CONFORMANT": pass
         "NON CONFORMANT": fail
-
-    #
-    # Monitor no.3
-    # Monitor the results from each individual sensor when performing the reading_get
-    # This special case is required since the baremetal application does not have
-    #     any knowledge of the power state of the system. This results in a blind
-    #     call to all the available sensors exposed by the platform, including ones
-    #     tied to specific power domains that are in off state. The driver is then
-    #     refusing to provide a reading for those sensors, causing a known fail for
-    #     the test.
-    #     The parser will therefore discard false failures.
-    #
-    - name: SCP-SCMI-SENSOR-PROTOCOL-GET
-      start: 'SENSOR_READING_GET:'
-      end: 'SCMI TEST: END'
-
-      pattern: "SENSOR ID (?P<test_case_id>\\\d+)[\\\n|\\\r](.*)MESSAGE_ID = 0x06[\\\n|\\\r](.*)PARAMETERS (.*)[\\\n|\\\r](.*)CHECK HEADER:(.*)[\\\n|\\\r](.*)CHECK STATUS: (?P<result>(PASSED|FAILED))"
-
-      fixupdict:
-        "PASSED": pass
-        "FAILED": fail
-
-
-
-    #
-    # We have already tested with one agent above and the expectations are the
-    # same for the two agents.
-    # Collect the final results.
-    #
-    - name: SCP-SCMI
-      start: 'Test Suite: SCMI 103'
-      end: 'End of Test Suite: SCMI'
-
-      pattern: "\\\[UT\\\] Test Case: (?P<test_case_id>\\\D*)(.*) Result: (?P<result>[0-9])"
-
-      fixupdict:
-        "0": pass
-        "1": fail
-        "2": fail
-        "3": fail
-        "4": fail
-        "5": fail
-        "6": fail
-        "7": fail
-        "8": fail
-        "9": fail
-
+        "SKIPPED": skip
 
 
 EOF
