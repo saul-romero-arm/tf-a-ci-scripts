@@ -627,7 +627,7 @@ clone_tf_for_scp_tools() {
 
 		cd "$scp_tools_arm_tf"
 
-		git checkout --track origin/dev/pedro/juno
+		git checkout --track origin/juno-v4.3
 
 		git show --quiet --no-color | sed 's/^/  > /g'
 
@@ -671,15 +671,17 @@ build_scmi_lib_scp_tools() {
 	cflags="$cflags -fdata-sections"
 	cflags="$cflags -DAARCH64"
 	cflags="$cflags -DPRId32=\"ld\""
+	cflags="$cflags -DVERBOSE_LEVEL=3"
 
 	cflags="$cflags $std_libs"
 
-	protocols="power,system_power,performance,sensor"
+	protocols="performance,power_domain,system_power,reset"
 
 	echo "Building SCMI library (SCP-tools) ..."
 
 	make "CROSS_COMPILE=$cross_compile" \
 		"CFLAGS=$cflags" \
+		"PLAT=baremetal" \
 		"PROTOCOLS=$protocols" \
 		"clean" \
 		"all"
