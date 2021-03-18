@@ -130,8 +130,9 @@ get_ftpm_optee_bin() {
 		saveas="bl32_extra1.bin" fetch_file
 	archive_file "bl32_extra1.bin"
 
-	url="$tfa_downloads/ftpm/optee/tee-pageable_v2.bin" \
-		saveas="bl32_extra2.bin" fetch_file
+	# tee-pageable_v2.bin is just a empty file, named as bl32_extra2.bin,
+	# so just create the file
+	touch "bl32_extra2.bin"
 	archive_file "bl32_extra2.bin"
 }
 
