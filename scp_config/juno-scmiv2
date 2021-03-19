@@ -1,0 +1,7 @@
+CC=/arm/pdsw/downloads/scp-models/tools/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc
+PRODUCT=juno
+BS_FIRMWARE_HAS_SCMI_NOTIFICATIONS=yes
+BS_FIRMWARE_HAS_FAST_CHANNELS=yes
+BS_FIRMWARE_HAS_SCMI_RESET=yes
+BS_FIRMWARE_HAS_DEBUG_UNIT=no
+BS_FIRMWARE_HAS_RESOURCE_PERMISSIONS=no
