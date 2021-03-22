@@ -84,6 +84,7 @@ fvp_models=(
 [neoverse_n1]="${fvp_arm_std_library};FVP_Base_Neoverse-N1x1"
 [neoverse_n2]=";;;"
 [neoverse-v1x4]=";;;"
+[matterhornx4]=";;;"
 [css-rdv1]=";;;"
 [css-rde1edge]=";;;"
 [css-rdn1edge]=";;;"
