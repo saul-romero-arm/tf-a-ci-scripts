@@ -32,15 +32,18 @@ def report_job_success():
     print()
     sys.exit(0)
 
-def scmi_parse_phase(results, case, special_case):
+def scmi_parse_phase(results, case, special_case, expected_skip_count):
     pass_count = 0
     fail_count = 0
     false_fail_count = 0
+    skip_count = 0
 
     for phase in results:
         if phase["metadata"]["definition"] == case:
             if phase["metadata"]["result"] == "pass":
                 pass_count += 1
+            elif phase["metadata"]["result"] == "skip":
+                skip_count += 1
             else:
                 if special_case != "" and phase["metadata"]["case"] == special_case:
                     false_fail_count += 1
@@ -52,33 +55,16 @@ def scmi_parse_phase(results, case, special_case):
     print("fail_count " + str(fail_count))
     if special_case != "":
         print("false_fail_count " + str(false_fail_count))
-    if fail_count > 0:
+    print("skip_count " + str(skip_count) + " out of expected " + str(expected_skip_count))
+    if (fail_count > 0) or (skip_count > expected_skip_count):
         report_job_failure()
 
 def parse_scp_scmi_results():
     #
     # All protocols but sensor
     #
-    scmi_parse_phase(results, "scp-scmi-non-sensor-protocol", "")
-
-    #
-    # Protocol sensor, not reading_get
-    #
-    scmi_parse_phase(results, "scp-scmi-sensor-protocol", "")
-
-    #
-    # Protocol sensor, only reading_get
-    # In this case, we know that the reading from the sensor VBIG will fail
-    # cause the big cluster is OFF. Thus we simply discard that false failure.
-    #
-    JUNO_PVT_SENSOR_VOLT_BIG = "1"
-    scmi_parse_phase(results, "scp-scmi-sensor-protocol-get", JUNO_PVT_SENSOR_VOLT_BIG)
-
-    #
-    # Parse the final overall results
-    # We already know the false failures, discard them
-    #
-    scmi_parse_phase(results, "scp-scmi", "sensor_reading_get_sync_allsensorid_")
+    all_prot_expected_skip_count = 9
+    scmi_parse_phase(results, "scp-scmi-all-protocol", "", all_prot_expected_skip_count)
 
 def parse_cmd_line():
     parser = argparse.ArgumentParser(description="Parse results from LAVA. "
