@@ -315,6 +315,7 @@ clean_build PLAT=versal $(common_flags) VERSAL_PLATFORM=versal_virt
 # Platforms from Allwinner
 make PLAT=sun50i_a64 $(common_flags) all
 make PLAT=sun50i_h6 $(common_flags) all
+make PLAT=sun50i_h616 $(common_flags) all
 
 # Platforms from i.MX
 make AARCH32_SP=optee ARCH=aarch32 ARM_ARCH_MAJOR=7 ARM_CORTEX_A7=yes \
