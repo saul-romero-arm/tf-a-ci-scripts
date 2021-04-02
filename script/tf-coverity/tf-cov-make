@@ -334,6 +334,11 @@ make PLAT=imx8mq $(common_flags release) all
 make PLAT=imx8qm $(common_flags) all
 make PLAT=imx8qx $(common_flags) all
 
+# Platforms for NXP Layerscape
+make PLAT=lx2160aqds $(common_flags) all
+make PLAT=lx2160ardb $(common_flags) all
+make PLAT=lx2162aqds $(common_flags) all
+
 # Platforms from Intel
 make PLAT=stratix10 $(common_flags) all
 make PLAT=agilex $(common_flags) all
