@@ -609,12 +609,142 @@ gen_fvp_yaml() {
     done < "$lava_model_params"
     sed -i -e '/{BOOT_ARGUMENTS}/d' "$yaml_file"
 
+    # Append expect commands into the job definition through test-interactive commands
+    gen_fvp_yaml_expect >> "$yaml_file"
+
     # create job.yaml
     cp "$yaml_file" "$yaml_job_file"
 
     # archive both yamls
     archive_file "$yaml_file"
     archive_file "$yaml_job_file"
+}
+
+gen_fvp_yaml_expect() {
+    # Loop through all uarts expect files
+    run_root="$archive/run"
+    for expect_file in $(find $run_root -name expect); do
+
+        # TODO: currently, only handle UART 0
+        case $expect_file in
+            *uart0* )
+                uart_number=uart0
+                ;;
+            *)
+                continue
+                ;;
+        esac
+
+        # Array containing expect strings and populated during run config execution
+        expect_string=()
+
+        # Get the real name of the expect file
+        expect_file=$(cat $expect_file)
+
+        # Source the run_config enviroment variables
+        env=$run_root/$uart_number/env
+        if [ -e $env ]; then
+            source $env
+        fi
+
+        # Get all expect strings
+        expect_file=$ci_root/lava-expect/${expect_file}
+        source $expect_file
+
+        # Append the corresponding test-interactive commands
+        if [ ${#expect_string[@]} -gt 0 ]; then
+
+            cat << EOF
+- test:
+   timeout:
+    minutes: 15
+   interactive:
+EOF
+            for key in "${!expect_string[@]}"; do
+
+                # Expect strings have the format '<prompt>;<successes>;<failures>', so use these
+                # arrays to store them separately
+                prompts=()
+                successes=()
+                failures=()
+                commands=()
+
+                # Parse expect string values and split into the arrays
+                for es in "${expect_string[@]}"; do
+                    prompts+=("$(echo "${es}" | awk -F ';' '{print $1}')")
+                    successes+=("$(echo "${es}" | awk -F ';' '{print $2}')")
+                    failures+=("$(echo "${es}" | awk -F ';' '{print $3}')")
+                    commands+=("$(echo "${es}" | awk -F ';' '{print $4}')")
+                done
+
+                OLD_IFS=$IFS; IFS=$'@'
+
+                if [[ -n "${prompts[$key]}" && -n "${successes[$key]}" && -n "${failures[$key]}" ]]; then
+                    cat << EOF
+   - name: ${uart_number}_${key}
+     prompts: ['${prompts[$key]}']
+     script:
+     - name: result
+       command: ${commands[$key]}
+EOF
+                    cat << EOF
+       successes:
+EOF
+                    for s in ${successes[$key]}; do
+                        cat <<EOF
+       - message: '$s'
+EOF
+                    done
+                    cat << EOF
+       failures:
+EOF
+                    for f in ${failures[$key]}; do
+                        cat <<EOF
+       - message: '$f'
+EOF
+                    done
+                elif [[ -n "${prompts[$key]}" && -n "${successes[$key]}" ]]; then
+                    cat << EOF
+   - name: ${uart_number}_${key}
+     prompts: ['${prompts[$key]}']
+     script:
+     - name: result
+       command: ${commands[$key]}
+       successes:
+EOF
+                    for s in ${successes[$key]}; do
+                        cat <<EOF
+       - message: '$s'
+EOF
+                    done
+                elif [[ -n "${prompts[$key]}" && -n "${failures[$key]}" ]]; then
+                    cat << EOF
+   - name: ${uart_number}_${key}
+     prompts: ['${prompts[$key]}']
+     script:
+     - name: result
+       command: ${commands[$key]}
+       failures:
+EOF
+                    for f in ${failures[$key]}; do
+                        cat <<EOF
+       - message: '$f'
+EOF
+                    done
+
+                else
+                    cat << EOF
+   - name: ${uart_number}_${key}
+     prompts: ['${prompts[$key]}']
+     script:
+     - name: result
+       command: ${commands[$key]}
+EOF
+                fi
+                IFS=$OLD_IFS
+            done
+        fi
+    done
 }
 
 docker_registry_append() {

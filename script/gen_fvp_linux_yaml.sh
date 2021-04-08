@@ -126,7 +126,4 @@ actions:
       minutes: 30
     arguments:
 {BOOT_ARGUMENTS}
-    prompts:
-    - '{PROMPT1}'
-    - '{PROMPT2}'
 EOF
