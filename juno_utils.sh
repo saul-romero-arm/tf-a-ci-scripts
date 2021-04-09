@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
 set -u
 
-scp_bl2_url="$linaro_release/juno-latest-oe-uboot/SOFTWARE/scp_bl2.bin"
+scp_bl1_url="$tfa_downloads/css_scp_2.8.0-dev/juno/scp_bl1.bin"
+scp_bl2_url="$tfa_downloads/css_scp_2.8.0-dev/juno/scp_bl2.bin"
 psci_reset2_scp_bl2_url="$tfa_downloads/psci_reset2/scp_bl2.bin"
 uboot_bl33_url="$linaro_release/juno-latest-oe-uboot/SOFTWARE/bl33-uboot.bin"
 optee_fip_url="$linaro_release/juno-ack-android-uboot/SOFTWARE/fip.bin"
@@ -29,6 +30,12 @@ get_optee_bin() {
 	mv "tos-fw.bin" "bl32.bin"
 	archive_file "bl32.bin"
 	popd
+}
+
+# Get scp_bl1 and scp_bl2 binaries
+# from $url and store as $saveas
+get_scp_bl_bin() {
+	url="$url" saveas="$saveas" fetch_file
 }
 
 get_scp_bl2_bin() {
@@ -71,6 +78,10 @@ gen_recovery_image() {
 
 	saveas="$zip_dir" url="$url" fetch_directory
 	if [ "$*" ]; then
+		# Copy scp_bl1 scp_bl2 binaries. Copying then first
+		# so that the subsequent copy can replace it if necessary.
+		url="$scp_bl1_url" saveas="$zip_dir/SOFTWARE/scp_bl1.bin" get_scp_bl_bin
+		url="$scp_bl2_url" saveas="$zip_dir/SOFTWARE/scp_bl2.bin" get_scp_bl_bin
 		cp -f "$@" "$zip_dir/SOFTWARE"
 	fi
 
