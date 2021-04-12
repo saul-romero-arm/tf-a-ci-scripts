@@ -336,12 +336,10 @@ css_downloads_270="${css_downloads_270:-$tfa_downloads/css_scp_2.7.0}"
 
 linaro_2001_release="${linaro_2001_release:-$tfa_downloads/linaro/20.01}"
 linaro_release="${linaro_release:-$linaro_2001_release}"
+mbedtls_version="${mbedtls_version:-2.26.0}"
 
 # mbedTLS archive public hosting available at github.com
-mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-2.25.0.tar.gz}"
-# The tar file contains mbedtls-mbedtls-2.25.0 repo which holds the necessary
-# source files of mbedTLS project
-mbedtls_repo_name="${mbedtls_repo_name:-mbedtls-mbedtls-2.25.0}"
+mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-${mbedtls_version}.tar.gz}"
 
 coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2020.06}"
 coverity_default_checkers=(
