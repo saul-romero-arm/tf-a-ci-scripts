@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -9,8 +9,8 @@ source "$ci_root/fvp_utils.sh"
 
 sgi_prebuilts="${sgi_prebuilts:-$css_downloads/sgi/rdn1edgex2}"
 
-# Pre-built SCP/MCP v2.7.0 release binaries
-scp_mcp_prebuilts="${scp_mcp_prebuilts:-$css_downloads_270/sgi/rdn1edgex2}"
+# Pre-built SCP/MCP v2.8.0-dev release binaries
+scp_mcp_prebuilts="${scp_mcp_prebuilts:-$css_downloads_280/sgi/rdn1edgex2}"
 
 fvp_kernels[fvp-sgi-busybox]="$sgi_prebuilts/Image"
 fvp_initrd_urls[fvp-sgi-ramdisk]="$sgi_prebuilts/ramdisk-busybox.img"

@@ -330,9 +330,9 @@ spm_src_repo_url="${spm_src_repo_url:-https://$tforg_gerrit_url/hafnium/hafnium}
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"
 css_downloads="${css_downloads:-$tfa_downloads/css}"
 
-# SCP/MCP v2.7.0 release binaries
+# SCP/MCP v2.8.0-dev release binaries
 # Linux files from https://releases.linaro.org/members/arm/platforms/20.01
-css_downloads_270="${css_downloads_270:-$tfa_downloads/css_scp_2.7.0}"
+css_downloads_280="${css_downloads_280:-$tfa_downloads/css_scp_2.8.0-dev}"
 
 linaro_2001_release="${linaro_2001_release:-$tfa_downloads/linaro/20.01}"
 linaro_release="${linaro_release:-$linaro_2001_release}"
