@@ -349,6 +349,7 @@ gen_fvp_yaml() {
     cactus_primary="$(fvp_gen_bin_url cactus-primary.pkg)"
     cactus_secondary="$(fvp_gen_bin_url cactus-secondary.pkg)"
     cactus_tertiary="$(fvp_gen_bin_url cactus-tertiary.pkg)"
+    coverage_trace_plugin="${coverage_trace_plugin}"
     dtb="$(fvp_gen_bin_url ${model_dtb})"
     el3_payload="$(fvp_gen_bin_url el3_payload.bin)"
     fip="$(fvp_gen_bin_url fip.bin)"
@@ -404,6 +405,7 @@ gen_fvp_yaml() {
         [cactus_primary]="{CACTUS_PRIMARY}"
         [cactus_secondary]="{CACTUS_SECONDARY}"
         [cactus_tertiary]="{CACTUS_TERTIARY}"
+        [coverage_trace_plugin]="{COVERAGE_TRACE_PLUGIN}"
         [busybox]="{BUSYBOX}"
         [dtb]="{DTB}"
         [el3_payload]="{EL3_PAYLOAD}"
@@ -460,6 +462,12 @@ gen_fvp_yaml() {
             cactus_tertiary)
                 # cactus packages have a hyphen, not an underscore
                 if ! grep -E -q "cactus-tertiary.pkg" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            coverage_trace_plugin)
+                if ! grep -q "coverage_trace.so" "$archive/model_params"; then
                     sed -i "/$m:\$/d" "${yaml_template_file}"
                     sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
                 fi
@@ -560,6 +568,10 @@ gen_fvp_yaml() {
                 ;;
             cactus_tertiary)
                 sed -i -e "s|=cactus-tertiary.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            coverage_trace_plugin)
+                sed -i -e "s|--plugin .*coverage_trace.so|--plugin ${artefacts_macros[$m]}|" "$lava_model_params"
+                sed -i -e "s|--plugin=.*coverage_trace.so|--plugin=${artefacts_macros[$m]}|" "$lava_model_params"
                 ;;
             generic_trace)
                 sed -i -e "s|--plugin .*GenericTrace.so|--plugin ${artefacts_macros[$m]}|" "$lava_model_params"

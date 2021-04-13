@@ -54,6 +54,8 @@ actions:
         url: {CACTUS_SECONDARY}
       cactus_tertiary:
         url: {CACTUS_TERTIARY}
+      coverage_trace_plugin:
+        url: {COVERAGE_TRACE_PLUGIN}
       dtb:
         url: {DTB}
       el3_payload:

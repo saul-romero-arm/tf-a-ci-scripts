@@ -326,7 +326,7 @@ scp_src_repo_url="${scp_src_repo_url:-$scp_src_repo_default}"
 spm_src_repo_url="${spm_src_repo_url:-$SPM_SRC_REPO_URL}"
 spm_src_repo_url="${spm_src_repo_url:-https://$tforg_gerrit_url/hafnium/hafnium}"
 
-# FIXME set a sane default for tfa_downloads
+tf_downloads="${tf_downloads:-file:///downloads/}"
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"
 css_downloads="${css_downloads:-$tfa_downloads/css}"
 
