@@ -47,7 +47,7 @@ EOM
                     "URL":  "$CC_CMSIS_URL",
                     "COMMIT": "$CC_CMSIS_COMMIT",
                     "REFSPEC": "$CC_CMSIS_REFSPEC",
-                    "LOCATION": "scp/cmsis"
+                    "LOCATION": "scp/contrib/cmsis/git"
                     }
                 ]
 EOM
