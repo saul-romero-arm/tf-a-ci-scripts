@@ -90,7 +90,6 @@ fvp_models=(
 [css-rdn1edge]=";;;"
 [css-rdn1edgex2]=";;;"
 [css-sgi575]=";;;"
-[css-sgm775]=";;;"
 [tc0]=";;;"
 )
 
@@ -189,11 +188,6 @@ get_dtb() {
 		"fvp-base-quad-cluster-gicv3-psci")
 			# Get the quad-cluster FDT from pdsw area
 			dtb_url="$tfa_downloads/quad_cluster/fvp-base-quad-cluster-gicv3-psci.dtb"
-			url="$dtb_url" saveas="$dtb_saveas" fetch_file
-			;;
-		"sgm775")
-			# Get the SGM775 FDT from pdsw area
-			dtb_url="$sgm_prebuilts/sgm775.dtb"
 			url="$dtb_url" saveas="$dtb_saveas" fetch_file
 			;;
 		*)

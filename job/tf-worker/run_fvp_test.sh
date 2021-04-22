@@ -42,8 +42,6 @@ if [ "$RUN_CONFIG" != "nil" ] && echo "$RUN_CONFIG" | grep -iq '^fvp'; then
 			export JENKINS_SOURCES_WORKSPACE="${scp_root:-$workspace}"
 			if grep -q "fvp-linux.sgi" <<< "$test_config"; then
 				export LIST_OF_BINARIES=${LIST_OF_BINARIES:-"scp_ram scp_rom mcp_rom"}
-			elif grep -q "fvp-sgm775" <<< "$test_config"; then
-				export LIST_OF_BINARIES=${LIST_OF_BINARIES:-"scp_ram scp_rom"}
 			fi
 			export OBJDUMP="$(which 'arm-none-eabi-objdump')"
 			export READELF="$(which 'arm-none-eabi-readelf')"

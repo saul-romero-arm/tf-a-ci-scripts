@@ -28,11 +28,6 @@ nomination_rules = {
              "tf-l3-boot-tests-css/fvp-sgi575-tbb,fvp-sgi575-default:fvp-tftf-fip.tftf-sgi575",
              "tf-l2-coverity-misra-nominated/fvp-sgi575-tbb:coverity-tf-misra.diff"],
 
-        # Run SGM775 boot test and MISRA checks for any changes with "sgm" in the path
-        "pathre:sgm":
-            ["tf-l3-boot-tests-css/fvp-sgm775-tbb:fvp-linux.sgm-dtb.sgm775-fip.sgm-sgm775-debug",
-             "tf-l2-coverity-misra-nominated/fvp-sgm775-tbb:coverity-tf-misra.diff"],
-
         # Run Coverity MISRA checks for tc0 platform changes
         "path:plat/arm/board/tc0":
             ["tf-l2-coverity-misra-nominated/fvp-tc0-tbb:coverity-tf-misra.diff"],

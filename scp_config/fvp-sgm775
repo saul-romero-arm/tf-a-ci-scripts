@@ -1,2 +1,0 @@
-CC=/arm/pdsw/downloads/scp-models/tools/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc
-PRODUCT=sgm775
