@@ -1,12 +1,30 @@
 FROM ${OS}:${OS_VER} as FVP
 
-RUN apt-get update && \
-    apt-get install --no-install-recommends --yes bc libatomic1 telnet libdbus-1-3 xterm && \
-    rm -rf /var/cache/apt
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PKG_DEPS="\
+    bc \
+    ca-certificates \
+    curl \
+    libatomic1 \
+    libdbus-1-3 \
+    openssh-server \
+    telnet \
+    xterm \
+"
+
+RUN set -e ;\
+    apt update -q=2 ;\
+    apt full-upgrade -q=2 --yes ;\
+    apt install -q=2 --yes --no-install-recommends ${PKG_DEPS} ;\
+    # Cleanup
+    apt clean ;\
+    rm -rf /var/lib/apt/lists/* /tmp/*
 
 FROM FVP
 
 WORKDIR ${MODEL_DIR}
+
+COPY setup-sshd /usr/sbin/setup-sshd
 
 # Add the FVP model tarball
 # NOTE: some tarballs contain an installer script others don't, so it may be the case
@@ -18,3 +36,6 @@ RUN ${MODEL_DIR}/${MODEL}.sh \
         --i-agree-to-the-contained-eula \
         --verbose \
         --destination ${MODEL_DIR}/${MODEL} && rm -f ${MODEL_DIR}/${MODEL}.sh || true
+
+EXPOSE 22
+ENTRYPOINT ["/usr/sbin/setup-sshd"]

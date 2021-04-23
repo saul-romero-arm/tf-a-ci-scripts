@@ -23,6 +23,7 @@ define create-docker-image
 	rm -rf $(WORKSPACE)/$${tag} && \
 	mkdir -p $(WORKSPACE)/$${tag} && \
 	cp $@ $(WORKSPACE)/$${tag} && \
+        cp setup-sshd $(WORKSPACE)/$${tag} && \
 	./create-model-dockerfile.sh $${tarball} $(WORKSPACE)/$${tag} && \
 	docker build --tag fvp:$${tag} $(WORKSPACE)/$${tag} > /dev/null && \
 	echo "Docker image created" && \
