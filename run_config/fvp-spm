@@ -24,8 +24,14 @@ post_fetch_tf_resource() {
 	# SPM(reference implementation of S-EL2 firmware) has SMMUv3 driver
 	# enabled to help with stage-2 translation and virtualization of
 	# upstream peripheral devices. Hence, enable the SMMUv3 IP in FVP
-	# by confuguring the appropriate parameters of the SMMUv3 AEM.
-	model="$model" arch_version="8.4" has_smmuv3_params="1" gen_model_params
+	# by configuring the appropriate parameters of the SMMUv3 AEM.
+
+	model="$model" \
+	arch_version="8.5" \
+	has_smmuv3_params="1" \
+	has_branch_target_exception="1" \
+	restriction_on_speculative_execution="2" \
+		gen_model_params
 
 	model="$model" gen_fvp_yaml
 }

@@ -45,7 +45,9 @@ post_fetch_tf_resource() {
         local model="base-aemv8a"
 
 	model="$model" \
-	arch_version="8.4" \
+	arch_version="8.5" \
+	has_branch_target_exception="1" \
+	restriction_on_speculative_execution="2" \
 	reset_to_bl31="1" \
 	preload_bl33="1" \
 	preload_bl33_bin="$archive/hafnium.bin" \
@@ -58,5 +60,6 @@ post_fetch_tf_resource() {
 	el3_payload_bin="manifest.dtb" \
 	has_smmuv3_params="1" \
 		gen_model_params
+
 	model="$model" model_dtb="manifest.dtb" gen_fvp_yaml
 }
