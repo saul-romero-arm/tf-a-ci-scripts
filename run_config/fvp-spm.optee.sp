@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -34,6 +34,6 @@ fetch_tf_resource() {
 post_fetch_tf_resource() {
         local model="base-aemv8a"
 
-	model="$model" arch_version="8.4" gen_model_params
+	model="$model" arch_version="8.4" has_smmuv3_params="1" gen_model_params
 	model="$model" gen_fvp_yaml
 }

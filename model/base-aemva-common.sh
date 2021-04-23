@@ -152,8 +152,6 @@ if [ "$has_smmuv3_params" = "1" ]; then
 -C pci.tbu0_pre_smmu_logger.trace_snoops=1
 -C pci.tbu0_pre_smmu_logger.trace_debug=1
 -C pci.pci_smmuv3.mmu.all_error_messages_through_trace=1
--C pci.pci_smmuv3.mmu.howto_identify=use-identify
--C pci.pci_smmuv3.enable_device_id_checks=1
 
 -C TRACE.GenericTrace.trace-sources=verbose_commentary,smmu_initial_transaction,smmu_final_transaction,*.pci.pci_smmuv3.mmu.*.*,*.pci.smmulogger.*,*.pci.tbu0_pre_smmu_logger.*,FVP_Base_RevC_2xAEMv8A.pci.pci_smmuv3,smmu_poison_tw_data
 --plugin $warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/GenericTrace.so
