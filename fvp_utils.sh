@@ -41,7 +41,7 @@ default_model_dtb="fvp-base-gicv3-psci.dtb"
 
 # FVP containers and model paths
 fvp_arm_std_library="fvp:fvp_arm_std_library_${model_version}_${model_build};/opt/model/FVP_ARM_Std_Library/models/${model_flavour}"
-fvp_base_revc_2xaemv8a="fvp:fvp_base_revc-2xaemv8a_${model_version}_${model_build};/opt/model/Base_RevC_AEMv8A_pkg/models/${model_flavour}"
+fvp_base_revc_2xaemva="fvp:fvp_base_revc-2xaemva_${model_version}_${model_build};/opt/model/Base_RevC_AEMvA_pkg/models/${model_flavour}"
 foundation_platform="fvp:foundation_platform_${model_version}_${model_build};/opt/model/Foundation_Platformpkg/models/${model_flavour}"
 
 # FVP associate array, run_config are keys and fvp container parameters are the values
@@ -56,7 +56,7 @@ fvp_models=(
 [base-aemva]=";;;"
 [base-aemv8a-gic600ae]=";;;"
 [foundationv8]="${foundation_platform};Foundation_Platform"
-[base-aemv8a]="${fvp_base_revc_2xaemv8a};FVP_Base_RevC-2xAEMv8A"
+[base-aemv8a]="${fvp_base_revc_2xaemva};FVP_Base_RevC-2xAEMvA"
 [cortex-a32x4]="${fvp_arm_std_library};FVP_Base_Cortex-A32x4"
 [cortex-a35x4]="${fvp_arm_std_library};FVP_Base_Cortex-A35x4"
 [cortex-a53x4]="${fvp_arm_std_library};FVP_Base_Cortex-A53x4"

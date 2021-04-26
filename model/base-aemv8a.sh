@@ -7,7 +7,7 @@
 
 # Use revc model
 if  is_arm_jenkins_env || upon "$local_ci"; then
-        set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/models/$model_flavour/FVP_Base_RevC-2xAEMv8A"
+        set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/external/models/$model_flavour/FVP_Base_RevC-2xAEMvA"
         default_var sve_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/sve2-HEAD/ScalableVectorExtension.so"
 else
         # OpenCI enviroment

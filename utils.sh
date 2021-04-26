@@ -301,8 +301,8 @@ jenkins_url="${JENKINS_URL%/*}"
 jenkins_url="${jenkins_url:-https://ci.trustedfirmware.org/}"
 
 # Model revisions
-model_version="${model_version:-11.12}"
-model_build="${model_build:-38}"
+model_version="${model_version:-11.14}"
+model_build="${model_build:-21}"
 model_flavour="${model_flavour:-Linux64_GCC-6.4}"
 
 # Model snapshots from filer are not normally not accessible from developer

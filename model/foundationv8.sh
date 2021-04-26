@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/models/$model_flavour/Foundation_Platform"
+set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/external/models/$model_flavour/Foundation_Platform"
 
 default_var ncores 4
 default_var quantum 1000
