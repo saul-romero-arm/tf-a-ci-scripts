@@ -7,8 +7,10 @@
 
 set -u
 
-scp_bl1_url="$tfa_downloads/css_scp_2.8.0-dev/juno/scp_bl1.bin"
-scp_bl2_url="$tfa_downloads/css_scp_2.8.0-dev/juno/scp_bl2.bin"
+# Pre-built SCP v2.8.0 release binaries
+scp_bl1_url="$tfa_downloads/css_scp_2.8.0/juno/scp_bl1.bin"
+scp_bl2_url="$tfa_downloads/css_scp_2.8.0/juno/scp_bl2.bin"
+
 psci_reset2_scp_bl2_url="$tfa_downloads/psci_reset2/scp_bl2.bin"
 uboot_bl33_url="$linaro_release/juno-latest-oe-uboot/SOFTWARE/bl33-uboot.bin"
 optee_fip_url="$linaro_release/juno-ack-android-uboot/SOFTWARE/fip.bin"
