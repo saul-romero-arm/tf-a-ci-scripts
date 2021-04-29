@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-set_model_path "$warehouse/SysGen/SubSystemModels/11.13/10/models/Linux64_GCC-6.4/FVP_RD_Daniel"
+set_model_path "$warehouse/SysGen/SubSystemModels/11.14/34/models/Linux64_GCC-6.4/FVP_RD_V1"
 
 cat <<EOF >"$model_param_file"
 -C css.cmn_650.force_rnsam_internal=true
