@@ -52,6 +52,33 @@ exclude_paths = [
     ("plat/brcm/common/brcm_mhu.c", "Cannot be built due to the missing m0_ipc.h file"),
     ("plat/brcm/common/brcm_scpi.c", "Cannot be built due to the missing m0_ipc.h file"),
 
+    # The following block is excluding files specific to NXP platforms that
+    # cannot be compiled with any build flags at this moment due to external
+    # dependencies
+    ("drivers/nxp/auth/csf_hdr_parser/cot.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/auth/csf_hdr_parser/csf_hdr_parser.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/auth/csf_hdr_parser/plat_img_parser.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/auth/tbbr/tbbr_cot.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/console/console_16550.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/crypto/caam/src/auth/hash.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/crypto/caam/src/auth/nxp_crypto.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/crypto/caam/src/auth/rsa.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/csu/csu.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/ddr/fsl-mmdc/fsl_mmdc.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/ddr/phy-gen1/phy.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/gic/ls_gicv2.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/gpio/nxp_gpio.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/interconnect/ls_cci.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/qspi/qspi.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/sd/sd_mmc.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/sec_mon/snvs.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/sfp/fuse_prov.c", "Cannot be built due to external dependencies"),
+    ("drivers/nxp/sfp/sfp.c", "Cannot be built due to external dependencies"),
+    ("plat/nxp/common/fip_handler/fuse_fip/fuse_io_storage.c", "Cannot be built due to external dependencies"),
+    ("plat/nxp/common/setup/ls_stack_protector.c", "Cannot be built due to external dependencies"),
+    ("plat/nxp/common/tbbr/csf_tbbr.c", "Cannot be built due to external dependencies"),
+    ("plat/nxp/common/tbbr/x509_tbbr.c", "Cannot be built due to external dependencies"),
+
     ("lib/compiler-rt/.*", "3rd party libraries will not be fixed"),
     ("lib/libfdt/.*", "3rd party libraries will not be fixed"),
     ("lib/libc/strlcat.c", "Not used by any upstream platform"),
