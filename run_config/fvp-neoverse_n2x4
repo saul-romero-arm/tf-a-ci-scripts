@@ -9,6 +9,8 @@ post_fetch_tf_resource() {
         local model="neoverse_n2"
 
 	model="$model" \
+	model_version="11.12" \
+	model_build="38" \
 	cache_state_modelled="0" \
 	gen_model_params
 	uart="0" set_expect_variable "num_cpus" "4"
