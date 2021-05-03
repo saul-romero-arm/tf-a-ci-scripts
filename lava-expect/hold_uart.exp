@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script
+#
+
+# If we exit from the uart, and if that had lots of prints, then the model
+# will stall. This may also occur even when the uart does not have any print.
+# See: https://jira.arm.com/browse/SDDKW-43675. So, we wait here expect for
+# something that never arrives.
+
+# TODO

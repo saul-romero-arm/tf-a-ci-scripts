@@ -1,0 +1,18 @@
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script for Trusted Firmware Test Framework
+#
+
+source $ci_root/lava-expect/disable_dyn_auth.inc
+
+prompt='Booting trusted firmware test framework'
+successes='Running at NS-EL(1|2)'
+expect_string+=("${prompt};${successes}")
+
+prompt='Tests Failed  : 0'
+successes='Exiting tests.'
+failures='Tests Passed  : 0'
+expect_string+=("${prompt};${successes};${failures}")

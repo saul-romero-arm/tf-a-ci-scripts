@@ -1,0 +1,8 @@
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+# Expect an error while loading BL2 image.
+expect_string+=('Loading of FW_CONFIG failed;;BL1: Booting BL2')

@@ -1,0 +1,18 @@
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script for Trusted Firmware + U-Boot + Linux boot process with
+# OpenEmbedded rootfs in /dev/vda2
+# TF with reset to BL3-1
+#
+
+# Trusted Firmware boot section
+source $ci_root/lava-expect/trusted-firmware-rst-to-bl31.inc
+
+# Linux kernel boot section
+source $ci_root/lava-expect/linux.inc
+
+# OpenEmbedded filesystem section
+source $ci_root/lava-expect/openembedded.inc

@@ -1,0 +1,21 @@
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script for Trusted Firmware + Linux boot process
+#
+
+# Trusted Firmware boot section
+source $ci_root/lava-expect/trusted-firmware.inc
+
+# Linux kernel boot section
+expect_string+=('Booting Linux on physical CPU')
+expect_string+=('Linux version')
+
+# The kernel prints some information it takes from the preloaded DTB.
+# Check for following information to see that we actually got the right DTB.
+# 1. Machine model
+# 2. Command line passed via the "/chosen" node
+expect_string+=('Machine model: FVP (Base|Foundation)')
+expect_string+=('Kernel command line: console=ttyAMA0')

@@ -1,0 +1,16 @@
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script for Trusted Firmware + UEFI + Linux boot process with RAM Disk
+#
+
+# Trusted Firmware boot section
+source $ci_root/lava-expect/trusted-firmware.inc
+
+# Linux kernel boot section
+source $ci_root/lava-expect/linux.inc
+
+# Busybox filesystem section
+source $ci_root/lava-expect/busybox.inc

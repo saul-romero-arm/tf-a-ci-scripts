@@ -1,0 +1,12 @@
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script for Trusted Firmware Test Framework
+#
+
+# Value for trap BRK instruction
+trap_value=0x00003e8
+
+expect_string+=("Unexpected BRK instruction with value $trap_value")

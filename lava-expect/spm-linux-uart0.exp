@@ -1,0 +1,9 @@
+#
+# Copyright (c) 2021, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+expect_string+=('Please press Enter to activate this console.;;;\r')
+expect_string+=('/ # ;;;insmod hafnium.ko\n')
+expect_string+=('Hafnium successfully loaded with 1 VMs:')
