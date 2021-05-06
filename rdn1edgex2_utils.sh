@@ -9,7 +9,7 @@ source "$ci_root/fvp_utils.sh"
 
 sgi_prebuilts="${sgi_prebuilts:-$css_downloads/sgi/rdn1edgex2}"
 
-# Pre-built SCP/MCP v2.8.0-dev release binaries
+# Pre-built SCP/MCP v2.8.0 release binaries
 scp_mcp_prebuilts="${scp_mcp_prebuilts:-$css_downloads_280/sgi/rdn1edgex2}"
 
 fvp_kernels[fvp-sgi-busybox]="$sgi_prebuilts/Image"

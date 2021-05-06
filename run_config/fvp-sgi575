@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -8,15 +8,15 @@
 fetch_tf_resource() {
 	# Fetch the pre-built SCP/MCP binaries if they haven't been built
 	if [ ! -f "$archive/mcp_rom.bin" ]; then
-		url="$sgi_prebuilts/mcp_rom.bin" fetch_file
+		url="$scp_mcp_prebuilts/mcp_rom.bin" fetch_file
 		archive_file "mcp_rom.bin"
 	fi
 	if [ ! -f "$archive/scp_ram.bin" ]; then
-		url="$sgi_prebuilts/scp_ram.bin" fetch_file
+		url="$scp_mcp_prebuilts/scp_ram.bin" fetch_file
 		archive_file "scp_ram.bin"
 	fi
 	if [ ! -f "$archive/scp_rom.bin" ]; then
-		url="$sgi_prebuilts/scp_rom.bin" fetch_file
+		url="$scp_mcp_prebuilts/scp_rom.bin" fetch_file
 		archive_file "scp_rom.bin"
 	fi
 

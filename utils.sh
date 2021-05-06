@@ -335,9 +335,8 @@ tf_downloads="${tf_downloads:-file:///downloads/}"
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"
 css_downloads="${css_downloads:-$tfa_downloads/css}"
 
-# SCP/MCP v2.8.0-dev release binaries
-# Linux files from https://releases.linaro.org/members/arm/platforms/20.01
-css_downloads_280="${css_downloads_280:-$tfa_downloads/css_scp_2.8.0-dev}"
+# SCP/MCP v2.8.0 release binaries
+css_downloads_280="${css_downloads_280:-$tfa_downloads/css_scp_2.8.0}"
 
 linaro_2001_release="${linaro_2001_release:-$tfa_downloads/linaro/20.01}"
 linaro_release="${linaro_release:-$linaro_2001_release}"
