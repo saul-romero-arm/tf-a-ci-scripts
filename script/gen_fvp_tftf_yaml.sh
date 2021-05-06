@@ -65,6 +65,8 @@ actions:
         url: {EL3_PAYLOAD}
       fip:
         url: {FIP}
+      fip_gpt:
+        url: {FIP_GPT}
       fwu_fip:
         url: {FWU_FIP}
       generic_trace:
