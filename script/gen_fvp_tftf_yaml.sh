@@ -10,6 +10,9 @@
 # to correct values
 
 cat <<EOF
+metadata:
+  test_config: {TEST_CONFIG}
+
 device_type: fvp
 job_name: fvp-tftf-{MODEL}
 

@@ -366,11 +366,17 @@ gen_fvp_yaml() {
     prompt2='root@genericarmv8:~#'
     version_string="\"Fast Models"' [^\\n]+'"\""
 
+    test_config="${TEST_CONFIG}"
+
     # arrays that relates variables and template macros
     # NOTE: any addition on these arrays, requires an addition in the
     # fvp templates
+    declare -A metadata_macros
     declare -A yaml_macros
     declare -A artefacts_macros
+    metadata_macros=(
+        [test_config]="{TEST_CONFIG}"
+    )
     yaml_macros=(
         [armlmd_license_file]="{ARMLMD_LICENSE_FILE}"
         [docker_name]="{BOOT_DOCKER_NAME}"
@@ -527,6 +533,11 @@ gen_fvp_yaml() {
     # copied files are the working files
     cp "${yaml_template_file}" "${yaml_file}"
     cp "$archive/model_params" "$lava_model_params"
+
+    # replace metadata macros with real values
+    for m in "${!metadata_macros[@]}"; do
+        sed -i -e "s|${metadata_macros[$m]}|${!m}|" "$yaml_file"
+    done
 
     # replace yaml macros with real values
     for m in "${!yaml_macros[@]}"; do
