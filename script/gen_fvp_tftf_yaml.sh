@@ -17,22 +17,38 @@ device_type: fvp
 job_name: fvp-tftf-{MODEL}
 
 timeouts:
+  job:
+    minutes: 60
+  action:
+    minutes: 50
+  actions:
+    auto-login-action:
+      seconds: 300
+    lava-test-monitor:
+      minutes: 45
+    lava-test-shell:
+      seconds: 300
+    lava-test-retry:
+      seconds: 300
+    http-download:
+      seconds: 120
+    download-retry:
+      seconds: 120
+    fvp-deploy:
+      seconds: 300
   connection:
     minutes: 3
   connections:
+    lava-test-retry:
+      seconds: 300
     lava-test-monitor:
-      minutes: 10
-  job:
-    minutes: 60
-  actions:
-    auto-login-action:
-      minutes: 5
-    http-download:
-      minutes: 2
-    download-retry:
-      minutes: 2
-    fvp-deploy:
-      minutes: 5
+      seconds: 300
+    lava-test-shell:
+      seconds: 300
+    bootloader-action:
+      seconds: 300
+    bootloader-retry:
+      seconds: 300
 
 priority: medium
 visibility: public
@@ -129,8 +145,6 @@ actions:
 {BOOT_ARGUMENTS}
 
 - test:
-    timeout:
-      minutes: 30
 
     monitors:
     - name: TFTF
