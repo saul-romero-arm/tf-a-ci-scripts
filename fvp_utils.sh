@@ -37,7 +37,7 @@ uboot32_fip_url="$linaro_release/fvp32-latest-busybox-uboot/fip.bin"
 rootfs_url="$linaro_release/lt-vexpress64-openembedded_minimal-armv8-gcc-5.2_20170127-761.img.gz"
 
 # Default FVP model variables
-default_model_dtb="fvp-base-gicv3-psci.dtb"
+default_model_dtb="dtb.bin"
 
 # FVP containers and model paths
 fvp_arm_std_library_11_12="fvp:fvp_arm_std_library_${model_version_11_12}_${model_build_11_12};/opt/model/FVP_ARM_Std_Library/models/${model_flavour_11_12}"
