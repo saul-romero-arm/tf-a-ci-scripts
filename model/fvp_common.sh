@@ -102,10 +102,15 @@ if [ "$print_stat" = "1" ]; then
 EOF
 fi
 
-# TFTF: When running in non-Jenkins environment,
-# shutdown simulation when EOT (ASCII 4) char is transmitted.
-if not_upon "$jenkins_run" && echo "$RUN_CONFIG" | grep -iq 'tftf'; then
+# TFTF: There are two scenarions where simulation should be shutdown
+# when a EOT (ASCII 4) char is transmitted: on local or Open CI runs.
+# For the latter case, shutdown is required so further commands parse
+# or transfer any produced files during execution, i.e. trace code
+# coverage logs
+if echo "$RUN_CONFIG" | grep -iq 'tftf'; then
+    if ! is_arm_jenkins_env || upon "$local_ci"; then
 	cat <<EOF >>"$model_param_file"
 -C bp.pl011_uart0.shutdown_on_eot=1
 EOF
+    fi
 fi
