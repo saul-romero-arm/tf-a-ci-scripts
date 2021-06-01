@@ -333,7 +333,19 @@ make PLAT=imx8qx $(common_flags) all
 # Platforms for NXP Layerscape
 make PLAT=lx2160aqds $(common_flags) all
 make PLAT=lx2160ardb $(common_flags) all
-make PLAT=lx2162aqds $(common_flags) all
+
+#CSF Based CoT:
+clean_build PLAT=lx2162aqds $(common_flags) BOOT_MODE=flexspi_nor SPD=opteed \
+    TRUSTED_BOARD_BOOT=1 CST_DIR=$(pwd) DDR_PHY_BIN_PATH=$(pwd)
+
+#X509 Based CoT
+clean_build PLAT=lx2162aqds $(common_flags) BOOT_MODE=flexspi_nor SPD=opteed \
+    TRUSTED_BOARD_BOOT=1 CST_DIR=$(pwd) GENERATE_COT=1 \
+    MBEDTLS_DIR=$(pwd)/mbedtls
+
+#BOOT_MODE=emmc and Stack protector
+clean_build PLAT=lx2162aqds $(common_flags) BOOT_MODE=emmc SPD=opteed \
+    TRUSTED_BOARD_BOOT=1 CST_DIR=$(pwd) ENABLE_STACK_PROTECTOR=strong
 
 # Platforms from Intel
 make PLAT=stratix10 $(common_flags) all
