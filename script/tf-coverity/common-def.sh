@@ -45,6 +45,14 @@ is_arm_jenkins_env() {
     return 1
 }
 
+# Use "$1" as a boolean
+upon() {
+	case "$1" in
+		"" | "0" | "false") return 1;;
+		*) return 0;;
+	esac
+}
+
 # Provide correct linaro cross toolchain based on environment
 set_cross_compile_gcc_linaro_toolchain() {
     local cross_compile_path="/home/buildslave/tools"
