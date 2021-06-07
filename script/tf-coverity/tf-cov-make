@@ -322,10 +322,11 @@ make PLAT=imx8mm $(common_flags) all
 make PLAT=imx8mn $(common_flags) all
 make PLAT=imx8mp $(common_flags) all
 
-# Temporarily building in release mode until the following ticket is resolved:
+# Due to the limited OCRAM space that can be used for TF-A, build test
+# will report failure caused by too small RAM size, so comment out the
+# build test for imx8mq in CI. It can also resolve the following ticket:
 # https://developer.trustedfirmware.org/T626
-# make PLAT=imx8mq $(common_flags) all
-make PLAT=imx8mq $(common_flags release) all
+#make PLAT=imx8mq $(common_flags release) all
 
 make PLAT=imx8qm $(common_flags) all
 make PLAT=imx8qx $(common_flags) all

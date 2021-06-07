@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -116,4 +116,9 @@ exclude_paths = [
     ("plat/mediatek/mt8195/plat_sip_calls.c", "Temporarily excluded"),
     ("plat/mediatek/mt8195/plat_topology.", "Temporarily excluded"),
 
+    # Exclude the following files of imx8mq as this platform is dropped
+    # from the CI. Put the files of this platform into a silent status.
+    ("plat/imx/imx8m/imx8mq/gpc.c", "Not currently used"),
+    ("plat/imx/imx8m/imx8mq/imx8mq_bl31_setup.c", "Not currently used"),
+    ("plat/imx/imx8m/imx8mq/imx8mq_psci.c", "Not currently used"),
 ]
