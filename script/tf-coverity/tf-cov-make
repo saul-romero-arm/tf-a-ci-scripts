@@ -68,6 +68,9 @@ clean_build $fvp_common_flags SDEI_SUPPORT=1 EL3_EXCEPTION_HANDLING=1
 # SDEI with fconf
 clean_build $fvp_common_flags SDEI_IN_FCONF=1 SDEI_SUPPORT=1 EL3_EXCEPTION_HANDLING=1
 
+# PCI Service
+clean_build $fvp_common_flags SMC_PCI_SUPPORT=1
+
 # Secure interrupt descriptors with fconf
 clean_build $fvp_common_flags SEC_INT_DESC_IN_FCONF=1
 
@@ -300,6 +303,7 @@ make PLAT=tegra TARGET_SOC=t194 $(common_flags) all
 # these build flags.
 make PLAT=zynqmp $(common_flags) \
     RESET_TO_BL31=1 SPD=tspd \
+    SDEI_SUPPORT=1 \
     ZYNQMP_ATF_MEM_BASE=0xFFFC0000 ZYNQMP_ATF_MEM_SIZE=0x00040000 \
     all
 

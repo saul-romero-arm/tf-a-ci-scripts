@@ -74,7 +74,7 @@ exclude_paths = [
 
     ("tools/.*", "Host tools"),
 
-    # Temporarily exclude the following files such that tf-cvoerity job can be
+    # Temporarily exclude the following files such that tf-coverity job can be
     # reinstated. Appropriate build commands to compile these files should be
     # added to tf-cov-make script after v2.5 release
     ("drivers/arm/tzc/tzc_dmc500.c", "Temporarily excluded"),
@@ -106,6 +106,7 @@ exclude_paths = [
     ("plat/marvell/armada/a3k/a3700/board/pm_src.c", "Temporarily excluded"),
     ("plat/mediatek/mt8195/aarch64/platform_common.c", "Temporarily excluded"),
     ("plat/mediatek/mt8195/bl31_plat_setup.c", "Temporarily excluded"),
+    ("plat/mediatek/mt8195/drivers/dp/mt_dp.c", "Temporarily excluded"),
     ("plat/mediatek/mt8195/drivers/gpio/mtgpio.c", "Temporarily excluded"),
     ("plat/mediatek/mt8195/drivers/mcdi/mt_cpu_pm.c", "Temporarily excluded"),
     ("plat/mediatek/mt8195/drivers/mcdi/mt_cpu_pm_cpc.c", "Temporarily excluded"),
