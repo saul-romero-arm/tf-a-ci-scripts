@@ -6,7 +6,7 @@
 #
 
 post_fetch_tf_resource() {
-        local model="matterhornx4"
+        local model="cortex-a710"
 
 	model="$model" \
 	cache_state_modelled="0" \

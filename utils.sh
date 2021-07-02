@@ -306,8 +306,8 @@ model_build_11_12="38"
 model_flavour_11_12="Linux64_GCC-6.4"
 
 # Model revisions
-model_version="${model_version:-11.14}"
-model_build="${model_build:-21}"
+model_version="${model_version:-11.15}"
+model_build="${model_build:-14}"
 model_flavour="${model_flavour:-Linux64_GCC-6.4}"
 
 # Model snapshots from filer are not normally not accessible from developer
