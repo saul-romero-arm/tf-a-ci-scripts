@@ -69,6 +69,7 @@ ${spmc_manifest+--data ${data_instance}=$spmc_manifest@${spmc_manifest_addr:?}}
 ${sp1_pkg+--data ${data_instance}=$sp1_pkg@${sp1_addr:?}}
 ${sp2_pkg+--data ${data_instance}=$sp2_pkg@${sp2_addr:?}}
 ${sp3_pkg+--data ${data_instance}=$sp3_pkg@${sp3_addr:?}}
+${sp4_pkg+--data ${data_instance}=$sp4_pkg@${sp4_addr:?}}
 
 ${ns_bl1u_bin+--data ${data_instance}=$ns_bl1u_bin@$ns_bl1u_addr}
 ${fwu_fip_bin+--data ${data_instance}=$fwu_fip_bin@$fwu_fip_addr}
