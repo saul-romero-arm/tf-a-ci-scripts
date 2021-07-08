@@ -271,9 +271,11 @@ make $(common_flags) PLAT=morello all
 # We don't need to clean between each build here because we only do one build
 # per platform so we don't hit the build flags dependency problem.
 
+# Platforms from Mediatek
 make PLAT=mt8173 $(common_flags) all
 make PLAT=mt8183 $(common_flags) all
 make PLAT=mt8192 $(common_flags) COREBOOT=1 all
+make PLAT=mt8195 $(common_flags) COREBOOT=1 all
 
 # Platforms from Qualcomm
 make PLAT=sc7180 $(common_flags) COREBOOT=1 all
