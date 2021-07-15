@@ -12,6 +12,8 @@ test_setup() {
 }
 
 pre_tf_build() {
+	targets="all mrvl_flash" set_tf_build_targets
+
 	pushd "$workspace"
 
 	if [ ! -d "mv-ddr-marvell" ]; then
