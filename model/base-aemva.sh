@@ -9,6 +9,10 @@ set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/external/mo
 
 default_var sve_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/sve2-HEAD/ScalableVectorExtension.so"
 
+default_var etm_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/ETMv4ExamplePlugin.so"
+
+default_var ete_plugin_path "$warehouse/SysGen/ETE/0.0/79/external/lib/Linux64_GCC-6.4/libete-plugin.so"
+
 default_var is_dual_cluster 0
 
 source "$ci_root/model/base-aemva-common.sh"

@@ -67,6 +67,18 @@ reset_var mpidr_layout
 # is multi-threading compatible
 reset_var supports_multi_threading
 
+# ETM plugin to access ETM trace system registers
+reset_var etm_plugin
+
+# ETE plugin to access ETE trace system registers
+reset_var ete_plugin
+
+# Trace filter register support
+reset_var supports_trace_filter_regs
+
+# Trace buffer control register support
+reset_var supports_trace_buffer_control_regs
+
 source "$ci_root/model/fvp_common.sh"
 
 #------------ Common configuration --------------
@@ -89,6 +101,9 @@ ${bmcov_plugin+--plugin=$bmcov_plugin_path}
 
 ${nvcounter_version+-C bp.trusted_nv_counter.version=$nvcounter_version}
 ${nvcounter_diag+-C bp.trusted_nv_counter.diagnostics=$nvcounter_diag}
+
+${etm_plugin+--plugin=$etm_plugin_path}
+${ete_plugin+--plugin=$ete_plugin_path}
 EOF
 
 # TFTF Reboot/Shutdown tests
@@ -154,6 +169,8 @@ ${etm_present+-C cluster0.cpu0.etm-present=$etm_present}
 ${etm_present+-C cluster0.cpu1.etm-present=$etm_present}
 ${etm_present+-C cluster0.cpu2.etm-present=$etm_present}
 ${etm_present+-C cluster0.cpu3.etm-present=$etm_present}
+${supports_trace_filter_regs+-C cluster0.has_self_hosted_trace_extension=$supports_trace_filter_regs}
+${supports_trace_buffer_control_regs+-C cluster0.has_trbe=$supports_trace_buffer_control_regs}
 
 EOF
 
@@ -262,6 +279,8 @@ ${etm_present+-C cluster1.cpu0.etm-present=$etm_present}
 ${etm_present+-C cluster1.cpu1.etm-present=$etm_present}
 ${etm_present+-C cluster1.cpu2.etm-present=$etm_present}
 ${etm_present+-C cluster1.cpu3.etm-present=$etm_present}
+${supports_system_trace_filter_regs+-C cluster1.has_self_hosted_trace_extension=$supports_system_trace_filter_regs}
+${supports_trace_buffer_control_regs+-C cluster1.has_trbe=$supports_trace_buffer_control_regs}
 
 EOF
 
