@@ -12,6 +12,11 @@ default_var quantum 1000
 default_var data_instance cluster0.cpu0
 default_var cache_state_modelled 1
 default_var print_stat 1
+# Trace unit functionally works in FVP model by enabling ETM/ETE trace
+# unit along with its plugin.
+# Hence disabled ETM by default, and enable it along with its plugin whenever
+# needed.
+default_var etm_present 0
 
 reset_var has_bl1
 reset_var has_fip

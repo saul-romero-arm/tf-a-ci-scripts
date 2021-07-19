@@ -53,4 +53,21 @@ ${gicv3_gicv2_only+-C gicv3.gicv2-only=$gicv3_gicv2_only}
 
 ${ccn502_cache_size_in_kbytes+-C ccn502.cache_size_in_kbytes=$ccn502_cache_size_in_kbytes}
 
+${etm_present+-C cluster0.cpu0.etm-present=$etm_present}
+${etm_present+-C cluster0.cpu1.etm-present=$etm_present}
+${etm_present+-C cluster0.cpu2.etm-present=$etm_present}
+${etm_present+-C cluster0.cpu3.etm-present=$etm_present}
+${etm_present+-C cluster1.cpu0.etm-present=$etm_present}
+${etm_present+-C cluster1.cpu1.etm-present=$etm_present}
+${etm_present+-C cluster1.cpu2.etm-present=$etm_present}
+${etm_present+-C cluster1.cpu3.etm-present=$etm_present}
+${etm_present+-C cluster2.cpu0.etm-present=$etm_present}
+${etm_present+-C cluster2.cpu1.etm-present=$etm_present}
+${etm_present+-C cluster2.cpu2.etm-present=$etm_present}
+${etm_present+-C cluster2.cpu3.etm-present=$etm_present}
+${etm_present+-C cluster3.cpu0.etm-present=$etm_present}
+${etm_present+-C cluster3.cpu1.etm-present=$etm_present}
+${etm_present+-C cluster3.cpu2.etm-present=$etm_present}
+${etm_present+-C cluster3.cpu3.etm-present=$etm_present}
+
 EOF
