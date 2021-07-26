@@ -61,7 +61,7 @@ lavacli jobs wait $JOB_ID
 
 # Output to the specified directory before uploading artefacts
 mkdir -p "${SAVE_OUTPUT}"
-lavacli jobs logs $JOB_ID > "${SAVE_OUTPUT}/job_output.log"
+curl https://lava.oss.arm.com/scheduler/job/$JOB_ID/log_file/plain > "${SAVE_OUTPUT}/job_output.log"
 cp ${SAVE_OUTPUT}/job_output.log $workspace/artefacts
 
 # Send file(s) to artefacts receiver
