@@ -16,7 +16,7 @@ expect {
 }
 
 expect {
-	"FFA_VERSION returned 1.0"  {
+	"FFA_VERSION returned 1.1"  {
 		puts "<<SP checked FF-A version>>"
 	}
 	timeout {
