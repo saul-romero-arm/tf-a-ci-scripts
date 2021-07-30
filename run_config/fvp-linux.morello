@@ -8,7 +8,7 @@
 fetch_tf_resource() {
 	uart="1" set_primary="1" file="linux-rd-busybox.exp" track_expect
 
-	url="$morello_prebuilts/grub-busybox.img" saveas="busybox.bin" fetch_file
+	url="$morello_prebuilts/busybox.img" saveas="busybox.bin" fetch_file
 
 	archive_file "busybox.bin"
 

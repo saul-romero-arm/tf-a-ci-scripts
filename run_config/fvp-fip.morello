@@ -5,6 +5,26 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 post_tf_build() {
+	#Fetch pre-built SCP/MCP binaries if they haven't been built
+	if [ ! -f "$archive/mcp_rom.bin" ]; then
+		url="$morello_prebuilts/mcp_rom.bin" fetch_file
+		archive_file "mcp_rom.bin"
+	fi
+
+	if [ ! -f "$archive/scp_rom.bin" ]; then
+		url="$morello_prebuilts/scp_rom.bin" fetch_file
+		archive_file "scp_rom.bin"
+	fi
+
+	if [ ! -f "$archive/scp_ramfw_fvp.bin" ]; then
+		url="$morello_prebuilts/scp_ramfw_fvp.bin" fetch_file
+		archive_file "scp_ramfw_fvp.bin"
+	fi
+
+	if [ ! -f "$archive/mcp_ramfw_fvp.bin" ]; then
+		url="$morello_prebuilts/mcp_ramfw_fvp.bin" fetch_file
+		archive_file "mcp_ramfw_fvp.bin"
+	fi
 
 	# Create FIP for SCP
 	"$fiptool" create --soc-fw "$tf_root/build/morello/$bin_mode/bl31.bin" --scp-fw "$archive/scp_ramfw_fvp.bin" "scp_fw.bin"
