@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -162,6 +162,9 @@ clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} MEASURED_BOOT=1
 
 # CoT descriptors in device tree
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} COT_DESC_IN_DTB=1 USE_ROMLIB=1
+
+# PSA FWU support
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_GPT_SUPPORT=1 PSA_FWU_SUPPORT=1 USE_ROMLIB=1
 
 #
 # Juno platform
