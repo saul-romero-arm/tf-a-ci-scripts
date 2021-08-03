@@ -270,6 +270,25 @@ make $(common_flags) PLAT=tc TARGET_PLATFORM=1 ${ARM_TBB_OPTIONS} all
 #
 make $(common_flags) PLAT=morello all
 
+#
+# diphda Platform
+#
+
+make $(common_flags) \
+     PLAT=diphda \
+     SPD=spmd \
+     TARGET_PLATFORM=fpga \
+     ENABLE_STACK_PROTECTOR=strong \
+     ENABLE_PIE=1 \
+     BL2_AT_EL3=1 \
+     SPMD_SPM_AT_SEL2=0 \
+     ${ARM_TBB_OPTIONS} \
+     CREATE_KEYS=1 \
+     COT=tbbr \
+     ROT_KEY=plat/arm/board/common/rotpk/arm_rotprivk_rsa.pem \
+     bl2 \
+     bl31
+
 # Partners' platforms.
 # Enable as many features as possible.
 # We don't need to clean between each build here because we only do one build
