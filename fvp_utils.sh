@@ -93,6 +93,7 @@ fvp_models=(
 [css-rdn1edgex2]=";;;"
 [css-sgi575]=";;;"
 [tc0]=";;;"
+[tc1]=";;;"
 )
 
 

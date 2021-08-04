@@ -260,9 +260,10 @@ make PLAT=arm_fpga $(common_flags) CROSS_COMPILE=aarch64-none-elf- \
     FPGA_PRELOADED_DTB_BASE=0x88000000 PRELOADED_BL33_BASE=0x82080000 all
 
 #
-# Total Compute platform
+# Total Compute platforms
 #
-make $(common_flags) PLAT=tc0 ${ARM_TBB_OPTIONS} all
+make $(common_flags) PLAT=tc TARGET_PLATFORM=0 ${ARM_TBB_OPTIONS} all
+make $(common_flags) PLAT=tc TARGET_PLATFORM=1 ${ARM_TBB_OPTIONS} all
 
 #
 # Morello platform

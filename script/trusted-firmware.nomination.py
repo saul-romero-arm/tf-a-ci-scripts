@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -28,9 +28,9 @@ nomination_rules = {
              "tf-l3-boot-tests-css/fvp-sgi575-tbb,fvp-sgi575-default:fvp-tftf-fip.tftf-sgi575",
              "tf-l2-coverity-misra-nominated/fvp-sgi575-tbb:coverity-tf-misra.diff"],
 
-        # Run Coverity MISRA checks for tc0 platform changes
-        "path:plat/arm/board/tc0":
-            ["tf-l2-coverity-misra-nominated/fvp-tc0-tbb:coverity-tf-misra.diff"],
+        # Run Coverity MISRA checks for tc platform changes
+        "path:plat/arm/board/tc":
+            ["tf-l2-coverity-misra-nominated/fvp-tc-tbb:coverity-tf-misra.diff"],
 
          # Run Coverity MISRA checks for n1sdp platform changes
         "path:plat/arm/board/n1sdp":
