@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -58,6 +58,20 @@ def retry_job(cmd, retries):
 
 
 if __name__ == "__main__":
+
+    # To deploy and boot the artefacts on a board in LAVA a platform specific
+    # yaml file should be dispatched to LAVA. The below logic will identify
+    # the name of the yaml file at run time for the platform defined in run_cfg.
+    platform_list = ['n1sdp', 'juno']
+
+    run_cfg = os.environ["RUN_CONFIG"]
+    res = [i for i in platform_list if i in run_cfg]
+    if res:
+        platform_yaml=''.join(res)+'.yaml'
+    else:
+        logging.critical("Exiting: Platform not found for LAVA in run-config %s", os.environ["RUN_CONFIG"])
+        sys.exit(-1)
+
     parser = argparse.ArgumentParser(
         description="Lava job runner with infrastructure error dectection and retry."
     )
@@ -70,7 +84,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "job",
         nargs="?",
-        default=os.path.join("artefacts", os.environ["BIN_MODE"], "juno.yaml"),
+        default=os.path.join("artefacts", os.environ["BIN_MODE"], platform_yaml),
         help="the Lava job description file",
     )
     parser.add_argument(

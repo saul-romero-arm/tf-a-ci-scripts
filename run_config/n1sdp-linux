@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_fetch_tf_resource() {
+        gen_recovery_image_n1sdp "$archive/n1sdp-board-firmware.zip"
+        payload_type="linux" gen_n1sdp_yaml
+}

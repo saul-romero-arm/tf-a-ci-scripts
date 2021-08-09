@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2021 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build() {
+        # Create FIP for SCP
+        "$fiptool" create --soc-fw "$tf_root/build/n1sdp/$bin_mode/bl31.bin" --scp-fw "$scp_root/build/product/n1sdp/scp_ramfw/$mode/bin/scp_ramfw.bin" "scp_fw.bin"
+        archive_file "scp_fw.bin"
+
+        # Create FIP for MCP, this needs fixed uuid for now
+        "$fiptool" create --blob uuid=54464222-a4cf-4bf8-b1b6-cee7dade539e,file="$scp_root/build/product/n1sdp/mcp_ramfw/$mode/bin/mcp_ramfw.bin" "mcp_fw.bin"
+        archive_file "mcp_fw.bin"
+}
