@@ -109,6 +109,18 @@ else
 fi
 echo
 
+# Check to ensure newly added source files are detected for Coverity Scan analysis
+
+echo 'Checking whether the newly added source files are detected for Coverity Scan analysis...'
+echo
+"$CI_ROOT"/script/static-checks/static-checks-detect-newly-added-files.sh
+if [ "$?" != 0 ]; then
+   echo "Files Detection check: FAILURE"
+   ((ERROR_COUNT++))
+else
+   echo "Files Detection check: PASS"
+fi
+echo
 
 # Check error count
 
