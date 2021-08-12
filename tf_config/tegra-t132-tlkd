@@ -1,4 +1,0 @@
-CROSS_COMPILE=aarch64-none-elf-
-PLAT=tegra
-SPD=tlkd
-TARGET_SOC=t132
