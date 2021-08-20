@@ -60,6 +60,9 @@ reset_var nvcounter_diag
 # Enable SMMUv3 functionality
 reset_var has_smmuv3_params
 
+# Enable FEAT_RME
+reset_var has_rme
+
 # Layout of MPIDR. 0=AFF0 is CPUID, 1=AFF1 is CPUID
 reset_var mpidr_layout
 
@@ -114,6 +117,14 @@ if [ "$retain_flash" = "1" ]; then
 -C bp.flashloader0.fnameWrite=$flashloader0_fwrite
 -C bp.pl011_uart0.untimed_fifos=1
 -C bp.ve_sysregs.mmbSiteDefault=0
+EOF
+fi
+
+# FEAT_RME is enabled
+if [ "$has_rme" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C bp.refcounter.non_arch_start_at_default=1
+-C bp.refcounter.use_real_time=0
 EOF
 fi
 
@@ -175,7 +186,23 @@ ${supports_trace_buffer_control_regs+-C cluster0.has_trbe=$supports_trace_buffer
 EOF
 
 if [ "$has_smmuv3_params" = "1" ]; then
-	cat <<EOF >>"$model_param_file"
+# The pci.pci_smmuv3.mmu.SMMU_IDR5
+# parameter is modified for 48 bit
+# physical address if rme is enabled.
+# Also ignores the tracing parameters.
+	if [ "$has_rme" = "1" ]; then
+		cat <<EOF >>"$model_param_file"
+-C pci.pci_smmuv3.mmu.SMMU_AIDR=2
+-C pci.pci_smmuv3.mmu.SMMU_IDR0=0x0046123B
+-C pci.pci_smmuv3.mmu.SMMU_IDR1=0x00600002
+-C pci.pci_smmuv3.mmu.SMMU_IDR3=0x1714
+-C pci.pci_smmuv3.mmu.SMMU_IDR5=0xFFFF0475
+-C pci.pci_smmuv3.mmu.SMMU_S_IDR1=0xA0000002
+-C pci.pci_smmuv3.mmu.SMMU_S_IDR2=0
+-C pci.pci_smmuv3.mmu.SMMU_S_IDR3=0
+EOF
+	else
+		cat <<EOF >>"$model_param_file"
 -C pci.pci_smmuv3.mmu.SMMU_AIDR=2
 -C pci.pci_smmuv3.mmu.SMMU_IDR0=0x0046123B
 -C pci.pci_smmuv3.mmu.SMMU_IDR1=0x00600002
@@ -193,6 +220,7 @@ if [ "$has_smmuv3_params" = "1" ]; then
 -C TRACE.GenericTrace.trace-sources=verbose_commentary,smmu_initial_transaction,smmu_final_transaction,*.pci.pci_smmuv3.mmu.*.*,*.pci.smmulogger.*,*.pci.tbu0_pre_smmu_logger.*,FVP_Base_RevC_2xAEMv8A.pci.pci_smmuv3,smmu_poison_tw_data
 --plugin $warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/GenericTrace.so
 EOF
+	fi
 fi
 
 # Parameters to select architecture version
@@ -227,6 +255,21 @@ if [ "$fault_inject" = "1" ]; then
 -C cluster0.has_ras=2
 -C cluster0.error_record_feature_register='{"INJ":0x1,"ED":0x1,"UI":0x0,"FI":0x0,"UE":0x1,"CFI":0x0,"CEC":0x0,"RP":0x0,"DUI":0x0,"CEO":0x0}'
 -C cluster0.pseudo_fault_generation_feature_register='{"OF":false,"CI":false,"ER":false,"PN":false,"AV":false,"MV":false,"SYN":false,"UC":true,"UEU":true,"UER":false,"UEO":false,"DE":false,"CE":0,"R":false}'
+EOF
+fi
+
+# FEAT_RME is enabled
+if [ "$has_rme" = "1" ]; then
+        cat <<EOF >>"$model_param_file"
+-C cluster0.has_rme=1
+-C cluster0.has_rndr=1
+-C cluster0.has_v8_7_pmu_extension=2
+-C cluster0.ecv_support_level=2
+-C cluster0.gicv3.cpuintf-mmap-access-level=2
+-C cluster0.gicv4.mask-virtual-interrupt=1
+-C cluster0.gicv3.without-DS-support=1
+-C cluster0.max_32bit_el=-1
+-C cluster0.PA_SIZE=48
 EOF
 fi
 
@@ -316,6 +359,21 @@ if [ "$fault_inject" = "1" ]; then
 -C cluster1.has_ras=2
 -C cluster1.error_record_feature_register='{"INJ":0x1,"ED":0x1,"UI":0x0,"FI":0x0,"UE":0x1,"CFI":0x0,"CEC":0x0,"RP":0x0,"DUI":0x0,"CEO":0x0}'
 -C cluster1.pseudo_fault_generation_feature_register='{"OF":false,"CI":false,"ER":false,"PN":false,"AV":false,"MV":false,"SYN":false,"UC":true,"UEU":true,"UER":false,"UEO":false,"DE":false,"CE":0,"R":false}'
+EOF
+fi
+
+# FEAT_RME is enabled
+if [ "$has_rme" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster1.has_rme=1
+-C cluster1.has_rndr=1
+-C cluster1.has_v8_7_pmu_extension=2
+-C cluster1.ecv_support_level=2
+-C cluster1.gicv3.cpuintf-mmap-access-level=2
+-C cluster1.gicv4.mask-virtual-interrupt=1
+-C cluster1.gicv3.without-DS-support=1
+-C cluster1.max_32bit_el=-1
+-C cluster1.PA_SIZE=48
 EOF
 fi
 fi

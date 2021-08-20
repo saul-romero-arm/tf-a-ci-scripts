@@ -169,6 +169,9 @@ clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_GPT_SUPPORT=1 PSA_FWU_SUPPO
 # FVP-R platform
 clean_build PLAT=fvp_r $(common_flags) all
 
+# FEAT_RME
+clean_build $fvp_common_flags ENABLE_RME=1
+
 #
 # Juno platform
 # We'll use the following flags for all Juno builds.
