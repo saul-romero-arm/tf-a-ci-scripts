@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -11,7 +11,7 @@ post_tf_build() {
 
 	# Use SCP binary from SCP build if it exists, or fetch pre-built ones.
 	if [ ! -f "$archive/scp_ramfw.bin" ]; then
-		url="$scp_prebuilts/tc1/scp_ramfw.bin" fetch_file
+		url="$scp_prebuilts/tc$plat_variant/scp_ramfw.bin" fetch_file
 		archive_file "scp_ramfw.bin"
 	fi
 

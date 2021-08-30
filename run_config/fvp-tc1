@@ -5,17 +5,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-fetch_tf_resource() {
-	# Use SCP binary from SCP build if it exists, or fetch pre-built ones.
-	if [ ! -f "$archive/scp_romfw.bin" ]; then
-		url="$scp_prebuilts/tc1/scp_romfw.bin" fetch_file
-		archive_file "scp_romfw.bin"
-	fi
-
-	# Hold scp terminal_s0
-	uart="0" file="hold_uart.exp" track_expect
-}
-
 post_fetch_tf_resource() {
         local model="tc1"
 

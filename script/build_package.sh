@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -1371,6 +1371,8 @@ for mode in $modes; do
 		echo "##########"
 
 		plat_utils="$(get_tf_opt PLAT_UTILS)"
+		export plat_variant="$(get_tf_opt TARGET_PLATFORM)"
+
 		if [ -z ${plat_utils} ]; then
 			# Source platform-specific utilities.
 			plat="$(get_tf_opt PLAT)"

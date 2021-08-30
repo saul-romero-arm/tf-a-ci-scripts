@@ -17,6 +17,8 @@ reset_var cluster_1_num_cores
 reset_var aarch64_only
 reset_var aarch32
 
+reset_var plat_variant
+
 #------------ GIC configuration --------------
 
 # GICv2 compatibility is not supported and GICD_CTLR.ARE_* is always one
