@@ -477,10 +477,42 @@ clean_build PLAT=rzg $(common_flags) \
     RCAR_DRAM_SPLIT=2 RCAR_LOSSY_ENABLE=1 SPD=none
 
 # Platforms from ST
+# STM32MP1 SDMMC boot
+make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
+    $(common_flags) ARM_ARCH_MAJOR=7 STM32MP_SDMMC=1 \
+    BUILD_PLAT=build/stm32mp1-sdmmc/debug \
+    ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl2 bl32
+
+# STM32MP1 eMMC boot
 make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
     $(common_flags) ARM_ARCH_MAJOR=7 STM32MP_EMMC=1 \
-    STM32MP_RAW_NAND=1 STM32MP_SDMMC=1 STM32MP_SPI_NAND=1 STM32MP_SPI_NOR=1 \
-    ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl1 bl2 bl32
+    BUILD_PLAT=build/stm32mp1-emmc/debug \
+    ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl2 bl32
+
+# STM32MP1 Raw NAND boot
+make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
+    $(common_flags) ARM_ARCH_MAJOR=7 STM32MP_RAW_NAND=1 \
+    BUILD_PLAT=build/stm32mp1-nand/debug \
+    ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl2 bl32
+
+# STM32MP1 SPI NAND boot
+make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
+    $(common_flags) ARM_ARCH_MAJOR=7 STM32MP_SPI_NAND=1 \
+    BUILD_PLAT=build/stm32mp1-snand/debug \
+    ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl2 bl32
+
+# STM32MP1 SPI NOR boot
+make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
+    $(common_flags) ARM_ARCH_MAJOR=7 STM32MP_SPI_NOR=1 \
+    BUILD_PLAT=build/stm32mp1-snor/debug \
+    ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl2 bl32
+
+# STM32MP1 SDMMC boot without FIP
+make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
+    $(common_flags) ARM_ARCH_MAJOR=7 STM32MP_SDMMC=1 \
+    BUILD_PLAT=build/stm32mp1-sdmmc-stm32image/debug \
+    STM32MP_USE_STM32IMAGE=1 \
+    ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl2 bl32
 
 # Platforms from TI
 make PLAT=k3 $(common_flags) all
