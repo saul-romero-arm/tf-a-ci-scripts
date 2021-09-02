@@ -15,7 +15,7 @@ clean_build()
     local flags="$*"
     echo "Building TF with the following build flags:"
     echo "  $flags"
-    make $flags clean
+    make distclean
     make $flags all
     echo "Build config complete."
     echo
