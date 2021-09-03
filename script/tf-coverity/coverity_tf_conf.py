@@ -35,6 +35,8 @@ exclude_paths = [
     ("plat/nvidia/tegra/common/tegra_gicv3.c", "Not used by any upstream nvidia platform"),
     ("plat/qemu/common/sp_min/sp_min_setup.c", "Not used in any upstream platform - see GENFW-2164"),
     ("plat/rockchip/rk3399/drivers/m0/.*", "Work around the lack of support for the M0 compiler in the scripts"),
+    ("drivers/arm/gic/v3/gic600ae_fmu.c", "Not used by any upstream platform"),
+    ("drivers/arm/gic/v3/gic600ae_fmu_helpers.c", "Not used by any upstream platform"),
 
     # The following block is excluding files that are impossible to include in a build due to a missing file
     # this should be removed as soon as it would be possible to build stingray platform with SCP_BL2 option
