@@ -5,6 +5,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
+pre_tftf_build() {
+	# Build Cactus and Ivy images only
+	targets="cactus ivy" set_tftf_build_targets
+}
+
 post_tf_build() {
 	#
 	# To build SP packages in TF-A we need to build FIP.
@@ -31,10 +36,10 @@ post_tf_build() {
 
 fetch_tf_resource() {
 	url="$tfa_downloads/spm/07-29-2021/initrd.img" saveas="initrd.bin" fetch_file
-	url="$tfa_downloads/spm/07-29-2021/manifest.dtb" fetch_file
+	url="$tfa_downloads/spm/07-29-2021/manifest.dtb" saveas="dtb.bin" fetch_file
 
 	archive_file "initrd.bin"
-	archive_file "manifest.dtb"
+	archive_file "dtb.bin"
 
 	# Expect scripts
 	uart="0" file="spm-linux-uart0.exp" track_expect
@@ -59,10 +64,9 @@ post_fetch_tf_resource() {
 	sp2_pkg="cactus-secondary.pkg" \
 	sp3_pkg="cactus-tertiary.pkg" \
 	sp4_pkg="ivy.pkg" \
-	initrd_bin="initrd.bin" \
-	el3_payload_bin="manifest.dtb" \
+	dtb_addr=0x80000000 \
 	has_smmuv3_params="1" \
 		gen_model_params
 
-	model="$model" model_dtb="manifest.dtb" gen_fvp_yaml
+	model="$model" model_dtb="dtb.bin" gen_fvp_yaml
 }
