@@ -518,7 +518,7 @@ make PLAT=poplar $(common_flags) all
 # Raspberry Pi Platforms
 make PLAT=rpi3 $(common_flags) ${TBB_OPTIONS} \
     ENABLE_STACK_PROTECTOR=strong PRELOADED_BL33_BASE=0xDEADBEEF all
-make PLAT=rpi4 $(common_flags) all
+clean_build PLAT=rpi4 $(common_flags) SMC_PCI_SUPPORT=1 all
 
 # Cannot use $(common_flags) for LS1043 platform, as then
 # the binaries do not fit in memory.
