@@ -32,9 +32,10 @@ nomination_rules = {
         "path:plat/arm/board/tc":
             ["tf-l2-coverity-misra-nominated/fvp-tc-tbb:coverity-tf-misra.diff"],
 
-         # Run Coverity MISRA checks for n1sdp platform changes
+         # Run Coverity MISRA checks and boot test for n1sdp platform changes
         "path:plat/arm/board/n1sdp":
-            ["tf-l2-coverity-misra-nominated/n1sdp-default:coverity-tf-misra.diff"],
+            ["tf-l2-coverity-misra-nominated/n1sdp-default:coverity-tf-misra.diff",
+             "tf-l3-boot-tests-n1sdp/n1sdp-default:n1sdp-linux-fip-firmware-debug"],
 
         # Run Coverity MISRA checks for arm_fpga platform changes
         "path:plat/arm/board/arm_fpga":
