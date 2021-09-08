@@ -6,4 +6,4 @@
 # Expect script for Trusted Firmware Test Framework
 #
 
-expect_string+=('Translation tables are now read-only at EL1.')
+expect_string+=('i;Translation tables are now read-only at EL1.')

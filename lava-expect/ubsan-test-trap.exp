@@ -9,4 +9,4 @@
 # Value for trap BRK instruction
 trap_value=0x00003e8
 
-expect_string+=("Unexpected BRK instruction with value $trap_value")
+expect_string+=("i;Unexpected BRK instruction with value $trap_value")

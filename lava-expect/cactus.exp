@@ -6,6 +6,6 @@
 # Expect script for the test Secure Partition Cactus
 #
 
-expect_string+=('Booting test Secure Partition Cactus')
+expect_string+=('i;Booting test Secure Partition Cactus')
 
 source $ci_root/lava-expect/uart-hold.inc

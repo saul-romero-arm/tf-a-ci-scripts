@@ -8,5 +8,5 @@
 # This script is not standalone and should be sourced by a top expect script.
 #
 
-expect_string+=('init.sh')
-expect_string+=('.* # ')
+expect_string+=('i;init.sh')
+expect_string+=('i;.* # ')

@@ -6,4 +6,4 @@
 # Script to interact with Trusted Firmware when resetting to BL31.
 #
 
-expect_string+=('NOTICE:  BL3-?1:')
+expect_string+=('i;NOTICE:  BL3-?1:')

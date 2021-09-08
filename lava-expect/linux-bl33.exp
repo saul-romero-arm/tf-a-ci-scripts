@@ -10,12 +10,12 @@
 source $ci_root/lava-expect/trusted-firmware.inc
 
 # Linux kernel boot section
-expect_string+=('Booting Linux on physical CPU')
-expect_string+=('Linux version')
+expect_string+=('i;Booting Linux on physical CPU')
+expect_string+=('i;Linux version')
 
 # The kernel prints some information it takes from the preloaded DTB.
 # Check for following information to see that we actually got the right DTB.
 # 1. Machine model
 # 2. Command line passed via the "/chosen" node
-expect_string+=('Machine model: FVP (Base|Foundation)')
-expect_string+=('Kernel command line: console=ttyAMA0')
+expect_string+=('i;Machine model: FVP (Base|Foundation)')
+expect_string+=('i;Kernel command line: console=ttyAMA0')

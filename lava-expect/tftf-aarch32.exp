@@ -10,8 +10,8 @@ source $ci_root/lava-expect/trusted-firmware-aarch32.inc
 
 prompt='Booting trusted firmware test framework'
 successes='Running in AArch32 HYP mode'
-expect_string+=("${prompt};${successes}")
+expect_string+=("i;${prompt};${successes}")
 
 prompt='Tests Failed  : 0'
 failures='Tests Passed  : 0'
-expect_string+=("${prompt};;${failures}")
+expect_string+=("i;${prompt};;${failures}")

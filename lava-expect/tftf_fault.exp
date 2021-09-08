@@ -8,5 +8,5 @@
 
 # Expect the test to have set a fault message
 if [ -n "${tftf_fault_msg}" ]; then
-    expect_string+=("${tftf_fault_msg}")
+    expect_string+=("i;${tftf_fault_msg}")
 fi

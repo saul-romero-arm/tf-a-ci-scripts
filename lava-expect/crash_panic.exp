@@ -6,4 +6,4 @@
 # Expect script for Trusted Firmware Test Framework
 #
 
-expect_string+=('PANIC at PC :')
+expect_string+=('i;PANIC at PC :')

@@ -12,16 +12,16 @@
 source $ci_root/lava-expect/trusted-firmware.inc
 
 # EDK2 section
-expect_string+=('UEFI firmware')
+expect_string+=('i;UEFI firmware')
 
-expect_string+=('UEFI Interactive Shell')
+expect_string+=('i;UEFI Interactive Shell')
 
-expect_string+=('any other key to continue.;;;\r')
+expect_string+=('i;any other key to continue.;;;\r')
 
-expect_string+=('Shell>;;;fs0:\r')
+expect_string+=('i;Shell>;;;fs0:\r')
 
-expect_string+=('FS0:;;;UefiInfo.efi\r')
+expect_string+=('i;FS0:;;;UefiInfo.efi\r')
 
-expect_string+=('Loading driver at .* UefiInfo.efi')
+expect_string+=('i;Loading driver at .* UefiInfo.efi')
 
-expect_string+=('FS0:')
+expect_string+=('i;FS0:')

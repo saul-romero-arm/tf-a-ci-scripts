@@ -10,9 +10,9 @@ source $ci_root/lava-expect/disable_dyn_auth.inc
 
 prompt='Booting trusted firmware test framework'
 successes='Running at NS-EL(1|2)'
-expect_string+=("${prompt};${successes}")
+expect_string+=("i;${prompt};${successes}")
 
 prompt='Tests Failed  : 0'
 successes='Exiting tests.'
 failures='Tests Passed  : 0'
-expect_string+=("${prompt};${successes};${failures}")
+expect_string+=("i;${prompt};${successes};${failures}")

@@ -6,6 +6,6 @@
 # Expect script for the test Secure Partition Ivy
 #
 
-expect_string+=('Booting test Secure Partition Ivy')
+expect_string+=('i;Booting test Secure Partition Ivy')
 
 source $ci_root/lava-expect/uart-hold.inc

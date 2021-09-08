@@ -11,5 +11,5 @@
 # Trusted Firmware boot section
 source $ci_root/lava-expect/trusted-firmware.inc
 
-expect_string+=('Booting the EL3 test payload')
-expect_string+=('All CPUs booted!')
+expect_string+=('i;Booting the EL3 test payload')
+expect_string+=('i;All CPUs booted!')

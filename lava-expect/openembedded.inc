@@ -8,5 +8,5 @@
 # This script is not standalone and should be sourced by a top expect script.
 #
 
-expect_string+=('INIT:')
-expect_string+=('root@genericarmv8:~#;(Power down|System halted);;shutdown -h now\r')
+expect_string+=('i;INIT:')
+expect_string+=('i;root@genericarmv8:~#;(Power down|System halted);;shutdown -h now\r')

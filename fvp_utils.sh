@@ -622,8 +622,10 @@ gen_fvp_yaml() {
 }
 
 gen_fvp_yaml_expect() {
-    # Loop through all uarts expect files
+
     run_root="$archive/run"
+
+    # Loop through all uarts expect files
     for expect_file in $(find $run_root -name expect); do
 
         # TODO: currently, only handle UART 0
@@ -636,10 +638,21 @@ gen_fvp_yaml_expect() {
                 ;;
         esac
 
-        # Array containing expect strings and populated during run config execution
+        # Array containing "interactive" or "monitor" expect strings and populated during run config execution.
+        # Interactive expect scripts are converted into LAVA Interactive Test Actions (see
+        # https://tf.validation.linaro.org/static/docs/v2/interactive.html#writing-tests-interactive) and
+        # monitor expect scripts are converted into LAVA Monitor Test Actions (see
+        # https://validation.linaro.org/static/docs/v2/actions-test.html#monitor)
+        #
+        # Interactive Expect strings have the format 'i;<prompt>;<succeses>;<failures>;<commands>'
+        # where multiple successes or  failures or commands are separated by @
+        #
+        # Monitor Expect strings have the format 'm;<start>;<end>;<patterns>'
+        # where multiple patterns are separated by @
+        #
         expect_string=()
 
-        # Get the real name of the expect file
+       # Get the real name of the expect file
         expect_file=$(cat $expect_file)
 
         # Source the run_config enviroment variables
@@ -652,100 +665,178 @@ gen_fvp_yaml_expect() {
         expect_file=$ci_root/lava-expect/${expect_file}
         source $expect_file
 
-        # Append the corresponding test-interactive commands
+
         if [ ${#expect_string[@]} -gt 0 ]; then
 
-            cat << EOF
-- test:
-   timeout:
-    minutes: 15
-   interactive:
-EOF
+            # expect loop
             for key in "${!expect_string[@]}"; do
 
-                # Expect strings have the format '<prompt>;<successes>;<failures>', so use these
-                # arrays to store them separately
-                prompts=()
-                successes=()
-                failures=()
-                commands=()
+                # single raw expect string
+                es="${expect_string[${key}]}"
 
-                # Parse expect string values and split into the arrays
-                for es in "${expect_string[@]}"; do
-                    prompts+=("$(echo "${es}" | awk -F ';' '{print $1}')")
-                    successes+=("$(echo "${es}" | awk -F ';' '{print $2}')")
-                    failures+=("$(echo "${es}" | awk -F ';' '{print $3}')")
-                    commands+=("$(echo "${es}" | awk -F ';' '{print $4}')")
-                done
+                # action type: either m or i
+                action="$(echo "${es}" | awk -F ';' '{print $1}')"
 
-                OLD_IFS=$IFS; IFS=$'@'
+                if [ "${action}" = "m" ]; then
 
-                if [[ -n "${prompts[$key]}" && -n "${successes[$key]}" && -n "${failures[$key]}" ]]; then
+                    start="$(echo "${es}" | awk -F ';' '{print $2}')"
+                    end="$(echo "${es}" | awk -F ';' '{print $3}')"
+                    patterns="$(echo "${es}" | awk -F ';' '{print $4}')"
+
                     cat << EOF
-   - name: ${uart_number}_${key}
-     prompts: ['${prompts[$key]}']
-     script:
-     - name: result
-       command: ${commands[$key]}
+- test:
+   monitors:
+   - name: tests
+     start: '${start}'
+     end: '${end}'
 EOF
+                    # Patterns are separated by '@'
+                    OLD_IFS=$IFS; IFS=$'@'
+                    for p in ${patterns}; do
+                        cat << EOF
+     pattern: '$p'
+EOF
+                    done
+                    IFS=$OLD_IFS
                     cat << EOF
+     fixupdict:
+      PASS: pass
+      FAIL: fail
+EOF
+                fi # end of monitor action
+
+                if [ "${action}" = "i" ]; then
+
+                    prompts="$(echo "${es}" | awk -F ';' '{print $2}')"
+                    successes="$(echo "${es}" | awk -F ';' '{print $3}')"
+                    failures="$(echo "${es}" | awk -F ';' '{print $4}')"
+                    commands="$(echo "${es}" | awk -F ';' '{print $5}')"
+
+                    cat << EOF
+- test:
+   interactive:
+EOF
+                    OLD_IFS=$IFS; IFS=$'@'
+
+                    if [[ -n "${prompts}" && -n "${successes}" && -n "${failures}" ]]; then
+                        cat << EOF
+   - name: interactive_${uart_number}_${key}
+     prompts: ['${prompts}']
+     script:
+EOF
+                        if [ -z "${commands}" ]; then
+                            cat <<EOF
+     - name: interactive_command_${uart_number}_${key}
+       command:
+EOF
+                        else
+                            for c in ${commands}; do
+                                cat <<EOF
+     - name: interactive_command_${uart_number}_${key}
+       command: $c
+EOF
+                            done
+                        fi
+                        cat << EOF
        successes:
 EOF
-                    for s in ${successes[$key]}; do
-                        cat <<EOF
+                        for s in ${successes}; do
+                            cat <<EOF
        - message: '$s'
 EOF
-                    done
-                    cat << EOF
+                        done
+                        cat << EOF
        failures:
 EOF
-                    for f in ${failures[$key]}; do
-                        cat <<EOF
+                        for f in ${failures}; do
+                            cat <<EOF
        - message: '$f'
 EOF
-                    done
-                elif [[ -n "${prompts[$key]}" && -n "${successes[$key]}" ]]; then
-                    cat << EOF
-   - name: ${uart_number}_${key}
-     prompts: ['${prompts[$key]}']
+                        done
+                    elif [[ -n "${prompts}" && -n "${successes}" ]]; then
+                        cat << EOF
+   - name: interactive_${uart_number}_${key}
+     prompts: ['${prompts}']
      script:
-     - name: result
-       command: ${commands[$key]}
+EOF
+
+                        if [ -z "${commands}" ]; then
+                            cat <<EOF
+     - name: interactive_command_${uart_number}_${key}
+       command:
+EOF
+                        else
+                            for c in ${commands}; do
+                                cat <<EOF
+     - name: interactive_command_${uart_number}_${key}
+       command: $c
+EOF
+                            done
+                        fi
+                        cat << EOF
        successes:
 EOF
-                    for s in ${successes[$key]}; do
-                        cat <<EOF
+                        for s in ${successes}; do
+                            cat <<EOF
        - message: '$s'
 EOF
-                    done
-                elif [[ -n "${prompts[$key]}" && -n "${failures[$key]}" ]]; then
-                    cat << EOF
-   - name: ${uart_number}_${key}
-     prompts: ['${prompts[$key]}']
+                        done
+
+                    elif [[ -n "${prompts}" && -n "${failures}" ]]; then
+                        cat << EOF
+   - name: interactive_${uart_number}_${key}
+     prompts: ['${prompts}']
      script:
-     - name: result
-       command: ${commands[$key]}
+EOF
+                        if [ -z "${commands}" ]; then
+                            cat <<EOF
+     - name: interactive_command_${uart_number}_${key}
+       command:
+EOF
+                        else
+                            for c in ${commands}; do
+                                cat <<EOF
+     - name: interactive_command_${uart_number}_${key}
+       command: $c
+EOF
+                            done
+                        fi
+                        cat << EOF
        failures:
 EOF
-                    for f in ${failures[$key]}; do
-                        cat <<EOF
+                        for f in ${failures}; do
+                            cat <<EOF
        - message: '$f'
 EOF
-                    done
-
-                else
-                    cat << EOF
-   - name: ${uart_number}_${key}
-     prompts: ['${prompts[$key]}']
+                        done
+                    else
+                        cat << EOF
+   - name: interactive_${uart_number}_${key}
+     prompts: ['${prompts}']
      script:
-     - name: result
-       command: ${commands[$key]}
 EOF
-                fi
-                IFS=$OLD_IFS
-            done
+                        if [ -z "${commands}" ]; then
+                            cat <<EOF
+     - name: interactive_command_${uart_number}_${key}
+       command:
+EOF
+                        else
+                            for c in ${commands}; do
+                                cat <<EOF
+     - name: interactive_command_${uart_number}_${key}
+       command: $c
+EOF
+                            done
+                        fi
+                    fi
+
+                    IFS=$OLD_IFS
+                fi # end of interactive action
+
+            done # end of expect  loop
+
         fi
-    done
+    done # end of uart loop
 }
 
 docker_registry_append() {
