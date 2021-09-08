@@ -66,15 +66,14 @@ for dir in $toplevel $secondlevel; do
 	# This is the heart of the implementation, and probably the most
 	# complicated line in this script. First, we generate the subdirectory
 	# sloc with tokei, in json format. We then filter it with jq. The jq
-	# filter is a foreach loop where we iterate over $x = column name, as
-	# passed in as the first positional argument. Each interation through
-	# the loop, we print out the code value, when it exists, or null + 0.
-	# This takes advantage of the property of null:
+	# filter iterates over the column names as saved in the categories
+	# variable. Each iteration through the loop, we print out the code
+	# value, when it exists, or null + 0. This takes advantage of the
+	# property of null:
 	#  > null can be added to any value, and returns the other value
 	#  > unchanged.
 	tokei --output json $dir \
-		| jq '$ARGS.positional[0][] as $x | .[$x].code + 0' \
-			--jsonargs "$categories" \
+	        | jq " .[$categories[]].code + 0" \
 		| $n2t >> $data
 	echo  >> $data
 done
