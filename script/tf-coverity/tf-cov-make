@@ -359,7 +359,7 @@ make AARCH32_SP=optee ARCH=aarch32 CROSS_COMPILE=arm-none-eabi- PLAT=picopi \
     $(common_flags) all
 make PLAT=imx8mm $(common_flags) all
 make PLAT=imx8mn $(common_flags) all
-make PLAT=imx8mp $(common_flags) all
+make PLAT=imx8mp $(common_flags) NEED_BL2=yes ${TBB_OPTIONS} all
 
 # Due to the limited OCRAM space that can be used for TF-A, build test
 # will report failure caused by too small RAM size, so comment out the
