@@ -87,6 +87,8 @@ def inc_order_is_correct(inc_list, path, commit_hash=""):
     incs = collections.defaultdict(list)
     error_msgs = []
     plat_incs = dir_include_paths("plat") | dir_include_paths("include/plat")
+    plat_common_incs = dir_include_paths("include/plat/common")
+    plat_incs.difference_update(plat_common_incs)
     libc_incs = dir_include_paths("include/lib/libc")
 
     for inc in inc_list:
