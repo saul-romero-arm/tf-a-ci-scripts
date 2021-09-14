@@ -14,6 +14,8 @@
 LOG_FILE=$(mktemp -t files-detection-check.XXXX)
 TFA_PATCH_NEWFILES_LIST=$(mktemp -t tfa-patch-newfiles-list.XXXX)
 EXIT_VALUE=0
+DOC_URL="https://trustedfirmware-a.readthedocs.io/en/latest/process/contributing.html\
+#add-build-configurations"
 
 # Function    : file_updation_report
 # Description : To update the inclusion of files listed in the temp file
@@ -22,31 +24,25 @@ EXIT_VALUE=0
 #				and the Error status is printed.
 function file_updation_report( )
 {
-  echo "========================================================================"
-  echo "New source files have been identified in your patch.."
-  echo >> "$LOG_FILE"
-  echo "New source files have been identified in your patch.." >> "$LOG_FILE"
+  echo "==============================================================================="
+  echo  >> "$LOG_FILE"
+  echo "New source files have been identified in your patch.." | tee -a "$LOG_FILE"
 # Iterating through the patch filenames and logging them onto error report.
   while read filename
   do
-  	echo "$filename"
-    echo "$filename" >> "$LOG_FILE"
+    echo "$filename" | tee -a "$LOG_FILE"
   done < "$TFA_PATCH_NEWFILES_LIST"
 
-  echo
-  echo -e "1. Kindly ensure they are updated in the \"tf-cov-make\" build script as \n \
-well to consider them for Coverity Scan analysis."
-  echo >> "$LOG_FILE"
-  echo -e "1. Kindly ensure they are updated in the \"tf-cov-make\" build script as \n \
-well to consider them for Coverity Scan analysis." >> "$LOG_FILE"
+  echo  | tee -a "$LOG_FILE"
+  echo -e "1. Kindly ensure they are updated in the \"tf-cov-make\" build script as well to \n\
+   consider them for Coverity Scan analysis. Please refer to the tf-a documentation \n\
+   \"$DOC_URL\" \n   for more detailed explanation on adding your new build configurations." \
+  | tee -a "$LOG_FILE"
 
-  echo
-  echo -e "2. Please ignore if files are already updated. Further the Code Maintainer \n \
-will resolve the issue by taking appropriate action."
-  echo >> "$LOG_FILE"
-  echo -e "2. Please ignore if files are already updated. Further the Code Maintainer \n \
-will resolve the issue by taking appropriate action." >> "$LOG_FILE"
-  echo "========================================================================"
+  echo  | tee -a "$LOG_FILE"
+  echo -e "2. Please ignore if files are already updated. Further the Code Maintainer will \n\
+   resolve the issue by taking appropriate action." | tee -a "$LOG_FILE"
+  echo "==============================================================================="
 
   EXIT_VALUE=1
 }
