@@ -71,7 +71,7 @@ nomination_rules = {
 
         # Run Coverity MISRA checks for pauth changes
         "pathre:pauth":
-            ["tf-l2-coverity-misra-nominated/fvp-pauth-standard:coverity-tf-misra.diff"],
+            ["tf-l2-coverity-misra-nominated/fvp-pauth-standard-sdei:coverity-tf-misra.diff"],
 
         # Run Coverity MISRA checks for RAS extension changes
         ("path:lib/extensions/ras", "pathre:fvp_ras"):
