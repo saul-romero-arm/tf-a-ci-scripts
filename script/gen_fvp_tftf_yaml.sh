@@ -18,14 +18,16 @@ job_name: fvp-tftf-{MODEL}
 
 timeouts:
   job:
-    minutes: 60
+    minutes: 30
   action:
-    minutes: 50
+    minutes: 20
   actions:
     auto-login-action:
       seconds: 300
     lava-test-monitor:
-      minutes: 45
+      minutes: 5
+    lava-test-interactive:
+      minutes: 5
     lava-test-shell:
       seconds: 300
     lava-test-retry:
