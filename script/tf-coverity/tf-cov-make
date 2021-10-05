@@ -166,9 +166,6 @@ clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} COT_DESC_IN_DTB=1 USE_ROMLIB=1
 # PSA FWU support
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_GPT_SUPPORT=1 PSA_FWU_SUPPORT=1 USE_ROMLIB=1
 
-# FVP-R platform
-clean_build PLAT=fvp_r $(common_flags) all
-
 # FEAT_RME
 clean_build $fvp_common_flags ENABLE_RME=1
 
@@ -294,6 +291,11 @@ make $(common_flags) \
      ROT_KEY=plat/arm/board/common/rotpk/arm_rotprivk_rsa.pem \
      bl2 \
      bl31
+
+#
+# FVP-R platform
+#
+clean_build $(common_flags) PLAT=fvp_r ${ARM_TBB_OPTIONS} ENABLE_STACK_PROTECTOR=all
 
 # Partners' platforms.
 # Enable as many features as possible.
