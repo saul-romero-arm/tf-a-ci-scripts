@@ -5,6 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
+# model_version, model_build set in post_fetch_tf_resource
 set_model_path "$warehouse/SysGen/SubSystemModels/$model_version/$model_build/models/$model_flavour/FVP_Morello"
 
 cat <<EOF >"$model_param_file"
