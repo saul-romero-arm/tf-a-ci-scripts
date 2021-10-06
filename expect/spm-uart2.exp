@@ -7,17 +7,8 @@
 source [file join [file dirname [info script]] handle-arguments.inc]
 
 expect {
-	"Booting Primary Cactus Secure Partition"  {
+	"Booting Secure Partition"  {
 		puts "<<SP entry>>"
-	}
-	timeout {
-		exit_uart -1
-	}
-}
-
-expect {
-	"FFA_VERSION returned 1.1"  {
-		puts "<<SP checked FF-A version>>"
 	}
 	timeout {
 		exit_uart -1
