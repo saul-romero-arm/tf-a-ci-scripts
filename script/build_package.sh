@@ -805,6 +805,8 @@ EOF
 
 	# Build SPM. Since build output is being directed to the build log, have
 	# descriptor 3 point to the current terminal for build wrappers to vent.
+	export PATH=$PWD/prebuilts/linux-x64/clang/bin:$PWD/prebuilts/linux-x64/dtc:$PATH
+
 	make $make_j_opts $(cat "$config_file") 3>&1 &>>"$build_log" \
 		|| fail_build
 	)
