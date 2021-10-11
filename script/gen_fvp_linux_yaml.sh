@@ -21,9 +21,17 @@ timeouts:
     minutes: 3
   job:
     minutes: 30
+  action:
+    minutes: 20
   actions:
     auto-login-action:
       minutes: 5
+    lava-test-monitor:
+      minutes: 5
+    lava-test-interactive:
+      minutes: 5
+    lava-test-shell:
+      seconds: 300
     http-download:
       minutes: 2
     download-retry:
