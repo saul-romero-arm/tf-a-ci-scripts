@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-pre_tf_build() {
-	# Only build bl1, bl2 and bl32 for this config
-	# Building 'all' fails because of older DTC version.
-	targets="bl1 bl2 bl32" set_tf_build_targets
-}
