@@ -9,4 +9,5 @@
 #
 
 expect_string+=('i;INIT:')
-expect_string+=('i;root@genericarmv8:~#;(Power down|System halted);;shutdown -h now\r')
+expect_string+=('i;root@genericarmv8:~#')
+expect_string+=('i;(Power down|System halted);;;shutdown -h now')
