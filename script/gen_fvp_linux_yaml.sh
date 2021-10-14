@@ -18,7 +18,7 @@ job_name: fvp-linux-{MODEL}
 
 timeouts:
   connection:
-    minutes: 3
+    seconds: 10
   job:
     minutes: 30
   action:

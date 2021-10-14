@@ -39,7 +39,7 @@ timeouts:
     fvp-deploy:
       seconds: 300
   connection:
-    minutes: 3
+    seconds: 10
   connections:
     lava-test-retry:
       seconds: 300
