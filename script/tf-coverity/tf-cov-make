@@ -416,6 +416,8 @@ make PLAT=a70x0 DEBUG=1 SCP_BL2=/dev/null BL33=/dev/null MV_DDR_PATH=$PWD/driver
     CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all mrvl_flash
 make PLAT=a70x0_amc DEBUG=1 SCP_BL2=/dev/null BL33=/dev/null MV_DDR_PATH=$PWD/drivers/marvell/mv_ddr \
     CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all mrvl_flash
+make PLAT=a70x0_mochabin DEBUG=1 SCP_BL2=/dev/null BL33=/dev/null MV_DDR_PATH=$PWD/drivers/marvell/mv_ddr \
+    CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all mrvl_flash
 make PLAT=a80x0_puzzle DEBUG=1 SCP_BL2=/dev/null BL33=/dev/null MV_DDR_PATH=$PWD/drivers/marvell/mv_ddr \
     CROSS_COMPILE="$(set_cross_compile_gcc_linaro_toolchain)" all mrvl_flash
 make PLAT=t9130 DEBUG=1 SCP_BL2=/dev/null BL33=/dev/null MV_DDR_PATH=$PWD/drivers/marvell/mv_ddr \
