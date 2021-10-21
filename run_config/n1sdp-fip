@@ -8,19 +8,19 @@
 post_tf_build() {
         #Fetch pre-built SCP/MCP binaries if they haven't been built
         if [ ! -f "$archive/mcp_rom.bin" ]; then
-                url="$n1sdp_prebuilts/mcp_romfw.bin" saveas="mcp_rom.bin" fetch_file
+                url="$scp_mcp_prebuilts/mcp_romfw.bin" saveas="mcp_rom.bin" fetch_file
                 archive_file "mcp_rom.bin"
         fi
         if [ ! -f "$archive/scp_rom.bin" ]; then
-                url="$n1sdp_prebuilts/scp_romfw.bin" saveas="scp_rom.bin" fetch_file
+                url="$scp_mcp_prebuilts/scp_bl1.bin" saveas="scp_rom.bin" fetch_file
                 archive_file "scp_rom.bin"
         fi
         if [ ! -f "$archive/scp_ram.bin" ]; then
-                url="$n1sdp_prebuilts/scp_ramfw.bin" saveas="scp_ram.bin" fetch_file
+                url="$scp_mcp_prebuilts/scp_bl2.bin" saveas="scp_ram.bin" fetch_file
                 archive_file "scp_ram.bin"
         fi
         if [ ! -f "$archive/mcp_ram.bin" ]; then
-                url="$n1sdp_prebuilts/mcp_ramfw.bin" saveas="mcp_ram.bin" fetch_file
+                url="$scp_mcp_prebuilts/mcp_ramfw.bin" saveas="mcp_ram.bin" fetch_file
                 archive_file "mcp_ram.bin"
         fi
 

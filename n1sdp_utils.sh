@@ -8,6 +8,7 @@
 source "$ci_root/fvp_utils.sh"
 
 n1sdp_prebuilts=${n1sdp_prebuilts:="$tfa_downloads/css/n1sdp"}
+scp_mcp_prebuilts=${scp_mcp_prebuilts:="$scp_mcp_downloads/n1sdp/release"}
 
 get_n1sdp_firmware() {
         url=$n1sdp_firmware_bin_url saveas="n1sdp-board-firmware.zip" fetch_file
