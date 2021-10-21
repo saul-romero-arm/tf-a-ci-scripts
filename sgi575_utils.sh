@@ -9,8 +9,8 @@ source "$ci_root/fvp_utils.sh"
 
 sgi_prebuilts="${sgi_prebuilts:-$css_downloads/sgi/sgi575}"
 
-# Pre-built SCP/MCP v2.8.0 release binaries
-scp_mcp_prebuilts="${scp_mcp_prebuilts:-$css_downloads_280/sgi/sgi575}"
+# Pre-built SCP/MCP binaries
+scp_mcp_prebuilts="${scp_mcp_prebuilts:-$scp_mcp_downloads/sgi575/release}"
 
 fvp_kernels[fvp-sgi-busybox]="$sgi_prebuilts/Image"
 fvp_initrd_urls[fvp-sgi-ramdisk]="$sgi_prebuilts/ramdisk-busybox.img"
