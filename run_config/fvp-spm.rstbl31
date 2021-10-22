@@ -56,15 +56,14 @@ post_fetch_tf_resource() {
 	has_branch_target_exception="1" \
 	restriction_on_speculative_execution="2" \
 	reset_to_bl31="1" \
-	preload_bl33="1" \
-	preload_bl33_bin="$archive/hafnium.bin" \
+	kernel_addr=0x88000000 \
+	kernel_bin="$archive/hafnium.bin" \
 	spmc_manifest="fvp_spmc_manifest.dtb" \
 	spm_bin="$archive/secure_hafnium.bin" \
 	sp1_pkg="cactus-primary.pkg" \
 	sp2_pkg="cactus-secondary.pkg" \
 	sp3_pkg="cactus-tertiary.pkg" \
 	sp4_pkg="ivy.pkg" \
-	dtb_addr=0x80000000 \
 	has_smmuv3_params="1" \
 		gen_model_params
 
