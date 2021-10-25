@@ -170,6 +170,8 @@ ${has_branch_target_exception+-C cluster0.has_branch_target_exception=$has_branc
 
 ${restriction_on_speculative_execution+-C cluster0.restriction_on_speculative_execution=$restriction_on_speculative_execution}
 
+${restriction_on_speculative_execution+-C cluster0.restriction_on_speculative_execution_aarch32=$restriction_on_speculative_execution}
+
 ${gicv3_ext_interrupt_range+-C cluster0.gicv3.extended-interrupt-range-support=$gicv3_ext_interrupt_range}
 
 ${mpidr_layout+-C cluster0.mpidr_layout=$mpidr_layout}
@@ -311,6 +313,8 @@ ${memory_tagging_support_level+-C cluster1.memory_tagging_support_level=$memory_
 ${has_branch_target_exception+-C cluster1.has_branch_target_exception=$has_branch_target_exception}
 
 ${restriction_on_speculative_execution+-C cluster1.restriction_on_speculative_execution=$restriction_on_speculative_execution}
+
+${restriction_on_speculative_execution+-C cluster1.restriction_on_speculative_execution_aarch32=$restriction_on_speculative_execution}
 
 ${gicv3_ext_interrupt_range+-C cluster1.gicv3.extended-interrupt-range-support=$gicv3_ext_interrupt_range}
 

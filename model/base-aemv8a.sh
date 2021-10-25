@@ -7,15 +7,9 @@
 
 # Use revc model
 if  is_arm_jenkins_env || upon "$local_ci"; then
-	# TODO: For now rme-enabled model is located at a differnt location.
-	# Fix this path once the model becomes part of the "external" models.
-	if [ "$has_rme" = "1" ]; then
-		set_model_path "$project_filer/models/rme/FVP_Base_RevC-2xAEMvA_11.15_18/Base_RevC_AEMvA_pkg/models/Linux64_GCC-6.4/FVP_Base_RevC-2xAEMvA"
-	else
-        	set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/external/models/$model_flavour/FVP_Base_RevC-2xAEMvA"
-	fi
+	set_model_path "$warehouse/SysGen/Models/$model_version/$model_build/external/models/$model_flavour/FVP_Base_RevC-2xAEMvA"
 
-        default_var sve_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/sve2-HEAD/ScalableVectorExtension.so"
+	default_var sve_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/sve2-HEAD/ScalableVectorExtension.so"
 else
         # OpenCI enviroment
         source "$ci_root/fvp_utils.sh"
