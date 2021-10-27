@@ -12,10 +12,10 @@ fetch_tf_resource() {
 
 	payload_type="linux" gen_fvp_yaml_template
 	# Use SCP binary from SCP build if it exists, or fetch pre-built ones.
-	if [ ! -f "$archive/scp_romfw.bin" ]; then
+	if [ ! -f "$archive/scp_rom.bin" ]; then
 		# Pick the appropriate binary based on target platform variant
-		url="$scp_prebuilts/tc$plat_variant/scp_romfw.bin" fetch_file
-		archive_file "scp_romfw.bin"
+		url="$scp_prebuilts/tc$plat_variant/scp_romfw.bin" saveas="scp_rom.bin" fetch_file
+		archive_file "scp_rom.bin"
 	fi
 
 	# Hold scp terminal_s0

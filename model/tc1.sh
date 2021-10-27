@@ -9,7 +9,7 @@ set_model_path "$warehouse/SysGen/SubSystemModels/$model_version/$model_build/mo
 
 cat <<EOF >"$model_param_file"
 ${bl1_bin+-C css.trustedBootROMloader.fname=$bl1_bin}
-${scp_romfw_bin+-C css.scp.ROMloader.fname=$scp_romfw_bin}
+${scp_rom_bin+-C css.scp.ROMloader.fname=$scp_rom_bin}
 ${fip_bin+-C board.flashloader0.fname=$fip_bin}
 ${initrd_bin+--data board.dram=$initrd_bin@${initrd_addr:?}}
 ${kernel_bin+--data board.dram=$kernel_bin@${kernel_addr:?}}
