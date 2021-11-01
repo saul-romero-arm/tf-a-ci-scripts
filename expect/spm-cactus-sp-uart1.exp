@@ -1,0 +1,22 @@
+#
+# Copyright (c) 2021, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+# Trusted Firmware boot section
+source [file join [file dirname [info script]] trusted-firmware.inc]
+
+expect {
+	"Booting Secure Partition"  {
+		puts "<<SP entry>>"
+	}
+	timeout {
+		exit_uart -1
+	}
+}
+
+# Hold UART until test completes
+source [file join [file dirname [info script]] uart-hold.inc]

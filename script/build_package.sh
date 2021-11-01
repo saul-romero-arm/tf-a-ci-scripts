@@ -207,13 +207,13 @@ collect_scp_artefacts() {
 # Collect SPM/hafnium artefacts with "secure_" appended to the files
 # generated for SPM(secure hafnium).
 collect_spm_artefacts() {
-	if [ ! -d "${non_secure_from:?}" ] || [ ! -d "${secure_from:?}" ]; then
-		return
+	if [ -d "${non_secure_from:?}" ]; then
+		find "$non_secure_from" \( -name "*.bin" -o -name '*.elf' \) -exec cp -t "${to:?}" '{}' +
 	fi
 
-	find "$non_secure_from" \( -name "*.bin" -o -name '*.elf' \) -exec cp -t "${to:?}" '{}' +
-
-	for f in $(find "$secure_from" \( -name "*.bin" -o -name '*.elf' \)); do cp -- "$f" "${to:?}"/secure_$(basename $f); done
+	if [ -d "${secure_from:?}" ]; then
+		for f in $(find "$secure_from" \( -name "*.bin" -o -name '*.elf' \)); do cp -- "$f" "${to:?}"/secure_$(basename $f); done
+	fi
 }
 
 # Map the UART ID used for expect with the UART descriptor and port
@@ -1364,7 +1364,13 @@ for mode in $modes; do
 		build_spm
 
 		# Show SPM/Hafnium binary details
-		cksum $spm_build_root/hafnium.bin $hafnium_build_root/hafnium.bin
+		cksum $spm_build_root/hafnium.bin
+
+		# Some platforms only have secure configuration enabled. Hence,
+		# non secure hanfnium binary might not be built.
+		if [ -f $hafnium_build_root/hafnium.bin ]; then
+			cksum $hafnium_build_root/hafnium.bin
+		fi
 
 		secure_from="$spm_build_root" non_secure_from="$hafnium_build_root" to="$archive" collect_spm_artefacts
 
