@@ -1,6 +1,6 @@
 diff --git a/plat/arm/board/fvp/aarch64/fvp_fault.S b/plat/arm/board/fvp/aarch64/fvp_fault.S
 new file mode 100644
-index e69de29bb..3a2faca1a 100644
+index 000000000..f6e6bee1e
 --- /dev/null
 +++ b/plat/arm/board/fvp/aarch64/fvp_fault.S
 @@ -0,0 +1,42 @@
@@ -47,12 +47,12 @@ index e69de29bb..3a2faca1a 100644
 +	b	1b
 +endfunc plat_handle_double_fault
 diff --git a/plat/arm/board/fvp/platform.mk b/plat/arm/board/fvp/platform.mk
-index 2b1e0ac70..461932124 100644
+index 0d2c31971..3f90c7ef0 100644
 --- a/plat/arm/board/fvp/platform.mk
 +++ b/plat/arm/board/fvp/platform.mk
-@@ -4,6 +4,8 @@
- # SPDX-License-Identifier: BSD-3-Clause
- #
+@@ -6,6 +6,8 @@
+
+ include common/fdt_wrappers.mk
  
 +BL31_SOURCES		+=	plat/arm/board/fvp/aarch64/fvp_fault.S
 +
