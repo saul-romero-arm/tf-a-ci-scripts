@@ -133,5 +133,5 @@ for item in test_groups.split():
     process_item(item)
 
 print()
-print("{} children to be spawned...".format(num_spawn))
+print("{} test configurations to be built...".format(num_spawn))
 print()
