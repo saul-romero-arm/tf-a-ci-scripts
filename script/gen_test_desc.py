@@ -65,10 +65,17 @@ def gen_desc(group, test):
 
     # Create descriptor. Write the name of the original test config as its
     # content.
-    desc = os.path.join(workspace, "%".join([str(num_spawn).zfill(4), os.path.basename(group),
-        test_config + TEST_SUFFIX]))
+    desc_base = "%".join([str(num_spawn).zfill(4), os.path.basename(group),
+        test_config + TEST_SUFFIX])
+    desc = os.path.join(workspace, desc_base)
     with open(desc, "wt") as fd:
         print(test, file=fd)
+    # Create .testprop file for smoother integration with Jenkins
+    # (allows to pass test config as a normal string param instead
+    # of binary file which takes extra clicks to view).
+    with open(desc + "prop", "wt") as fd:
+        print("TEST_CONFIG={}".format(test), file=fd)
+        print("TEST_DESC={}".format(desc_base), file=fd)
 
     num_spawn += 1
 
