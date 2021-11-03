@@ -169,6 +169,9 @@ clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_GPT_SUPPORT=1 PSA_FWU_SUPPO
 # FEAT_RME
 clean_build $fvp_common_flags ENABLE_RME=1
 
+# SME and HCX features
+clean_build $fvp_common_flags ENABLE_SME_FOR_NS=1 ENABLE_FEAT_HCX=1
+
 #
 # Juno platform
 # We'll use the following flags for all Juno builds.
