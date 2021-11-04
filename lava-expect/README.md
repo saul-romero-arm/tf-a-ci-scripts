@@ -73,13 +73,17 @@ exit_uart -1
 source $ci_root/lava-expect/disable_dyn_auth.inc
 
 prompt='Booting trusted firmware test framework'
-successes='Running at NS-EL(1|2)'
-expect_string+=("i;${prompt};${successes}")
+expect_string+=("i;${prompt}")
+
+prompt='Running at NS-EL(1|2)'
+expect_string+=("i;${prompt}")
 
 prompt='Tests Failed  : 0'
-successes='Exiting tests.'
+expect_string+=("i;${prompt}")
+
+prompt='Exiting tests.'
 failures='Tests Passed  : 0'
-expect_string+=("i;${prompt};${successes};${failures}")
+expect_string+=("i;${prompt};;${failures}")
 ```
 
 The first thing to notice is that all strings are literal (no regex is required) and each are expected
@@ -94,34 +98,32 @@ It is worth noting that each *expect string* **must be** appended `+=` as an
 previous defined expect strings. Also note the leading **`i`** character in the array element,
 indicating a interactive actions.
 
-As indicated above, interactive actions match strings in a specific **order** with a **pass/fail
-criteria**. For the above example, the first expected match is called the `prompt` (in LAVA terms),
-and following it, the passing criteria is defined through the `successes` variable and the failing
-criteria through `failures` variable, defining these at the appended `expect_string` element:
+As indicated above, interactive actions match strings in a specific **order**.
+For the above example, expect strings are matched setting the `prompt` and an optional
+`failures` value, the latter indicating a possible failure string.
+
+*Interactive action strings* should follow the following syntax
 
 ```
-prompt='Tests Failed  : 0'
-successes='Exiting tests.'
-failures='Tests Passed  : 0'
-expect_string+=("i;${prompt};${successes};${failures}")
+expect_string+=("i;<prompts>[;<successes>;<failures>;<commands>]")
 ```
 
-Each *interactive action string* must follow a certain syntax as seen in the above example
+Indicating the `prompts` to match, which can be one or several separated by the `@` char and
+optional `successeses`, `failures` and `commands` strings.
 
-```
-expect_string+=("i;${prompt};${successes};${failures}")
-```
+One good way to explain (or at least understand it) is: If expect_string has a format of `i;<expected>`,
+then output will be matched for `<expected>` (until the end of output or timeout, lack of match is a
+failure in either case). Otherwise, the format is: `i;<prompts>;[<successeses>];[<failures>];[<commands>]`;
+a `<command>` will be sent to DUT, if specified; any output will be matched until next `<prompts>`;
+if `<successes>` is specified, it must be matched **before** appearance of prompt for this testcase
+to be successful (if `<successes>` is not matched before prompt, it's a failure); alternatively,
+if `<failures>` is matched, it's a fast-track failure (otherwise the lack of success output is
+enough to record a failure).
 
-In general, we first match the `prompt`, then after `prompt`,
-match `successes` and `failures` for pass/fail strings. In case different strings
-define the pass/fail criteria, these can be separated with a `@` character:
-
-```
-prompt='A'
-successes='B@C'
-failures='D@E'
-expect_string+=("${prompt};${successes};${failures}")
-```
+Again, this prompts/successes/failures form makes a good sense if actively sending a `<command>`
+and much less sense if not sending any `<command>`. Between these 2 main forms: *passively* matching output
+vs *actively* sending a command to a shell and checking its results, there can be other use cases
+which can be encoded with the full form, but then those would be corner/niche cases most of the cases.
 
 ### Monitor Action Strings
 

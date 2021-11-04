@@ -9,10 +9,14 @@
 source $ci_root/lava-expect/trusted-firmware.inc
 
 prompt='Booting trusted firmware test framework'
-successes='Running at NS-EL(1|2)'
-expect_string+=("i;${prompt};${successes}")
+expect_string+=("i;${prompt}")
+
+prompt='Running at NS-EL(1|2)'
+expect_string+=("i;${prompt}")
 
 prompt='Tests Failed  : 0'
-successes='Exiting tests.'
+expect_string+=("i;${prompt}")
+
+prompt='Exiting tests.'
 failures='Tests Passed  : 0'
-expect_string+=("i;${prompt};${successes};${failures}")
+expect_string+=("i;${prompt};;${failures}")
