@@ -24,4 +24,5 @@ cat <<EOF >"$model_param_file"
 -C soc.pl011_uart0.unbuffered_output=1
 -C soc.pl011_uart1.unbuffered_output=1
 --data css.scp.armcortexm7ct=$scp_ram_bin@$scp_ram_addr
+--data css.mcp.armcortexm7ct=$mcp_ram_bin@$mcp_ram_addr
 EOF

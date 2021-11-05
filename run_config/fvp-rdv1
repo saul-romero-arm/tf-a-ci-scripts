@@ -7,6 +7,10 @@
 
 fetch_tf_resource() {
 	# Fetch the pre-built SCP/MCP binaries if they haven't been built
+	if [ ! -f "$archive/mcp_ram.bin" ]; then
+		url="$scp_mcp_prebuilts/mcp_ramfw.bin" saveas="mcp_ram.bin" fetch_file
+		archive_file "mcp_ram.bin"
+	fi
 	if [ ! -f "$archive/mcp_rom.bin" ]; then
 		url="$scp_mcp_prebuilts/mcp_romfw.bin" saveas="mcp_rom.bin" fetch_file
 		archive_file "mcp_rom.bin"
