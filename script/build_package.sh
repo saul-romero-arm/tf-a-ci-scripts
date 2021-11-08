@@ -268,6 +268,14 @@ track_expect() {
 		echo "Primary UART set to UART$uart."
 		set_run_env "primary_uart" "$uart"
 	fi
+
+	# UART used by payload(such as tftf, Linux) may not be the same as the
+	# primary UART. Set a run environment variable to track the payload
+	# UART which is tracked to check if the test has finished sucessfully.
+	if upon "$set_payload_uart"; then
+		echo "Payload uses UART$uart."
+		set_run_env "payload_uart" "$uart"
+	fi
 }
 
 # Extract a FIP in $1 using fiptool

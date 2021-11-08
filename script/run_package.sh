@@ -162,6 +162,9 @@ if [ -z "$model_path" ]; then
 	die "No model path set by package!"
 fi
 
+# Assume primary UART is used by test payload as well
+payload_uart="${payload_uart:-$primary_uart}"
+
 # Launch model with parameters
 model_out="$run_root/model_log.txt"
 run_sh="$run_root/run.sh"
@@ -360,11 +363,11 @@ for u in $(seq 0 $(( $num_uarts - 1 )) | tac); do
 
 	if [ "$u" = "$primary_uart" ]; then
 		star="*"
-		uart_name="primary_uart"
 	else
 		star=" "
-		uart_name="uart$u"
 	fi
+
+	uart_name="uart$u"
 
 	# Launch expect after exporting required variables
 	(
@@ -409,8 +412,8 @@ while :; do
 		break
 	fi
 
-	# We're done if the primary UART exits success
-	if [ -f "$pid_dir/primary_uart.success" ]; then
+	# We're done if the payload UART exits success
+	if [ -f "$pid_dir/uart$payload_uart.success" ]; then
 		break
 	fi
 done
