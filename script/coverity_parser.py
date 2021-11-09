@@ -182,9 +182,9 @@ class Issues(object):
         # Top-level is a group of issues, all sharing a common CID
         for issue_group in filter(self.filter_groups_v1, report["issueInfo"]):
             # Pick up individual occurrence of the CID
-            self.totals[_classify_checker(occurrence["checkerName"])] += 1
             self.totals["total"] += 1
             for occurrence in issue_group["occurrences"]:
+                self.totals[_classify_checker(occurrence["checker"])] += 1
                 yield _new_issue(issue_group["cid"], occurrence)
 
     def filter_groups_v7(self, group):

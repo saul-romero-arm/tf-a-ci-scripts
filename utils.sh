@@ -345,7 +345,7 @@ mbedtls_version="${mbedtls_version:-2.26.0}"
 # mbedTLS archive public hosting available at github.com
 mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-${mbedtls_version}.tar.gz}"
 
-coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2020.06}"
+coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2020.12}"
 coverity_default_checkers=(
 "--all"
 "--checker-option DEADCODE:no_dead_default:true"
