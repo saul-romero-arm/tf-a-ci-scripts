@@ -1,8 +1,12 @@
 --- a/plat/arm/board/fvp/aarch64/fvp_ras.c
 +++ b/plat/arm/board/fvp/aarch64/fvp_ras.c
-@@ -5,11 +5,46 @@
+@@ -4,12 +4,50 @@
+  * SPDX-License-Identifier: BSD-3-Clause
   */
  
++#include <inttypes.h>
++#include <stdint.h>
++
  #include <lib/extensions/ras.h>
 +#include <services/sdei.h>
 +
@@ -18,9 +22,9 @@
 +	 */
 +	status = read_erxstatus_el1();
 +
-+	ERROR("Fault reported by system error record %d on 0x%lx: status=0x%llx\n",
++	ERROR("Fault reported by system error record %d on 0x%lx: status=0x%" PRIx64 "\n",
 +			probe_data, read_mpidr_el1(), status);
-+	ERROR(" exception reason=%u syndrome=0x%llx\n", data->ea_reason,
++	ERROR(" exception reason=%u syndrome=0x%" PRIx64 "\n", data->ea_reason,
 +			data->flags);
 +
 +	/* Clear error */
