@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+#
+# Copyright (c) 2021, Linaro Limited
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+import sys
+
+# FIXME: At the time of writing, due to STG-2668, logs for UARTs != UART0
+# are not complete, so match fewer lines.
+#REQUIRED_NUM = 1000
+REQUIRED_NUM = 30
+
+cnt = 0
+
+with open(sys.argv[1]) as f:
+    for l in f:
+        if "TSP: cpu" in l:
+            cnt += 1
+
+if cnt >= REQUIRED_NUM:
+    sys.exit(0)
+else:
+    sys.exit(1)
