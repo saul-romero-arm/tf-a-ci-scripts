@@ -4,6 +4,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-expect_string+=('i;Please press Enter to activate this console.;;;\r')
-expect_string+=('i;/ # ;;;insmod hafnium.ko\n')
-expect_string+=('i;Hafnium successfully loaded with 1 VMs:')
+expect_string+=('i;Please press Enter to activate this console.')
+expect_string+=('i;/ # ;;;\r')
+expect_string+=('i;Hafnium successfully loaded with 1 VMs:;;;insmod hafnium.ko')
