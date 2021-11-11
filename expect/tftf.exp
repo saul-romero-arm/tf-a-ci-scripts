@@ -19,11 +19,11 @@ expect {
 		exit_uart 0
 	}
 	"Tests Passed  : 0" {
-		puts "<<TFTF no tests passed>>"
+		expect_string "Exiting tests." "<<TFTF no tests passed>>"
 		exit_uart -1
 	}
 	-re "Tests Failed  : \[^0]" {
-		puts "<<TFTF Fail>>"
+		expect_string "Exiting tests." "<<TFTF Fail>>"
 		exit_uart -1
 	}
 	timeout {
