@@ -12,9 +12,10 @@
 cat <<EOF
 metadata:
   test_config: {TEST_CONFIG}
+  fvp_model: {MODEL}
 
 device_type: fvp
-job_name: fvp-tftf-{MODEL}
+job_name: {TEST_CONFIG}
 
 timeouts:
   job:

@@ -12,9 +12,10 @@
 cat <<EOF
 metadata:
   test_config: {TEST_CONFIG}
+  fvp_model: {MODEL}
 
 device_type: fvp
-job_name: fvp-linux-{MODEL}
+job_name: fvp-linux-{TEST_CONFIG}
 
 timeouts:
   connection:
