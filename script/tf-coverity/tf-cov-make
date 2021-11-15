@@ -362,7 +362,7 @@ make AARCH32_SP=optee ARCH=aarch32 ARM_ARCH_MAJOR=7 ARM_CORTEX_A7=yes \
     $(common_flags) all
 make AARCH32_SP=optee ARCH=aarch32 CROSS_COMPILE=arm-none-eabi- PLAT=picopi \
     $(common_flags) all
-make PLAT=imx8mm $(common_flags) all
+make PLAT=imx8mm $(common_flags) NEED_BL2=yes ${TBB_OPTIONS} all
 make PLAT=imx8mn $(common_flags) all
 make PLAT=imx8mp $(common_flags) NEED_BL2=yes ${TBB_OPTIONS} all
 
@@ -411,8 +411,10 @@ make PLAT=stratix10 $(common_flags) all
 make PLAT=agilex $(common_flags) all
 
 # Platforms from Broadcom
-clean_build PLAT=stingray $(common_flags) BOARD_CFG=bcm958742t INCLUDE_EMMC_DRIVER_ERASE_CODE=1 DRIVER_I2C_ENABLE=1
-clean_build PLAT=stingray $(common_flags) BOARD_CFG=bcm958742t-ns3 INCLUDE_EMMC_DRIVER_ERASE_CODE=1
+clean_build PLAT=stingray $(common_flags) BOARD_CFG=bcm958742t \
+    INCLUDE_EMMC_DRIVER_ERASE_CODE=1 DRIVER_I2C_ENABLE=1
+clean_build PLAT=stingray $(common_flags) BOARD_CFG=bcm958742t-ns3 \
+    INCLUDE_EMMC_DRIVER_ERASE_CODE=1 USE_USB=yes
 
 # Platforms from Marvell
 make PLAT=a3700 $(common_flags) SCP_BL2=/dev/null CM3_SYSTEM_RESET=1 \
