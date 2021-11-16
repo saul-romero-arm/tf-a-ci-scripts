@@ -11,11 +11,14 @@
 # file also includes references to ${UPPERCASE} which are just normal shell
 # variables, replaced on spot.
 
+. $(dirname $0)/gen_gerrit_meta.sh
+
 cat <<EOF
 metadata:
   test_config: {TEST_CONFIG}
   fvp_model: {MODEL}
   build_url: ${BUILD_URL}
+${gerrit_meta}
 
 device_type: fvp
 job_name: {TEST_CONFIG}
