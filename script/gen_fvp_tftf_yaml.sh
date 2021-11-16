@@ -5,14 +5,17 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-# Generate a FVP-TFTF model agnostic YAML template. Note that this template is not ready to be
-# sent to LAVA by Jenkins so in order to produce file, variables in ${UPPERCASE} must be replaced
-# to correct values
+# Generate a FVP-TFTF model agnostic YAML template. Note that this template
+# is not ready to be sent to LAVA by Jenkins. So in order to produce complete
+# file, variables in {UPPERCASE} must be replaced to correct values. This
+# file also includes references to ${UPPERCASE} which are just normal shell
+# variables, replaced on spot.
 
 cat <<EOF
 metadata:
   test_config: {TEST_CONFIG}
   fvp_model: {MODEL}
+  build_url: ${BUILD_URL}
 
 device_type: fvp
 job_name: {TEST_CONFIG}
