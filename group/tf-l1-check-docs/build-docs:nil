@@ -12,3 +12,7 @@ pre_tf_build() {
 
 	targets="doc" set_tf_build_targets
 }
+
+post_tf_build() {
+	mv "$tf_root/docs/build" "$archive"
+}
