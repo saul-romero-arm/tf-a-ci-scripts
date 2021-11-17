@@ -6,10 +6,6 @@
 #
 
 pre_tf_build() {
-	python3 -m venv .venv && \
-		. .venv/bin/activate && \
-		python3 -m pip install -r "$tf_root/docs/requirements.txt"
-
 	targets="doc" set_tf_build_targets
 }
 

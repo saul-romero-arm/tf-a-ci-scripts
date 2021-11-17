@@ -1387,6 +1387,8 @@ for mode in $modes; do
 			source "$plat_utils"
 		fi
 
+		source "$ci_root/script/install_python_deps_tf.sh"
+
 		archive="$build_archive"
 		tf_build_root="$tf_root/build"
 
