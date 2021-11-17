@@ -403,10 +403,20 @@ clean_build PLAT=ls1028ardb $(common_flags) all BOOT_MODE=flexspi_nor
 clean_build PLAT=ls1028ardb $(common_flags) all BOOT_MODE=emmc
 clean_build PLAT=ls1028ardb $(common_flags) all BOOT_MODE=sd
 
-# Secure Boot
+# ls1028a Secure Boot
 clean_build PLAT=ls1028ardb $(common_flags) all BOOT_MODE=flexspi_nor $nxp_sb_fuse_flags
 clean_build PLAT=ls1028ardb $(common_flags) all BOOT_MODE=emmc $nxp_sb_fuse_flags
 clean_build PLAT=ls1028ardb $(common_flags) all BOOT_MODE=sd $nxp_sb_fuse_flags
+
+# Platform ls1043ardb
+clean_build PLAT=ls1043ardb $(common_flags) all BOOT_MODE=nor
+clean_build PLAT=ls1043ardb $(common_flags) all BOOT_MODE=nand
+clean_build PLAT=ls1043ardb $(common_flags) all BOOT_MODE=sd
+
+# ls1043ardb Secure Boot
+clean_build PLAT=ls1043ardb $(common_flags) all BOOT_MODE=nor $nxp_sb_fuse_flags
+clean_build PLAT=ls1043ardb $(common_flags) all BOOT_MODE=nand $nxp_sb_fuse_flags
+clean_build PLAT=ls1043ardb $(common_flags) all BOOT_MODE=sd $nxp_sb_fuse_flags
 
 # Platforms from Intel
 make PLAT=stratix10 $(common_flags) all
@@ -598,11 +608,6 @@ make PLAT=poplar $(common_flags) all
 make PLAT=rpi3 $(common_flags) ${TBB_OPTIONS} \
     ENABLE_STACK_PROTECTOR=strong PRELOADED_BL33_BASE=0xDEADBEEF all
 clean_build PLAT=rpi4 $(common_flags) SMC_PCI_SUPPORT=1 all
-
-# Cannot use $(common_flags) for LS1043 platform, as then
-# the binaries do not fit in memory.
-clean_build PLAT=ls1043 SPD=opteed ENABLE_STACK_PROTECTOR=strong
-clean_build PLAT=ls1043 SPD=tspd
 
 # A113D (AXG) platform.
 clean_build PLAT=axg $(common_flags) SPD=opteed
