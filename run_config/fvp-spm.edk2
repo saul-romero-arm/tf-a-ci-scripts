@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
 post_tf_build() {
 	# Fetch EDK2 and pre-built partition files
-	url="$project_filer/ci-files/spm/FVP_AARCH64_EFI.fd" fetch_file
-	url="$project_filer/ci-files/spm/STANDALONESMM.fd" fetch_file
+	url="$tfa_downloads/spm/FVP_AARCH64_EFI.fd" fetch_file
+	url="$tfa_downloads/spm/STANDALONESMM.fd" fetch_file
 
 	archive_file "FVP_AARCH64_EFI.fd"
 	archive_file "STANDALONESMM.fd"
