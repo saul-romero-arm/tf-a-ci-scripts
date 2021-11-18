@@ -342,10 +342,13 @@ gen_fvp_yaml() {
     el3_payload="$(fvp_gen_bin_url el3_payload.bin)"
     fip="$(fvp_gen_bin_url fip.bin)"
     fip_gpt="$(fvp_gen_bin_url fip_gpt.bin)"
+    fvp_spmc_manifest_dtb="$(fvp_gen_bin_url fvp_spmc_manifest.dtb)"
     fwu_fip="$(fvp_gen_bin_url fwu_fip.bin)"
     generic_trace="${tfa_downloads}/FastModelsPortfolio_${model_version}/plugins/${model_flavour}/GenericTrace.so"
     hafnium="$(fvp_gen_bin_url hafnium.bin)"
     image="$(fvp_gen_bin_url kernel.bin)"
+    ivy="$(fvp_gen_bin_url ivy.pkg)"
+    manifest_dtb="$(fvp_gen_bin_url manifest.dtb)"
     mcp_rom="$(fvp_gen_bin_url mcp_rom.bin)"
     mcp_rom_hyphen="$(fvp_gen_bin_url mcp-rom.bin)"
     ns_bl1u="$(fvp_gen_bin_url ns_bl1u.bin)"
@@ -401,6 +404,7 @@ gen_fvp_yaml() {
         [cactus_secondary]="{CACTUS_SECONDARY}"
         [cactus_tertiary]="{CACTUS_TERTIARY}"
         [coverage_trace_plugin]="{COVERAGE_TRACE_PLUGIN}"
+        [fvp_spmc_manifest_dtb]="{FVP_SPMC_MANIFEST_DTB}"
         [busybox]="{BUSYBOX}"
         [dtb]="{DTB}"
         [el3_payload]="{EL3_PAYLOAD}"
@@ -410,6 +414,8 @@ gen_fvp_yaml() {
         [generic_trace]="{GENERIC_TRACE}"
         [hafnium]="{HAFNIUM}"
         [image]="{IMAGE}"
+        [ivy]="{IVY}"
+        [manifest_dtb]="{MANIFEST_DTB}"
         [mcp_rom]="{MCP_ROM}"
         [mcp_rom_hyphen]="{MCP_ROM_HYPHEN}"
         [ns_bl1u]="{NS_BL1U}"
@@ -468,11 +474,10 @@ gen_fvp_yaml() {
                     sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
                 fi
                 ;;
-            dtb)
-                # dtb can come in different names, i.e.  dtb.bin, manifest.dtb,
-                # so handle with regex
-                if ! grep -E -q "=.*dtb.*@" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
+            fvp_spmc_manifest_dtb)
+                # handles fvp_spmc_manifest.dtb as DTB file
+                if ! grep -q "=fvp_spmc_manifest.dtb" "$archive/model_params"; then
+                    sed -i "/ $m:\$/d" "${yaml_template_file}"
                     sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
                 fi
                 ;;
@@ -487,6 +492,20 @@ gen_fvp_yaml() {
                 # the image (Linux Kernel) is named as kernel.bin
                 if ! grep -q "kernel.bin" "$archive/model_params"; then
                     sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            ivy)
+                # the ivy package
+                if ! grep -q "ivy.pkg" "$archive/model_params"; then
+                    sed -i "/$m:\$/d" "${yaml_template_file}"
+                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
+                fi
+                ;;
+            manifest_dtb)
+                # handles manifest.dtb as DTB file
+                if ! grep -q "=manifest.dtb" "$archive/model_params"; then
+                    sed -i "/ $m:\$/d" "${yaml_template_file}"
                     sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
                 fi
                 ;;
@@ -558,9 +577,6 @@ gen_fvp_yaml() {
     # artefacts
     for m in "${!artefacts_macros[@]}"; do
         case "$m" in
-            dtb)
-                sed -i -e "s|=.*dtb.*@|=${artefacts_macros[$m]}@|" "$lava_model_params"
-                ;;
             cactus_primary)
                 sed -i -e "s|=cactus-primary.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
                 ;;
@@ -574,12 +590,21 @@ gen_fvp_yaml() {
                 sed -i -e "s|--plugin .*coverage_trace.so|--plugin ${artefacts_macros[$m]}|" "$lava_model_params"
                 sed -i -e "s|--plugin=.*coverage_trace.so|--plugin=${artefacts_macros[$m]}|" "$lava_model_params"
                 ;;
+            fvp_spmc_manifest_dtb)
+                sed -i -e "s|=fvp_spmc_manifest.dtb|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
             generic_trace)
                 sed -i -e "s|--plugin .*GenericTrace.so|--plugin ${artefacts_macros[$m]}|" "$lava_model_params"
 		sed -i -e "s|--plugin=.*GenericTrace.so|--plugin=${artefacts_macros[$m]}|" "$lava_model_params"
                 ;;
             image)
                 sed -i -e "s|=kernel.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            ivy)
+                sed -i -e "s|=ivy.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
+                ;;
+            manifest_dtb)
+                sed -i -e "s|=manifest.dtb|=${artefacts_macros[$m]}|" "$lava_model_params"
                 ;;
             mcp_rom_hyphen)
                 sed -i -e "s|=mcp-rom.bin|=${artefacts_macros[$m]}|" "$lava_model_params"

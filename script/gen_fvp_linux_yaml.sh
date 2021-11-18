@@ -78,6 +78,8 @@ actions:
         url: {DTB}
       el3_payload:
         url: {EL3_PAYLOAD}
+      fvp_spmc_manifest_dtb:
+        url: {FVP_SPMC_MANIFEST_DTB}
       fip:
         url: {FIP}
       fip_gpt:
@@ -90,6 +92,10 @@ actions:
         url: {HAFNIUM}
       image:
         url: {IMAGE}
+      ivy:
+        url: {IVY}
+      manifest_dtb:
+        url: {MANIFEST_DTB}
       mcp_rom:
         url: {MCP_ROM}
       mcp_rom_hyphen:
