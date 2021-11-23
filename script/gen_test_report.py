@@ -327,6 +327,34 @@ def result_to_html(node_stack):
     # Return result as string
     return "".join(crumbs)
 
+# Emit style sheet, and script elements.
+def emit_header(fd):
+    stem = os.path.splitext(os.path.abspath(__file__))[0]
+    for tag, ext in [("style", "css"), ("script", "js")]:
+        print(open_element(tag), file=fd)
+        with open(os.extsep.join([stem, ext])) as ext_fd:
+            shutil.copyfileobj(ext_fd, fd)
+        print(close_element(tag), file=fd)
+
+def print_error_message(fd):
+            # Upon error, create a static HTML reporting the error, and then raise
+        # the latent exception again.
+        fd.seek(0, io.SEEK_SET)
+
+        # Provide inline style as there won't be a page header for us.
+        err_style = (
+                "border: 1px solid red;",
+                "color: red;",
+                "font-size: 30px;",
+                "padding: 15px;"
+                )
+
+        print(make_element("div",
+            "HTML report couldn't be prepared! Check job console.",
+            style=" ".join(err_style)), file=fd)
+
+        # Truncate file as we're disarding whatever there generated before.
+        fd.truncate()
 
 def main(fd):
     global Build_job, Jenkins, Job
@@ -347,6 +375,9 @@ def main(fd):
     opts = parser.parse_args()
 
     workspace = os.environ["WORKSPACE"]
+
+    emit_header(fd)
+
     if not opts.from_json:
         json_obj = {}
 
@@ -431,13 +462,7 @@ def main(fd):
         run_node.set_result(test_result, build_number)
         run_node.set_desc(os.path.join(workspace, f))
 
-    # Emit style sheet, script, and page header elements
-    stem = os.path.splitext(os.path.abspath(__file__))[0]
-    for tag, ext in [("style", "css"), ("script", "js")]:
-        print(open_element(tag), file=fd)
-        with open(os.extsep.join([stem, ext])) as ext_fd:
-            shutil.copyfileobj(ext_fd, fd)
-        print(close_element(tag), file=fd)
+    # Emit page header element
     print(PAGE_HEADER, file=fd)
     begin_table(results, fd)
 
@@ -481,27 +506,10 @@ def main(fd):
         with open(REPORT_JSON, "wt") as json_fd:
             json.dump(json_obj, json_fd, indent=2)
 
-
-with open(REPORT, "wt") as fd:
-    try:
-        main(fd)
-    except:
-        # Upon error, create a static HTML reporting the error, and then raise
-        # the latent exception again.
-        fd.seek(0, io.SEEK_SET)
-
-        # Provide inline style as there won't be a page header for us.
-        err_style = (
-                "border: 1px solid red;",
-                "color: red;",
-                "font-size: 30px;",
-                "padding: 15px;"
-                )
-
-        print(make_element("div",
-            "HTML report couldn't be prepared! Check job console.",
-            style=" ".join(err_style)), file=fd)
-
-        # Truncate file as we're disarding whatever there generated before.
-        fd.truncate()
-        raise
+if __name__ == "__main__":
+    with open(REPORT, "wt") as fd:
+        try:
+            main(fd)
+        except:
+            print_error_message(fd)
+            raise

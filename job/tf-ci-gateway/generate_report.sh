@@ -26,7 +26,21 @@ if [ "$CI_ROOT" ]; then
 		triggered_job=$(echo ${TRIGGERED_JOB_NAMES} | tr "_" "-")
 		worker_job="${worker_job:-${triggered_job}}"
 		lava_job="${lava_job:-${triggered_job}}"
-        fi
+	fi
+
+	# Generate UI for test results, only if this is a visualization job.
+	while getopts ":t" option; do
+		case $option in
+			t)
+				target_job="$(dirname $TARGET_BUILD)"
+				target=${target_job:-tf-a-main}
+				"$CI_ROOT/script/gen_results_report.py" \
+					--png "${target}-result.png" \
+					--csv "${WORKSPACE}/${target}-result.csv" \
+					-o "${WORKSPACE}/report.html" || true
+				exit;;
+		esac
+	done
 
 	"$CI_ROOT/script/gen_test_report.py" \
 		--job "${worker_job}" \

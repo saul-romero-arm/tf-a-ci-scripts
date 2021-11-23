@@ -130,3 +130,51 @@
   display: inline-block;
   padding: 2px 3px 0px 3px;
 }
+
+#tf-results-panel {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  padding: 5px 10px;
+}
+
+.results-col {
+  padding: 5px 10px;
+}
+
+.results-col table {
+  border-collapse: collapse;
+  vertical-align: middle;
+}
+
+.results-col td,
+.results-col th {
+  text-align: center;
+  padding: 5px 10px;
+  font: 20px monospace;
+  border: 1px #c8c8c8 solid;
+}
+
+.results-col th {
+  font-weight: bold;
+  background-color: #e0f7ff;
+}
+.button-col {
+  margin-left: 15px;
+}
+
+#tf-results-panel .button-col {
+  border-collapse: collapse;
+  font: 10px monospace;
+  padding: 25px;
+}
+
+#tf-download-button {
+  background-color: #4b758b;
+  border: 1px solid #aaa;
+  color: #eee;
+  display: block;
+  font-weight: bold;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  width: 250px;
+}
