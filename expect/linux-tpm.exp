@@ -15,6 +15,7 @@ set digest_log [open $TFA_DIGEST w]
 
 # regexp for non-zero PCR0
 set non_zero_pcr "(?!(\\s00){16})((\\s(\[0-9a-f\]){2}){16}\\s)"
+set zero_pcr "(\\s00){16}\\s+(00\\s){16}"
 
 expect {
         # Parse the event log from the debug logs and store the digests
@@ -64,6 +65,23 @@ expect {
                 exp_continue
         }
 
+        "#" {
+                # get PCR1 value
+                send "pcrread -ha 1\n"
+        }
+
+        timeout {
+                exit_timeout
+        }
+}
+
+expect {
+        # Pass condition: PCR1 must not be all zeros.
+
+        -re $non_zero_pcr {
+                exp_continue
+        }
+
         "#" { }
 
         timeout {
@@ -72,11 +90,11 @@ expect {
 }
 
 # Iterate over the rest of PCRs and check that they all are zeros.
-for {set i 1} {$i < 11} {incr i} {
+for {set i 2} {$i < 11} {incr i} {
         send "pcrread -ha $i\n"
 
         expect {
-                -re "(\\s00){16}\\s+(00\\s){16}" { }
+                -re $zero_pcr { }
 
                 -re $non_zero_pcr {
                         exit_uart -1
