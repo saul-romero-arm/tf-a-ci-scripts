@@ -7,7 +7,7 @@
 #
 
 # Trusted Firmware boot section
-source $ci_root/lava-expect/trusted-firmware.inc
+source $ci_root/expect-lava/trusted-firmware.inc
 
 # Linux kernel boot section
 expect_string+=('i;Booting Linux on physical CPU')

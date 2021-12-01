@@ -6,7 +6,7 @@
 # Expect script for Trusted Firmware Test Framework
 #
 
-source $ci_root/lava-expect/trusted-firmware.inc
+source $ci_root/expect-lava/trusted-firmware.inc
 
 prompt='Booting trusted firmware test framework'
 expect_string+=("i;${prompt}")

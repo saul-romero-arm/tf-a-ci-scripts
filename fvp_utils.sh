@@ -689,7 +689,7 @@ gen_fvp_yaml_expect() {
         fi
 
         # Get all expect strings
-        expect_file=$ci_root/lava-expect/${expect_file}
+        expect_file=$ci_root/expect-lava/${expect_file}
         source $expect_file
 
 

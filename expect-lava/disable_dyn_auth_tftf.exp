@@ -1,17 +1,17 @@
 #
-# Copyright (c) 2021, Arm Limited. All rights reserved.
+# Copyright (c) 2021 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 # Expect script for Trusted Firmware Test Framework
 #
 
-source $ci_root/lava-expect/trusted-firmware-aarch32.inc
+source $ci_root/expect-lava/disable_dyn_auth.inc
 
 prompt='Booting trusted firmware test framework'
 expect_string+=("i;${prompt}")
 
-prompt='Running in AArch32 HYP mode'
+prompt='Running at NS-EL(1|2)'
 expect_string+=("i;${prompt}")
 
 prompt='Tests Failed  : 0'

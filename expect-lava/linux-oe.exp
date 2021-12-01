@@ -8,10 +8,10 @@
 #
 
 # Trusted Firmware boot section
-source $ci_root/lava-expect/trusted-firmware.inc
+source $ci_root/expect-lava/trusted-firmware.inc
 
 # Linux kernel boot section
-source $ci_root/lava-expect/linux.inc
+source $ci_root/expect-lava/linux.inc
 
 # OpenEmbedded filesystem section
-source $ci_root/lava-expect/openembedded.inc
+source $ci_root/expect-lava/openembedded.inc

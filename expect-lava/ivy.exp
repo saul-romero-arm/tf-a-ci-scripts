@@ -8,4 +8,4 @@
 
 expect_string+=('i;Booting test Secure Partition Ivy')
 
-source $ci_root/lava-expect/uart-hold.inc
+source $ci_root/expect-lava/uart-hold.inc

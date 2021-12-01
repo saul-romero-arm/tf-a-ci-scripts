@@ -1,19 +1,19 @@
 # Expect Scripts
 
 The project tracks two set of expect scripts under two different folders, `expect` and
-`lava-expect`, the former required for local (non-LAVA) or Internal CI (Arm CI) and
+`expect-lava`, the former required for local (non-LAVA) or Internal CI (Arm CI) and
 the latter for Open CI (LAVA). Note that any contribution into the expect scripts
 **must be done in both folders**, otherwise expect test coverage will differ.
 
 ## LAVA Test Actions
 
-The `lava-expect` script does exactly the same as its counterpart under the `expect`
+The `expect-lava` script does exactly the same as its counterpart under the `expect`
 folder. However, LAVA would use either [Interactive Test Actions](https://validation.linaro.org/static/docs/v2/actions-test.html#interactive-test-action)
 or [Monitor Test Actions](https://validation.linaro.org/static/docs/v2/monitors.html) to
 support possible scenarios. In other words, expect scripts are transformed into either
 interactive or monitor test actions.
 
-In the `lava-expect` scripts, both types of actions, interactive and monitor, are defined
+In the `expect-lava` scripts, both types of actions, interactive and monitor, are defined
 using the same array variable, `expect_string` but each array element would contain either
 a leading `i` indicating interactive actions or `m` indicating monitor actions.
 
@@ -34,8 +34,8 @@ The following sections go in detail providing syntactic details for each scenari
 
 ### Interactive Actions Strings
 
-To better understand how `expect` scripts translates into `lava-expect`, we can compare similar
-scripts, i.e. `expect/disable_dyn_auth_tftf.exp` versus `lava-expect/disable_dyn_auth_tftf.exp` which only requires interactive
+To better understand how `expect` scripts translates into `expect-lava`, we can compare similar
+scripts, i.e. `expect/disable_dyn_auth_tftf.exp` versus `expect-lava/disable_dyn_auth_tftf.exp` which only requires interactive
 actions. Let's compare these two:
 
 * `expect/disable_dyn_auth_tftf.exp`
@@ -67,10 +67,10 @@ expect {
 exit_uart -1
 ```
 
-* and its counterpart `lava-expect/disable_dyn_auth_tftf.exp` (note, the same filename but different folder)
+* and its counterpart `expect-lava/disable_dyn_auth_tftf.exp` (note, the same filename but different folder)
 
 ```
-source $ci_root/lava-expect/disable_dyn_auth.inc
+source $ci_root/expect-lava/disable_dyn_auth.inc
 
 prompt='Booting trusted firmware test framework'
 expect_string+=("i;${prompt}")
@@ -89,7 +89,7 @@ expect_string+=("i;${prompt};;${failures}")
 The first thing to notice is that all strings are literal (no regex is required) and each are expected
 just once, so interactive actions are the choice.
 
-As seen, the same *expect strings* appears in both, but in case of `lava-expect/disable_dyn_auth_tftf.exp`,
+As seen, the same *expect strings* appears in both, but in case of `expect-lava/disable_dyn_auth_tftf.exp`,
 is it written in *bash* language and **appending** elements into `expect_string`, which is the variable
 that ultimately is transformed into interactive test actions by CI scripts.
 
@@ -192,7 +192,7 @@ for {set i 1} {$i < 11} {incr i} {
 }
 ```
 
-which is translated into `lava-expect/linux-tpm.exp`
+which is translated into `expect-lava/linux-tpm.exp`
 
 ```
 non_zero_pcr='(?!(\s00){16})((\s([0-9a-f]){2}){16}\s)'
