@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+#
+# Copyright (c) 2021, Linaro Limited
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+import re
+import sys
+from subprocess import check_call
+
+
+PATTERN = "\
+Digest(\\s|\\w)*:\\s(\\w{2}\\s){16}|\
+ : (\\w{2}\\s){16}|\
+ Event\\w*\\s*:\\s\\w+\\s"
+
+
+# Extract pertinent information from TPM side.
+with open(sys.argv[1]) as f, open("ftpm_event_log", "w") as out:
+    for l in f:
+        m = re.search(PATTERN, l)
+        if m:
+            print(m.group(), file=out)
+
+# Extract pertinent information from TF side.
+with open(sys.argv[1].replace("uart1", "uart0")) as f, open("tfa_event_log", "w") as out:
+    for l in f:
+        m = re.search(PATTERN, l)
+        if m:
+            print(m.group(), file=out)
+
+# Compare it to match.
+check_call("diff -s -u tfa_event_log ftpm_event_log", shell=True)
