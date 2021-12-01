@@ -20,6 +20,11 @@ total=0
 failed=0
 
 for uartdir in $WORKSPACE/artefacts/debug/run/uart*; do
+    # In case no dirs exist and the glob above isn't expanded at all.
+    if [ ! -d "$uartdir" ]; then
+        break
+    fi
+
     uart=$(basename $uartdir)
     if [ $uart == "uart0" ]; then
         continue
