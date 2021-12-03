@@ -7,10 +7,7 @@
 
 import sys
 
-# FIXME: At the time of writing, due to STG-2668, logs for UARTs != UART0
-# are not complete, so match fewer lines.
-#REQUIRED_NUM = 1000
-REQUIRED_NUM = 30
+REQUIRED_NUM = 1000
 
 cnt = 0
 
