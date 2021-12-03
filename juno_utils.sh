@@ -34,12 +34,6 @@ get_optee_bin() {
 	popd
 }
 
-# Get scp_bl1 and scp_bl2 binaries
-# from $url and store as $saveas
-get_scp_bl_bin() {
-	url="$url" saveas="$saveas" fetch_file
-}
-
 get_scp_bl2_bin() {
 	url="$scp_bl2_url" saveas="scp_bl2.bin" fetch_file
 	archive_file "scp_bl2.bin"
@@ -80,10 +74,9 @@ gen_recovery_image() {
 
 	saveas="$zip_dir" url="$url" fetch_directory
 	if [ "$*" ]; then
-		# Copy scp_bl1 scp_bl2 binaries. Copying then first
-		# so that the subsequent copy can replace it if necessary.
-		url="$scp_bl1_url" saveas="$zip_dir/SOFTWARE/scp_bl1.bin" get_scp_bl_bin
-		url="$scp_bl2_url" saveas="$zip_dir/SOFTWARE/scp_bl2.bin" get_scp_bl_bin
+		# Replace files needed for this test. Copying them first so
+		# that the subsequent copy can replace it if necessary.
+		url="$scp_bl1_url" saveas="$zip_dir/SOFTWARE/scp_bl1.bin" fetch_file
 		cp -f "$@" "$zip_dir/SOFTWARE"
 	fi
 
