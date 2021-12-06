@@ -85,6 +85,7 @@ nomination_rules = {
              "tf-l2-coverity-misra-nominated/fvp-aarch64-sdei:coverity-tf-misra.diff"],
 
         # Run Morello FVP busybox boot test for any platform changes
-        "path:plat/arm/board/morello":
-            ["tf-l3-boot-tests-css/fvp-morello-default:fvp-linux.morello-fip.morello-morello-debug"],
+        # Disabling Morello boot tests until Morello TBBR changes are landed in TF-A
+        #"path:plat/arm/board/morello":
+        #    ["tf-l3-boot-tests-css/fvp-morello-default:fvp-linux.morello-fip.morello-morello-debug"],
         }
