@@ -7,5 +7,6 @@
 #
 
 python3 -m venv .venv && \
-    . .venv/bin/activate && \
-    python3 -m pip install -r "$tf_root/docs/requirements.txt"
+    source .venv/bin/activate && \
+    python3 -m pip install -r "${tf_root}/docs/requirements.txt" \
+        --cache-dir "${project_filer}/pip-cache" --retries 30 --verbose
