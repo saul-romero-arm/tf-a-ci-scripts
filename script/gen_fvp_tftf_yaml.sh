@@ -32,9 +32,9 @@ timeouts:
     auto-login-action:
       seconds: 300
     lava-test-monitor:
-      minutes: 5
+      minutes: 7
     lava-test-interactive:
-      minutes: 5
+      minutes: 7
     lava-test-shell:
       seconds: 300
     lava-test-retry:
