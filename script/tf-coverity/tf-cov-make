@@ -613,4 +613,7 @@ clean_build PLAT=rpi4 $(common_flags) SMC_PCI_SUPPORT=1 all
 clean_build PLAT=axg $(common_flags) SPD=opteed
 clean_build PLAT=axg $(common_flags) AML_USE_ATOS=1
 
+# QTI MSM8916 platform
+clean_build PLAT=msm8916 $(common_flags)
+
 cd ..
