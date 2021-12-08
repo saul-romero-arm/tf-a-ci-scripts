@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -25,7 +25,7 @@ get_recovery_image_url() {
 	fi
 }
 
-bootloader_prompt="${bootloader_prompt:-juno#}"
+bootloader_prompt="${bootloader_prompt:-VExpress64#}"
 recovery_img_url="${recovery_img_url:-$(get_recovery_image_url)}"
 nfs_rootfs="${nfs_rootfs:-$juno_rootfs_url}"
 linux_prompt="${linux_prompt:-root@(.*):~#}"
