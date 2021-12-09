@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021 Arm Limited. All rights reserved.
+# Copyright (c) 2021-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 fetch_tf_resource() {
-	uefi_ci_bin_url="$morello_prebuilts/uefi.bin" get_uefi_bin
-
 	# Hold terminal_uart_aon (SCP terminal)
 	uart="2" file="hold_uart.exp" track_expect
 }
@@ -16,7 +14,7 @@ post_fetch_tf_resource() {
 
 	model="morello" \
 	model_version="0.11" \
-	model_build="19" \
+	model_build="33" \
 	gen_model_params
 	set_run_env "ports_script" "$ci_root/model/morello-ports.awk"
 	set_run_env "num_uarts" "3"

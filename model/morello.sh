@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021 Arm Limited. All rights reserved.
+# Copyright (c) 2021-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -9,11 +9,12 @@
 set_model_path "$warehouse/SysGen/SubSystemModels/$model_version/$model_build/models/$model_flavour/FVP_Morello"
 
 cat <<EOF >"$model_param_file"
---data Morello_Top.css.scp.armcortexm7ct=$archive/scp_rom.bin@0x0
---data Morello_Top.css.mcp.armcortexm7ct=$archive/mcp_rom.bin@0x0
+--data Morello_Top.css.scp.armcortexm7ct=$scp_rom_bin@0x0
+--data Morello_Top.css.mcp.armcortexm7ct=$mcp_rom_bin@0x0
 -C Morello_Top.soc.scp_qspi_loader.fname=$scp_fw_bin
 -C Morello_Top.soc.mcp_qspi_loader.fname=$mcp_fw_bin
---data $uefi_bin@${uefi_addr:?}
+-C "css.trustedBootROMloader.fname=$bl1_bin"
+-C board.ap_qspi_loader.fname=$fip_bin
 -C board.virtioblockdevice.image_path=$busybox_bin
 ${uart1_out+-C css.pl011_uart_ap.out_file=$uart1_out}
 ${uart1_out+-C css.pl011_uart_ap.unbuffered_output=1}

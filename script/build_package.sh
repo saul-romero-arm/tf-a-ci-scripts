@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -179,20 +179,14 @@ collect_scp_artefacts() {
 		for file; do
 			ext="$(echo $file | awk -F. "{print \$NF}")"
 			case $file in
-				*/firmware-scp_ramfw/bin/*)
+				*/firmware-scp_ramfw/bin/*|*/firmware-scp_ramfw_fvp/bin/*)
 					cp $file $to/scp_ram.$ext
-					;;
-				*/firmware-scp_ramfw_fvp/bin/*)
-					cp $file $to/scp_ramfw_fvp.$ext
 					;;
 				*/firmware-scp_romfw/bin/*)
 					cp $file $to/scp_rom.$ext
 					;;
-				*/firmware-mcp_ramfw/bin/*)
+				*/firmware-mcp_ramfw/bin/*|*/firmware-mcp_ramfw_fvp/bin/*)
 					cp $file $to/mcp_ram.$ext
-					;;
-				*/firmware-mcp_ramfw_fvp/bin/*)
-					cp $file $to/mcp_ramfw_fvp.$ext
 					;;
 				*/firmware-mcp_romfw/bin/*)
 					cp $file $to/mcp_rom.$ext

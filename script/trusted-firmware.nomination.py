@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -85,7 +85,6 @@ nomination_rules = {
              "tf-l2-coverity-misra-nominated/fvp-aarch64-sdei:coverity-tf-misra.diff"],
 
         # Run Morello FVP busybox boot test for any platform changes
-        # Disabling Morello boot tests until Morello TBBR changes are landed in TF-A
-        #"path:plat/arm/board/morello":
-        #    ["tf-l3-boot-tests-css/fvp-morello-default:fvp-linux.morello-fip.morello-morello-debug"],
+        "path:plat/arm/board/morello":
+            ["tf-l3-boot-tests-css/fvp-morello-tbb:fvp-linux.morello-fip.morello-morello-debug"],
         }
