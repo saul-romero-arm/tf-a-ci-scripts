@@ -1,9 +1,11 @@
+#!/usr/bin/env bash
+
 #
-# Copyright (c) 2021 Arm Limited. All rights reserved.
+# Copyright (c) 2021-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-#!/usr/bin/env bash
+
 set -euo pipefail
 
 # This script plots the categories of tests by group. It does this by combining
@@ -13,12 +15,7 @@ set -euo pipefail
 # stdout.
 
 # Variables
-# ^^^^^^^^^
-#
-# We are located in a specific location with this repo, so we can take
-# advantage of that to avoid any issues with running this from an unexpected
-# directory.
-rootdir=$(realpath $(dirname $(realpath $0))/../..)
+# =========
 
 # I would like to use process-substitution for this, so that we can avoid
 # making a file on disk and keep everything in memory, removing the need to
@@ -30,35 +27,27 @@ rootdir=$(realpath $(dirname $(realpath $0))/../..)
 # removed on success.
 categories=$(mktemp "XXXXXXX-test-categories.dat")
 
-# We change a portion of the title for our graph based on the argument passed
-# to this script.
-title=$(if [[ $# -ge 1 ]] ; then echo $1 ; else echo "All Tests" ; fi)
+# We change a portion of the title for our graph based on the argument passed to
+# this script.
+subtitle=$([[ $# -ge 1 ]] && echo " (Filter: \"$1\")" || true)
 
-# Generate Data into the $categories file
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# Generate Data into the ${categories} file
+# =========================================
 #
 # The following pipeline is the heart of the implementation, and has four
 # stages: find, ???, awk, and sort. The ??? stage of the pipeline is determined
 # by the bash if statement, which switches between a filter, when an argument
-# is passed, and a passthrough, implemented as `cat -`, when no filter
-# argument is passed.
-#
-# Note that the env -C before the find is to enforce that it produces
-# directories relative to the $rootdir, so that it does not trip up the awk
-# script.
-env -C $rootdir find group -type f |\
-	if [[ $# -ge 1 ]] ; then
-		grep -e "$1" -
-	else
-		cat -
-	fi | awk -f ${0%bash}awk | sort > $categories
+# is passed, and a passthrough, implemented as `cat -`, when no filter argument
+# is passed.
+echo '"Name"	"Build-only tests"	"Static checks (MISRA, etc.)"	"Component tests"	"Integration tests (Linux boot, etc.)"' > "${categories}"
+find group -type f | ([[ $# -ge 1 ]] && grep -e "$1" - || cat -) |
+	awk -f "${0%bash}awk" >> "${categories}"
 
 # Generate a Plot (on stdout)
-gnuplot -e "subtitle='$title'" -c ${0%bash}plot $categories
+gnuplot -e "subtitle='${subtitle}'" -c "${0%bash}plot" "${categories}"
 
 # Dump data to stderr
-echo name build static component inegration 1>&2
-cat $categories 1>&2
+cat "${categories}" 1>&2
 
 # Clean up temporary files
-rm $categories
+rm "${categories}"
