@@ -6,4 +6,4 @@
 # Expect script for TSP
 #
 
-# TODO
+# Handled by ../expect-post/tsp.exp

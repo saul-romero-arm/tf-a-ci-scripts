@@ -6,4 +6,4 @@
 # Expect script for fTPM debug logs
 #
 
-# TODO
+# Handled by ../expect-post/tpm-logs.exp
