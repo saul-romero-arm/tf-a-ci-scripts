@@ -6,9 +6,11 @@
 # Expect script
 #
 
+# Original TCL expect/ArmCI description:
 # If we exit from the uart, and if that had lots of prints, then the model
 # will stall. This may also occur even when the uart does not have any print.
 # See: https://jira.arm.com/browse/SDDKW-43675. So, we wait here expect for
 # something that never arrives.
 
-# TODO
+# This functionality is not required for LAVA tests, so this file is empty.
+# See also ../expect-post/hold_uart.exp
