@@ -274,7 +274,7 @@ make $(common_flags) PLAT=tc TARGET_PLATFORM=1 ${ARM_TBB_OPTIONS} all
 #
 # Morello platform
 #
-make $(common_flags) PLAT=morello PLAT_FVP=1 ${ARM_TBB_OPTIONS} all
+make $(common_flags) PLAT=morello TARGET_PLATFORM=fvp ${ARM_TBB_OPTIONS} all
 
 #
 # diphda Platform
