@@ -617,7 +617,10 @@ clone_scp_tools() {
 
 	git submodule update
 
+	lib_commit=$(grep "'scmi_lib_commit'" run_tests/settings.py | cut -d':' -f 2 | tr -d "'")
+
 	cd "scmi"
+	git checkout $lib_commit
 
 	git show --quiet --no-color | sed 's/^/  > /g'
 }
