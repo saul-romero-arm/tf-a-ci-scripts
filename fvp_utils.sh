@@ -760,7 +760,7 @@ EOF
                             for c in ${commands}; do
                                 cat <<EOF
      - name: interactive_command_${uart_number}_${key}
-       command: $c
+       command: "$c"
 EOF
                             done
                         fi
@@ -796,7 +796,7 @@ EOF
                             for c in ${commands}; do
                                 cat <<EOF
      - name: interactive_command_${uart_number}_${key}
-       command: $c
+       command: "$c"
 EOF
                             done
                         fi
@@ -824,7 +824,7 @@ EOF
                             for c in ${commands}; do
                                 cat <<EOF
      - name: interactive_command_${uart_number}_${key}
-       command: $c
+       command: "$c"
 EOF
                             done
                         fi
@@ -851,7 +851,7 @@ EOF
                             for c in ${commands}; do
                                 cat <<EOF
      - name: interactive_command_${uart_number}_${key}
-       command: $c
+       command: "$c"
 EOF
                             done
                         fi
