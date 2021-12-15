@@ -16,12 +16,10 @@ expect_string+=('i;UEFI firmware')
 
 expect_string+=('i;UEFI Interactive Shell')
 
-expect_string+=('i;any other key to continue.;;;\r')
+expect_string+=('i;any other key to continue.')
 
-expect_string+=('i;Shell>;;;fs0:\r')
+expect_string+=('i;Shell>;;;\r')
 
-expect_string+=('i;FS0:;;;UefiInfo.efi\r')
+expect_string+=('i;FS0:;;;fs0:\r')
 
-expect_string+=('i;Loading driver at .* UefiInfo.efi')
-
-expect_string+=('i;FS0:')
+expect_string+=('i;FS0:;Loading driver at .* UefiInfo.efi;;UefiInfo.efi\r')
