@@ -4,4 +4,4 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-# TODO
+# Handled by ../expect-post/spm-uart2.exp

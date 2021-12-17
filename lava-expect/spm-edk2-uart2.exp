@@ -6,4 +6,4 @@
 # Expect script for Standalone MM partition UART2
 #
 
-# TODO
+# Handled by ../expect-post/spm-edk2-uart2.exp
