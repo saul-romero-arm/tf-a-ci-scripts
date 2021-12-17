@@ -108,6 +108,8 @@ call_hook() {
 
 	[ -z "$func" ] && return 0
 
+	echo "=== Calling hooks: $1 ==="
+
 	: >"$hook_env_file"
 
 	if [ "$run_config_candiates" ]; then
@@ -128,6 +130,8 @@ call_hook() {
 
 	# Have any variables set take effect
 	source "$hook_env_file"
+
+	echo "=== End calling hooks: $1 ==="
 }
 
 # Set a variable from within a hook
@@ -1238,6 +1242,7 @@ fi
 
 modes="${bin_mode:-debug release}"
 for mode in $modes; do
+	echo "===== Building package in mode: $mode ====="
 	# Build with a temporary archive
 	build_archive="$archive/$mode"
 	mkdir "$build_archive"
