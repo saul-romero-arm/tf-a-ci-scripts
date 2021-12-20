@@ -21,8 +21,11 @@ if [ "$CI_ROOT" ]; then
 		worker_job="${worker_job:-tf-worker}"
 		lava_job="${lava_job:-tf-build-for-lava}"
 	else
-		worker_job="${worker_job:-tf-a-builder}"
-		lava_job="${lava_job:-tf-a-builder}"
+		# ${TRIGGERED_JOB_NAMES} has hyphens replaced with underscores.
+		# As we know that we use hyphen convention, translate it back.
+		triggered_job=$(echo ${TRIGGERED_JOB_NAMES} | tr "_" "-")
+		worker_job="${worker_job:-${triggered_job}}"
+		lava_job="${lava_job:-${triggered_job}}"
         fi
 
 	"$CI_ROOT/script/gen_test_report.py" \
