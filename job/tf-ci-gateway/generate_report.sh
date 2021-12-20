@@ -5,7 +5,10 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
+echo "=== generate_report.sh ==="
 set -ex
+
+env
 
 # Generate test report
 if [ "$CI_ROOT" ]; then
@@ -54,3 +57,5 @@ if [ "$CI_ROOT" ]; then
 	source $CI_ROOT/script/gen_merge_report.sh "${WORKSPACE}/report.json" \
 		"${WORKSPACE}/report.html"
 fi
+
+echo "=== /generate_report.sh ==="
