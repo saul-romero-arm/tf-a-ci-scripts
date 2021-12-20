@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-set -e
+set -ex
 
 # Generate test report
 if [ "$CI_ROOT" ]; then
@@ -37,11 +37,6 @@ if [ "$CI_ROOT" ]; then
 		--meta-data html:coverity.data \
 		|| true
 
-	# TODO: Open CI does not (yet) support the merge of code coverage report into main
-	# report, so for the moment condition this task under the Jenkins Arm
-	# environment.
-	if echo "$JENKINS_URL" | grep -q "arm.com"; then
-	    source $CI_ROOT/script/gen_merge_report.sh "${WORKSPACE}/report.json" \
-		   "${WORKSPACE}/report.html"
-	fi
+	source $CI_ROOT/script/gen_merge_report.sh "${WORKSPACE}/report.json" \
+		"${WORKSPACE}/report.html"
 fi
