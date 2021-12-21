@@ -488,7 +488,8 @@ build_tf() {
 	source "$config_file"
 
 	# If it is a TBBR build, extract the MBED TLS library from archive
-	if [ "$(get_tf_opt TRUSTED_BOARD_BOOT)" = 1 ]; then
+	if [ "$(get_tf_opt TRUSTED_BOARD_BOOT)" = 1 ] ||
+	   [ "$(get_tf_opt MEASURED_BOOT)" = 1 ]; then
 		mbedtls_dir="$workspace/mbedtls"
 		if [ ! -d "$mbedtls_dir" ]; then
 			mbedtls_ar="$workspace/mbedtls.tar.gz"
