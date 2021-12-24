@@ -598,6 +598,7 @@ SCP build command line:
 	make -f Makefile.cmake $(cat "$config_file" | tr '\n' ' ') \
 		TOOLCHAIN=GNU \
 		MODE="$mode" \
+		EXTRA_CONFIG_ARGS+=-DDISABLE_CPPCHECK=true \
 		V=1 &>>"$build_log"
 
 EOF
@@ -606,6 +607,7 @@ EOF
 	make -f Makefile.cmake $(cat "$config_file" | tr '\n' ' ') \
 		TOOLCHAIN=GNU \
 		MODE="$mode" \
+		EXTRA_CONFIG_ARGS+=-DDISABLE_CPPCHECK=true \
 		V=1 &>>"$build_log" \
 		|| fail_build
 	)
