@@ -8,8 +8,8 @@
 REPORT_JSON=$1
 REPORT_HTML=$2
 TEST_DEF_FOLDER="${WORKSPACE}/test-definitions"
-INFO_PATH='artifact/html/lcov_report/coverage.info'
-JSON_PATH='artifact/html/output_file.json'
+INFO_PATH='artifact/trace_report/coverage.info'
+JSON_PATH='artifact/config_file.json'
 BRANCH_FOLDER="scripts/tools/code_coverage/fastmodel_baremetal/bmcov/report/branch_coverage"
 BMCOV_REPORT_FOLDER="$OUTDIR/$TEST_DEF_FOLDER/scripts/tools/code_coverage/fastmodel_baremetal/bmcov/report"
 
@@ -39,17 +39,17 @@ test_files = data['test_files']
 for index, build_number in enumerate(test_results):
     if "bmcov" in test_files[index] and test_results[build_number] == "SUCCESS":
         merge_number += 1
-        base_url = "{}job/{}/{}/artifact/html".format(
+        base_url = "{}job/{}/{}/artifact".format(
                         server, data['job'], build_number)
         _files.append( {'id': build_number,
                         'config': {
                                     'type': 'http',
-                                    'origin': "{}/output_file.json".format(
+                                    'origin': "{}/config_file.json".format(
                                         base_url)
                                     },
                         'info': {
                                     'type': 'http',
-                                    'origin': "{}/lcov_report/coverage.info".format(
+                                    'origin': "{}/trace_report/coverage.info".format(
                                         base_url)
                                 }
                         })
