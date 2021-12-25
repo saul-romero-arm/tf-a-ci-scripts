@@ -154,6 +154,7 @@ pushd $OUTDIR
     pushd $TEST_DEF_FOLDER
         git checkout $TEST_DEFINITIONS_REFSPEC
     popd
+    cat $MERGE_JSON; echo
 
     if echo "$JENKINS_URL" | grep -q "oss.arm.com"; then
     bash $TEST_DEF_FOLDER/scripts/tools/code_coverage/fastmodel_baremetal/bmcov/report/branch_coverage/merge.sh \
@@ -163,6 +164,7 @@ pushd $OUTDIR
         -j $MERGE_JSON -l ${OUTDIR} -w $SHARE_FOLDER
     fi
 
+    find ${OUTDIR}
     generate_bmcov_header ${OUTDIR}/index.html ${REPORT_HTML}
     cp ${REPORT_HTML} $OUTDIR
 popd
