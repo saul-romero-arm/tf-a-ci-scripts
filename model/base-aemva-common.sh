@@ -250,6 +250,12 @@ if [ "$arch_version" = "8.6" ]; then
 EOF
 fi
 
+if [ "$arch_version" = "8.7" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster0.has_arm_v8-7=1
+EOF
+fi
+
 # Parameters for fault injection
 if [ "$fault_inject" = "1" ]; then
 	cat <<EOF >>"$model_param_file"
@@ -353,6 +359,12 @@ fi
 if [ "$arch_version" = "8.6" ]; then
 	cat <<EOF >>"$model_param_file"
 -C cluster1.has_arm_v8-6=1
+EOF
+fi
+
+if [ "$arch_version" = "8.7" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster1.has_arm_v8-7=1
 EOF
 fi
 
