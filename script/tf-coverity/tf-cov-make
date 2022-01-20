@@ -278,11 +278,11 @@ clean_build $(common_flags) PLAT=morello TARGET_PLATFORM=fvp ${ARM_TBB_OPTIONS}
 clean_build $(common_flags) PLAT=morello TARGET_PLATFORM=soc ${ARM_TBB_OPTIONS}
 
 #
-# diphda Platform
+# corstone1000 Platform
 #
 
 make $(common_flags) \
-     PLAT=diphda \
+     PLAT=corstone1000 \
      SPD=spmd \
      TARGET_PLATFORM=fpga \
      ENABLE_STACK_PROTECTOR=strong \
