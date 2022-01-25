@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -9,8 +9,11 @@
 
 set -ex
 
-git clone ssh://$CI_BOT_USERNAME@review.trustedfirmware.org:29418/TF-A/trusted-firmware-a
-cd trusted-firmware-a
+# Use a directory which won't clash with a r/o clone made for building.
+clone_dir=trusted-firmware-a-for-update
+
+git clone ssh://$CI_BOT_USERNAME@review.trustedfirmware.org:29418/TF-A/trusted-firmware-a ${clone_dir}
+cd ${clone_dir}
 git checkout master
 git merge --ff-only origin/integration
 
@@ -21,4 +24,4 @@ if echo "$JENKINS_URL" | grep -q "arm.com"; then
 fi
 
 cd ..
-rm -rf trusted-firmware-a
+rm -rf ${clone_dir}
