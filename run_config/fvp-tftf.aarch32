@@ -6,7 +6,7 @@
 #
 
 fetch_tf_resource() {
-	uart="0" file="tftf-aarch32.exp" track_expect
+	uart="0" timeout="800" file="tftf-aarch32.exp" track_expect
 	uart="1" file="hold_uart.exp" track_expect
 
 	payload_type="tftf" gen_fvp_yaml_template
