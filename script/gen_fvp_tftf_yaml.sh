@@ -34,7 +34,7 @@ timeouts:
     lava-test-monitor:
       minutes: 7
     lava-test-interactive:
-      minutes: 7
+      minutes: 15
     lava-test-shell:
       seconds: 300
     lava-test-retry:
