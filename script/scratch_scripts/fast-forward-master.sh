@@ -9,6 +9,10 @@
 
 set -ex
 
+mkdir -p ~/.ssh/
+ssh-keyscan -p 29418 review.trustedfirmware.org >> ~/.ssh/known_hosts
+export GIT_SSH_COMMAND="ssh -i $CI_BOT_KEY"
+
 # Use a directory which won't clash with a r/o clone made for building.
 clone_dir=trusted-firmware-a-for-update
 
