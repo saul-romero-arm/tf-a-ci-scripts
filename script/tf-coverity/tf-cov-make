@@ -418,6 +418,21 @@ clean_build PLAT=ls1043ardb $(common_flags) all BOOT_MODE=nor $nxp_sb_fuse_flags
 clean_build PLAT=ls1043ardb $(common_flags) all BOOT_MODE=nand $nxp_sb_fuse_flags
 clean_build PLAT=ls1043ardb $(common_flags) all BOOT_MODE=sd $nxp_sb_fuse_flags
 
+# ls1046ardb Secure Boot
+clean_build PLAT=ls1046ardb $(common_flags) all BOOT_MODE=qspi $nxp_sb_fuse_flags
+clean_build PLAT=ls1046ardb $(common_flags) all BOOT_MODE=sd $nxp_sb_fuse_flags
+clean_build PLAT=ls1046ardb $(common_flags) all BOOT_MODE=emmc $nxp_sb_fuse_flags
+
+# ls1046afrwy Secure Boot
+clean_build PLAT=ls1046afrwy $(common_flags) all BOOT_MODE=qspi $nxp_sb_fuse_flags
+clean_build PLAT=ls1046afrwy $(common_flags) all BOOT_MODE=sd $nxp_sb_fuse_flags
+
+# ls1046aqds Secure Boot
+clean_build PLAT=ls1046aqds $(common_flags) all BOOT_MODE=qspi $nxp_sb_fuse_flags
+clean_build PLAT=ls1046aqds $(common_flags) all BOOT_MODE=sd $nxp_sb_fuse_flags
+clean_build PLAT=ls1046aqds $(common_flags) all BOOT_MODE=nor $nxp_sb_fuse_flags
+clean_build PLAT=ls1046aqds $(common_flags) all BOOT_MODE=nand $nxp_sb_fuse_flags
+
 # Platforms from Intel
 make PLAT=stratix10 $(common_flags) all
 make PLAT=agilex $(common_flags) all
