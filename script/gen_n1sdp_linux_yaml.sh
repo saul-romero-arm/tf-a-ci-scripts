@@ -135,7 +135,7 @@ actions:
           run:
             steps:
               - apt-get update -q
-              - apt-get install -qy bmap-tools
+              - apt-get install -qy wget
         from: inline
         name: install-dependancies
         path: inline/install-dependancies.yaml
@@ -146,21 +146,16 @@ actions:
     timeout:
       minutes: 10
     to: usb
-    os: oe
+    os: busybox
     images:
       image:
-        url: http://files.oss.arm.com/downloads/lava/health-checks/n1sdp/4/secondary/core-image-minimal-n1sdp.wic.gz
-        compression: gz
-      bmap:
-        url: http://files.oss.arm.com/downloads/lava/health-checks/n1sdp/4/secondary/core-image-minimal-n1sdp.wic.bmap
+        url: http://files.oss.arm.com/downloads/tf-a/css/n1sdp/busybox.img
     uniquify: false
     device: usb_storage_device
-    writer:
-      tool: /usr/bin/bmaptool
-      options: copy {DOWNLOAD_URL} {DEVICE}
-      prompt: 'bmaptool: info'
-    tool:
-      prompts: ['copying time: [0-9ms\.\ ]+, copying speed [0-9\.]+ MiB\/sec']
+    download:
+      tool: /usr/bin/wget
+      prompt: HTTP request sent, awaiting response
+      options: --no-check-certificate --no-proxy --connect-timeout=30 -S --progress=dot:giga -O - {DOWNLOAD_URL}
 
 #
 # Deploy the primary board firmware bundle (this time without the additinal
@@ -183,11 +178,8 @@ actions:
     timeout:
       minutes: 10
     method: minimal
-    auto_login:
-      login_prompt: '(.*)login:'
-      username: root
     prompts:
-      - 'root@(.*):~#'
+      - '/ #'
     transfer_overlay:
       download_command: wget -S
       unpack_command: tar -C / -xzf
