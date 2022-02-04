@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -33,6 +33,8 @@ else
   echo "Result : FAILURE" >> "$LOG_TEST_FILENAME"
   echo >> "$LOG_TEST_FILENAME"
   cat "$LOG_FILE" >> "$LOG_TEST_FILENAME"
+  echo >> "$LOG_TEST_FILENAME"
+  echo -e "Please refer to the docs for further information on include statement ordering: https://trustedfirmware-a.readthedocs.io/en/latest/process/coding-style.html#include-statement-ordering." >> "$LOG_TEST_FILENAME"
 fi
 echo >> "$LOG_TEST_FILENAME"
 
