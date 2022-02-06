@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021 Arm Limited. All rights reserved.
+# Copyright (c) 2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -34,13 +34,18 @@ function file_updation_report( )
   done < "$TFA_PATCH_NEWFILES_LIST"
 
   echo  | tee -a "$LOG_FILE"
-  echo -e "1. Kindly ensure they are updated in the \"tf-cov-make\" build script as well to \n\
-   consider them for Coverity Scan analysis. Please refer to the tf-a documentation \n\
-   \"$DOC_URL\" \n   for more detailed explanation on adding your new build configurations." \
-  | tee -a "$LOG_FILE"
+  echo -e "1. Kindly ensure these newly added source files are covered by : \n\
+   a. Coverity scan analysis by adding them to \"tf-cov-make\" build script with \
+the appropriate build configurations. \n\
+   b. Built as part of one of the platform configurations present in \"tf-l1-build-plat\" \
+test group." | tee -a "$LOG_FILE"
 
   echo  | tee -a "$LOG_FILE"
-  echo -e "2. Please ignore if files are already updated. Further the Code Maintainer will \n\
+  echo -e "   Please refer to the tf-a documentation for more detailed explanation. \n\
+   \"$DOC_URL\"" | tee -a "$LOG_FILE"
+
+  echo  | tee -a "$LOG_FILE"
+  echo -e "2. Please ignore if your files are already updated. Further the Code Maintainer will \n\
    resolve the issue by taking appropriate action." | tee -a "$LOG_FILE"
   echo "==============================================================================="
 
