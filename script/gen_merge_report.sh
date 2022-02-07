@@ -132,11 +132,11 @@ case "$TEST_GROUPS" in
             exit 0;;
 esac
 export MERGE_JSON="$OUTDIR/merge.json"
-echo "Merging $merge_files coverage files..."
 source "$CI_ROOT/script/test_definitions.sh"
 mkdir -p $OUTDIR
 pushd $OUTDIR
     merge_files=$(create_merge_cfg)
+    echo "Merging $merge_files coverage files..."
     # Only merge when more than 1 test result
     if [ "$merge_files" -lt 2 ] ; then
         exit 0
