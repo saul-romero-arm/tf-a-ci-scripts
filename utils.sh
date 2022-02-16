@@ -229,8 +229,22 @@ extend_path() {
 	eval "$path_var=\"$array_val\""
 }
 
-# Extract files from compressed archive to target directory. Supports .zip and
-# .tar.gz format
+# Fetch and extract the latest supported version of the LLVM toolchain from
+# a compressed archive file to a target directory, if it is required.
+setup_llvm_toolchain() {
+	link="${1:-$llvm_archive}"
+	archive="${2:-"$workspace/llvm.tar.xz"}"
+	target_dir="${3:-$llvm_dir}"
+
+	if is_arm_jenkins_env || upon "$local_ci"; then
+		url="$link" saveas="$archive" fetch_file
+		mkdir -p $target_dir
+		extract_tarball $archive $target_dir --strip-components=1 -k
+	fi
+}
+
+# Extract files from compressed archive to target directory. Supports .zip,
+# .tar.gz, and tar.xf format
 extract_tarball() {
 	local archive="$1"
 	local target_dir="$2"
@@ -243,6 +257,9 @@ extract_tarball() {
 				;;
 		application/zip)
 				unzip -q $extra_params $archive
+				;;
+		application/x-xz)
+				tar -x  $extra_params -f $archive
 				;;
 	esac
 	popd "$target_dir"
@@ -345,6 +362,12 @@ mbedtls_version="${mbedtls_version:-2.28.0}"
 # mbedTLS archive public hosting available at github.com
 mbedtls_archive="${mbedtls_archive:-https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v${mbedtls_version}.tar.gz}"
 
+# FIXME: workaround to allow all on-prem host machines to access the latest LLVM
+# LLVM archive public hosting available at github.com
+llvm_version="${llvm_version:-14.0.0}"
+llvm_dir="$workspace/llvm-$llvm_version"
+llvm_archive="${llvm_archive:-https://github.com/llvm/llvm-project/releases/download/llvmorg-$llvm_version/clang+llvm-$llvm_version-x86_64-linux-gnu-ubuntu-18.04.tar.xz}"
+
 coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2020.12}"
 coverity_default_checkers=(
 "--all"
@@ -370,6 +393,7 @@ arm_none_eabi_prefix="arm-none-eabi-"
 path_list=(
 		"${aarch64_none_elf_dir}/bin"
 		"${arm_none_eabi_dir}/bin"
+		"${llvm_dir}/bin"
 		"${nfs_volume}/pdsw/tools/gcc-arm-none-eabi-5_4-2016q3/bin"
 		"$coverity_path/bin"
 )

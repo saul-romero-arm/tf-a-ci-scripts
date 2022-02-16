@@ -502,6 +502,13 @@ build_tf() {
 		set +a
 	fi
 
+	if is_arm_jenkins_env || upon "$local_ci"; then
+		path_list=(
+			"$llvm_dir/bin"
+		)
+		extend_path "PATH" "path_list"
+	fi
+
 	cd "$tf_root"
 
 	# Always distclean when running on Jenkins. Skip distclean when running

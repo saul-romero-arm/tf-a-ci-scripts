@@ -65,10 +65,11 @@ set_cross_compile_gcc_linaro_toolchain() {
 
 # Provide correct armclang toolchain based on environment
 set_armclang_toolchain() {
-    local armclang_path="/home/buildslave/tools/armclang-6.8/bin"
+    # FIXME: ARMCompiler 6.18 is symlinked to 6.17 until it is available on OpenCI.
+    local armclang_path="/home/buildslave/tools/armclang-6.17/bin"
 
     # if under arm enviroment, overide cross-compilation path
-    is_arm_jenkins_env || upon "$local_ci" && armclang_path="/arm/warehouse/Distributions/FA/ARMCompiler/6.8/25/standalone-linux-x86_64-rel/bin"
+    is_arm_jenkins_env || upon "$local_ci" && armclang_path="/arm/warehouse/Distributions/FA/ARMCompiler/6.18/19/standalone-linux-x86_64-rel/bin"
 
     echo "${armclang_path}/armclang"
 }
