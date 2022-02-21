@@ -8,9 +8,17 @@
 REPORT_JSON=$1
 REPORT_HTML=$2
 TEST_DEF_FOLDER="${WORKSPACE}/test-definitions"
+
+if echo "$JENKINS_URL" | grep -q "arm.com"; then
 ARTIFACT_PATH='artifact/html'
 INFO_PATH='lcov_report/coverage.info'
 JSON_PATH='output_file.json'
+else
+ARTIFACT_PATH='artifact'
+INFO_PATH='trace_report/coverage.info'
+JSON_PATH='config_file.json'
+fi
+
 BRANCH_FOLDER="scripts/tools/code_coverage/fastmodel_baremetal/bmcov/report/branch_coverage"
 BMCOV_REPORT_FOLDER="$OUTDIR/$TEST_DEF_FOLDER/scripts/tools/code_coverage/fastmodel_baremetal/bmcov/report"
 
