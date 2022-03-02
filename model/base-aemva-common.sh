@@ -19,6 +19,8 @@ reset_var aarch32
 
 reset_var plat_variant
 
+reset_var pa_size
+
 #------------ GIC configuration --------------
 
 # GICv2 compatibility is not supported and GICD_CTLR.ARE_* is always one
@@ -141,6 +143,8 @@ fi
 #------------ Cluster0 configuration --------------
 
 cat <<EOF >>"$model_param_file"
+${pa_size+-C cluster0.PA_SIZE=$pa_size}
+
 ${cluster_0_reg_reset+-C cluster0.register_reset_data=$cluster_0_reg_reset}
 
 ${cluster_0_has_el2+-C cluster0.has_el2=$cluster_0_has_el2}
@@ -239,9 +243,20 @@ EOF
 	else
 		cat <<EOF >>"$model_param_file"
 -C pci.pci_smmuv3.mmu.SMMU_IDR0=0x0046123B
+EOF
+
+                # Align pci.pci_smmuv3.mmu.SMMU_IDR5 to define 48 bit physical
+                # address size as for the PE.
+                if [ "$pa_size" = "48" ]; then
+                    cat <<EOF >>"$model_param_file"
+-C pci.pci_smmuv3.mmu.SMMU_IDR5=0xFFFF0475
+EOF
+                else
+                    cat <<EOF >>"$model_param_file"
 -C pci.pci_smmuv3.mmu.SMMU_IDR5=0xFFFF0472
 EOF
-	fi
+	        fi
+        fi
 fi
 
 # Parameters to select architecture version
@@ -317,6 +332,8 @@ fi
 #------------ Cluster1 configuration (if exists) --------------
 if [ "$is_dual_cluster" = "1" ]; then
 	cat <<EOF >>"$model_param_file"
+${pa_size+-C cluster1.PA_SIZE=$pa_size}
+
 ${cluster_1_reg_reset+-C cluster1.register_reset_data=$cluster_1_reg_reset}
 
 ${cluster_1_has_el2+-C cluster1.has_el2=$cluster_1_has_el2}
@@ -443,4 +460,14 @@ if [ "$has_rme" = "1" ]; then
 -C cluster1.PA_SIZE=48
 EOF
 fi
+fi
+
+# 48bit PA size: in order to access memory in high address ranges the
+# model must declare and the interconnect has to be configured to
+# support such address width.
+if [ "$pa_size" = "48" ]; then
+cat <<EOF >>"$model_param_file"
+-C bp.dram_size=4000000
+-C cci550.addr_width=48
+EOF
 fi

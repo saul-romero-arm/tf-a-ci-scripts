@@ -1,0 +1,4 @@
+CROSS_COMPILE=aarch64-none-elf-
+PLAT=fvp
+PA_SIZE=48
+TESTS=spm
