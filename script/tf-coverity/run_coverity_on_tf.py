@@ -36,7 +36,7 @@ assert tarball_name("baz.tar.bz2") == "baz"
 
 
 def get_coverity_tool():
-    coverity_tarball = "cov-analysis-linux64-2020.09.tar.gz"
+    coverity_tarball = "cov-analysis-linux64-2021.12.1.tar.gz"
     url = "http://files.oss.arm.com/downloads/tf-a/" + coverity_tarball
     print("Downloading Coverity Build tool from %s..." % url)
     file_handle = urllib.request.urlopen(url)
