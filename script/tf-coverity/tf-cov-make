@@ -437,6 +437,7 @@ clean_build PLAT=ls1046aqds $(common_flags) all BOOT_MODE=nand $nxp_sb_fuse_flag
 # Platforms from Intel
 make PLAT=stratix10 $(common_flags) all
 make PLAT=agilex $(common_flags) all
+make PLAT=n5x $(common_flags) all
 
 # Platforms from Broadcom
 clean_build PLAT=stingray $(common_flags) BOARD_CFG=bcm958742t \
