@@ -861,6 +861,10 @@ set_spm_build_targets() {
 	set_hook_var "spm_build_targets" "$targets"
 }
 
+set_spm_out_dir() {
+	echo "Set SPMC binary build to '${out_dir:?}'"
+	set_hook_var "spm_secure_out_dir" "$out_dir"
+}
 # Look under $archive directory for known files such as blX images, kernel, DTB,
 # initrd etc. For each known file foo, if foo.bin exists, then set variable
 # foo_bin to the path of the file. Make the path relative to the workspace so as
@@ -1376,12 +1380,16 @@ for mode in $modes; do
 			source "$plat_utils"
 		fi
 
+		# Call pre-build hook
+		call_hook pre_spm_build
+
 		# SPM build generates two sets of binaries, one for normal and other
 		# for Secure world. We need both set of binaries for CI.
 		archive="$build_archive"
 		spm_build_root="$spm_root/out/reference/$spm_secure_out_dir"
 		hafnium_build_root="$spm_root/out/reference/$spm_non_secure_out_dir"
 
+		echo "spm_build_root is $spm_build_root"
 		echo "Building SPM ($mode) ..." |& log_separator
 
 		# NOTE: mode has no effect on SPM build (for now), hence debug
