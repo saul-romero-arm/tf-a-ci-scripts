@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -111,11 +111,18 @@ gen_juno_yaml() {
 }
 
 juno_aarch32_runtime() {
-	# Build BL32 for Juno in AArch32. Since build_tf does a realclean, we'll
-	# lose the fiptool binary. Build that again for later use.
 	echo "Building BL32 in AArch32 for Juno:"
 	sed 's/^/\t/' < "${config_file:?}"
-	tf_build_config="$config_file" tf_build_targets="fiptool bl32" \
+
+	# Build BL32 for Juno in AArch32. Since build_tf does a realclean, we'll
+	# lose the tools binaries. Build that again for later use.
+	if upon "$(get_tf_opt TRUSTED_BOARD_BOOT)"; then
+		tf_build_targets="fiptool certtool bl32"
+	else
+		tf_build_targets="fiptool bl32"
+	fi
+
+	tf_build_config="$config_file" tf_build_targets="$tf_build_targets" \
 		build_tf
 
 	# Copy BL32 to a temporary directoy, and update it in the FIP
