@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -219,7 +219,7 @@ EOF
 -C pci.tbu0_pre_smmu_logger.trace_debug=1
 -C pci.pci_smmuv3.mmu.all_error_messages_through_trace=1
 
--C TRACE.GenericTrace.trace-sources=verbose_commentary,smmu_initial_transaction,smmu_final_transaction,*.pci.pci_smmuv3.mmu.*.*,*.pci.smmulogger.*,*.pci.tbu0_pre_smmu_logger.*,FVP_Base_RevC_2xAEMv8A.pci.pci_smmuv3,smmu_poison_tw_data
+-C TRACE.GenericTrace.trace-sources=verbose_commentary,smmu_initial_transaction,smmu_final_transaction,*.pci.pci_smmuv3.mmu.*,*.pci.smmulogger.*,*.pci.tbu0_pre_smmu_logger.*,smmu_poison_tw_data
 --plugin $warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/GenericTrace.so
 EOF
 	fi
