@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -580,6 +580,12 @@ make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
     BUILD_PLAT=build/stm32mp1-sdmmc-stm32image/debug \
     STM32MP_USE_STM32IMAGE=1 \
     ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl2 bl32
+
+# STM32MP13 SDMMC boot
+make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
+    $(common_flags) ARM_ARCH_MAJOR=7 STM32MP_SDMMC=1 \
+    BUILD_PLAT=build/stm32mp1-mp13-sdmmc/debug STM32MP13=1 \
+    ARCH=aarch32 AARCH32_SP=optee ENABLE_STACK_PROTECTOR=strong bl2
 
 # Platforms from TI
 make PLAT=k3 $(common_flags) all
