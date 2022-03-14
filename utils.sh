@@ -21,7 +21,7 @@ if [ -n "$host_env" ]; then
   source "$host_env"
 else
   # Are we running on Arm infrastructure?
-  if echo "$JENKINS_URL" | grep -q "arm.com"; then
+  if echo "$JENKINS_URL" | grep -q "oss.arm.com"; then
     source "$ci_root/arm-env.sh"
   fi
 fi
@@ -248,8 +248,8 @@ extract_tarball() {
 	popd "$target_dir"
 }
 
-# Check if execution is done by Jenkins. If called with a parameter,
-# representing a 'domain', i.e. arm.com, it will also check if
+# See if execution is done by Jenkins. If called with a parameter,
+# representing a 'domain', e.g. arm.com, it will also check if
 # JENKINS_URL contains the latter.
 is_jenkins_env () {
     local domain="${1-}"
