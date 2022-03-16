@@ -195,28 +195,10 @@ ${supports_trace_buffer_control_regs+-C cluster0.has_trbe=$supports_trace_buffer
 EOF
 
 if [ "$has_smmuv3_params" = "1" ]; then
-# The pci.pci_smmuv3.mmu.SMMU_IDR5
-# parameter is modified for 48 bit
-# physical address if rme is enabled.
-# Also ignores the tracing parameters.
-	if [ "$has_rme" = "1" ]; then
 		cat <<EOF >>"$model_param_file"
 -C pci.pci_smmuv3.mmu.SMMU_AIDR=2
--C pci.pci_smmuv3.mmu.SMMU_IDR0=0x0046123B
 -C pci.pci_smmuv3.mmu.SMMU_IDR1=0x00600002
 -C pci.pci_smmuv3.mmu.SMMU_IDR3=0x1714
--C pci.pci_smmuv3.mmu.SMMU_IDR5=0xFFFF0475
--C pci.pci_smmuv3.mmu.SMMU_S_IDR1=0xA0000002
--C pci.pci_smmuv3.mmu.SMMU_S_IDR2=0
--C pci.pci_smmuv3.mmu.SMMU_S_IDR3=0
-EOF
-	else
-		cat <<EOF >>"$model_param_file"
--C pci.pci_smmuv3.mmu.SMMU_AIDR=2
--C pci.pci_smmuv3.mmu.SMMU_IDR0=0x0046123B
--C pci.pci_smmuv3.mmu.SMMU_IDR1=0x00600002
--C pci.pci_smmuv3.mmu.SMMU_IDR3=0x1714
--C pci.pci_smmuv3.mmu.SMMU_IDR5=0xFFFF0472
 -C pci.pci_smmuv3.mmu.SMMU_S_IDR1=0xA0000002
 -C pci.pci_smmuv3.mmu.SMMU_S_IDR2=0
 -C pci.pci_smmuv3.mmu.SMMU_S_IDR3=0
@@ -225,9 +207,31 @@ EOF
 -C pci.tbu0_pre_smmu_logger.trace_snoops=1
 -C pci.tbu0_pre_smmu_logger.trace_debug=1
 -C pci.pci_smmuv3.mmu.all_error_messages_through_trace=1
-
 -C TRACE.GenericTrace.trace-sources=verbose_commentary,smmu_initial_transaction,smmu_final_transaction,*.pci.pci_smmuv3.mmu.*,*.pci.smmulogger.*,*.pci.tbu0_pre_smmu_logger.*,smmu_poison_tw_data
 --plugin $warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/GenericTrace.so
+EOF
+
+# If RME is implemented:
+# * pci.pci_smmuv3.mmu.SMMU_IDR5 defines 48 bit physical address size aligned
+#   with the model configuration for the PE.
+# * pci.pci_smmuv3.mmu.root_register_page_offset defines the (platform
+#   dependent) SMMU Root register page offset.
+# * SMMU_IDR0.RME_IMPL=1: RME features supported for non-secure and secure
+#   programming interface.
+# * pci.pci_smmuv3.mmu.SMMU_ROOT_IDR0=3: ROOT_IMPL=1/BGPTM=1.
+# * pci.pci_smmuv3.mmu.SMMU_ROOT_IIDR=0x43B: JEP106 Arm implementer code.
+	if [ "$has_rme" = "1" ]; then
+		cat <<EOF >>"$model_param_file"
+-C pci.pci_smmuv3.mmu.SMMU_IDR0=0x4046123b
+-C pci.pci_smmuv3.mmu.SMMU_IDR5=0xFFFF0475
+-C pci.pci_smmuv3.mmu.SMMU_ROOT_IDR0=3
+-C pci.pci_smmuv3.mmu.SMMU_ROOT_IIDR=0x43B
+-C pci.pci_smmuv3.mmu.root_register_page_offset=0x20000
+EOF
+	else
+		cat <<EOF >>"$model_param_file"
+-C pci.pci_smmuv3.mmu.SMMU_IDR0=0x0046123B
+-C pci.pci_smmuv3.mmu.SMMU_IDR5=0xFFFF0472
 EOF
 	fi
 fi
