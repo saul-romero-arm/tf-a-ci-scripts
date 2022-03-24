@@ -128,6 +128,13 @@ if [ "$has_rme" = "1" ]; then
 EOF
 fi
 
+# MTE is enabled
+if [[ -n $memory_tagging_support_level ]]; then
+	cat <<EOF >>"$model_param_file"
+-C bp.dram_metadata.is_enabled=1
+EOF
+fi
+
 #------------ Cluster0 configuration --------------
 
 cat <<EOF >>"$model_param_file"

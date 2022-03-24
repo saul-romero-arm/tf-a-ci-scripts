@@ -32,7 +32,9 @@ fetch_tf_resource() {
 post_fetch_tf_resource() {
         local model="tc0"
 
-	model="$model" gen_model_params
+	model="$model" \
+	memory_tagging_support_level="2" \
+		gen_model_params
 
 	set_run_env "ports_script" "$ci_root/model/tc-ports.awk"
 	set_run_env "num_uarts" "2"

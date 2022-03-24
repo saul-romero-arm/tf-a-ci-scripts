@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020-2021, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -65,6 +65,7 @@ post_fetch_tf_resource() {
 	sp3_pkg="cactus-tertiary.pkg" \
 	sp4_pkg="ivy.pkg" \
 	has_smmuv3_params="1" \
+	memory_tagging_support_level="2" \
 		gen_model_params
 
 	model="$model" gen_fvp_yaml
