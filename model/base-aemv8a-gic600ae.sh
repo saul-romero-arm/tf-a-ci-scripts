@@ -11,6 +11,13 @@ default_var sve_plugin_path "$warehouse/SysGen/PVModelLib/0.0/6415/external/plug
 
 source "$ci_root/model/base-aemva-common.sh"
 
+# TF-A code maintain GICD and GICR base address at 0x2f000000
+# 0x2f100000 respectively. Model provides provision to only
+# put GICD base address, and there is a calculation to derive
+# GICR base address i.e.
+# GICR base address =  0x2f000000 + (4 + (2 × ITScount)+(RDnum × 2)) << 16
+# Hence to set GICR base address to 0x2f100000, set the
+# ITScount=6 where RDnum=0
 cat <<EOF >>"$model_param_file"
--C gic_iri.reg-base-per-redistributor=0.0.0.0=0x2f100000,0.0.0.1=0x2f120000,0.0.0.2=0x2f140000,0.0.0.3=0x2f160000,0.0.1.0=0x2f180000,0.0.1.1=0x2f1a0000,0.0.1.2=0x2f1c0000,0.0.1.3=0x2f1e0000
+-C gic_iri.ITS-count=6
 EOF
