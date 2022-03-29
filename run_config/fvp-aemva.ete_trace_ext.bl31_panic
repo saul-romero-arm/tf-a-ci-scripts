@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021 Arm Limited. All rights reserved.
+# Copyright (c) 2021-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -10,6 +10,7 @@ post_fetch_tf_resource() {
 
 	model_version="0.0" \
 	model_build="6684" \
+	model_flavour="Linux64_GCC-6.4" \
 	etm_present="1" \
 	ete_plugin="1" \
 	supports_trace_buffer_control_regs="1" \

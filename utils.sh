@@ -306,9 +306,9 @@ model_build_11_12="38"
 model_flavour_11_12="Linux64_GCC-6.4"
 
 # Model revisions
-model_version="${model_version:-11.16}"
-model_build="${model_build:-16}"
-model_flavour="${model_flavour:-Linux64_GCC-6.4}"
+model_version="${model_version:-11.17}"
+model_build="${model_build:-21}"
+model_flavour="${model_flavour:-Linux64_GCC-9.3}"
 
 # Model snapshots from filer are not normally not accessible from developer
 # systems. Ignore failures from picking real path for local runs.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -9,8 +9,6 @@ post_fetch_tf_resource() {
         local model="cortex-a32x4"
 
 	model="$model" \
-	model_version="11.12" \
-	model_build="38" \
 	gen_model_params
 	uart="0" set_expect_variable "num_cpus" "4"
 

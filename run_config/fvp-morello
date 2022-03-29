@@ -15,6 +15,7 @@ post_fetch_tf_resource() {
 	model="morello" \
 	model_version="0.11" \
 	model_build="33" \
+	model_flavour="Linux64_GCC-6.4" \
 	gen_model_params
 	set_run_env "ports_script" "$ci_root/model/morello-ports.awk"
 	set_run_env "num_uarts" "3"
