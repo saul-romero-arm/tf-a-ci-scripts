@@ -80,7 +80,7 @@ def print_coverage(coverity_dir, tf_dir, exclude_paths=[], log_filename=None):
     with open(coverity_build_log, encoding="utf-8") as build_log:
         for line in build_log:
             line = re.sub('//','/', line)
-            results = re.search("(?:COMPILING|EXECUTING):.*-c *(.*\.c).*-o.*\.o", line)
+            results = re.search("(?:COMPILING|EXECUTING):.*-c  *(.*\.c).*-o.*\.o", line)
             if results is not None:
                 filename = results.group(1)
                 if filename not in analyzed:
