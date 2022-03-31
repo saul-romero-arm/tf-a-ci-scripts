@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -11,15 +11,25 @@ source [file join [file dirname [info script]] handle-arguments.inc]
 
 # File to store the event log from the ftpm service.
 set TFA_DIGEST [get_param tfa_digest "tfa_event_log"]
-set digest_log [open $TFA_DIGEST w]
 
 # regexp for non-zero PCR0
 set non_zero_pcr "(?!(\\s00){16})((\\s(\[0-9a-f\]){2}){16}\\s)"
 set zero_pcr "(\\s00){16}\\s+(00\\s){16}"
 
 expect {
+        # Wait for the start of the event log dump.
+        "TCG_EfiSpecIDEvent:" {
+                set digest_log [open $TFA_DIGEST w]
+        }
+
+        timeout {
+                exit_timeout
+        }
+}
+
+expect {
         # Parse the event log from the debug logs and store the digests
-        # so they can be matched later with what the fTPM read.
+        # so they can be matched later with what the fTPM reads.
 
         -re "Digest(\\s|\\w)*:\\s(\\w{2}\\s){16}|\
         : (\\w{2}\\s){16}|\
