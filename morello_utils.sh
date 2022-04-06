@@ -8,7 +8,6 @@
 source "$ci_root/fvp_utils.sh"
 
 morello_prebuilts=${morello_prebuilts:="$tfa_downloads/morello"}
+scp_mcp_prebuilts=${scp_mcp_prebuilts:="$scp_mcp_downloads/morello/release"}
 
-# TODO: Restore this path once the SCP release v2.10 binaries are generated
-#scp_mcp_prebuilts=${scp_mcp_prebuilts:="$scp_mcp_downloads/morello/release"}
-scp_mcp_prebuilts=${scp_mcp_prebuilts:="$tfa_downloads/morello"}
+uefi_addr=0x14200000
