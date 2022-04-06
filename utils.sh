@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -335,8 +335,8 @@ tf_downloads="${tf_downloads:-file:///downloads/}"
 tfa_downloads="${tfa_downloads:-file:///downloads/tf-a}"
 css_downloads="${css_downloads:-$tfa_downloads/css}"
 
-# SCP/MCP v2.9.0 release binaries
-scp_mcp_downloads="${scp_mcp_downloads:-$tfa_downloads/css_scp_2.9.0}"
+# SCP/MCP v2.10.0 release binaries.
+scp_mcp_downloads="${scp_mcp_downloads:-$tfa_downloads/css_scp_2.10.0}"
 
 linaro_2001_release="${linaro_2001_release:-$tfa_downloads/linaro/20.01}"
 linaro_release="${linaro_release:-$linaro_2001_release}"
