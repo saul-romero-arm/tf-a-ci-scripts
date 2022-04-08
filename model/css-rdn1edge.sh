@@ -15,6 +15,7 @@ cat <<EOF >"$model_param_file"
 -C css.gic_distributor.ITS-device-bits=20
 -C css.mcp.ROMloader.fname=$mcp_rom_bin
 -C css.pl011_uart_ap.unbuffered_output=1
+-C css.pl011_uart1_ap.unbuffered_output=1
 -C css.scp.pl011_uart_scp.unbuffered_output=1
 -C css.scp.ROMloader.fname=$scp_rom_bin
 -C css.trustedBootROMloader.fname=$bl1_bin
