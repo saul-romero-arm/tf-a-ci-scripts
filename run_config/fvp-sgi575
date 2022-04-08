@@ -24,9 +24,6 @@ fetch_tf_resource() {
 		archive_file "scp_rom.bin"
 	fi
 
-	url="$tfa_downloads/SGI-575_cmn600.yml" fetch_file
-	archive_file "SGI-575_cmn600.yml"
-
 	# Hold terminal_uart_aon
 	uart="2" file="hold_uart.exp" track_expect
 }
