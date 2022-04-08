@@ -1,11 +1,11 @@
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-/terminal_s0/ { ports[0] = $NF }
-/terminal_s1/ { ports[1] = $NF }
+/terminal_uart1_ap/ { ports[0] = $NF }
+/terminal_uart_ap/ { ports[1] = $NF }
 
 # SCP uart window title
 /terminal_uart_aon/ { uart_aon[$NF]++ }
