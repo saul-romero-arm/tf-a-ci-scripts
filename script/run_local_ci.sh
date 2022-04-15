@@ -52,9 +52,9 @@ EOF
 	# serialise builds
 	while [ "$i" -lt "$num" ]; do
 		{
-		printf "all: %03d_run %03d_build\n" "$i" "$i"
+		printf "all: %04d_run %04d_build\n" "$i" "$i"
 		if upon "$serialize_builds" && [ "$i" -gt 0 ]; then
-			printf "%03d_build: %03d_build\n" "$i" "$((i - 1))"
+			printf "%04d_build: %04d_build\n" "$i" "$((i - 1))"
 		fi
 		echo
 		} >>Makefile
