@@ -59,6 +59,9 @@ clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tlkd
 # Dualroot chain of trust.
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tspd COT=dualroot
 
+# FEAT_RME with CCA chain of trust.
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tspd USE_ROMLIB=1 ENABLE_RME=1 MEASURED_BOOT=1
+
 clean_build $fvp_common_flags SPD=trusty
 clean_build $fvp_common_flags SPD=trusty TRUSTY_SPD_WITH_GENERIC_SERVICES=1
 
@@ -168,9 +171,6 @@ clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} COT_DESC_IN_DTB=1 USE_ROMLIB=1
 
 # PSA FWU support
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_GPT_SUPPORT=1 PSA_FWU_SUPPORT=1 USE_ROMLIB=1
-
-# FEAT_RME
-clean_build $fvp_common_flags ENABLE_RME=1
 
 # SME and HCX features
 clean_build $fvp_common_flags ENABLE_SME_FOR_NS=1 ENABLE_FEAT_HCX=1
