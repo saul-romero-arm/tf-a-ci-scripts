@@ -340,10 +340,10 @@ scp_mcp_downloads="${scp_mcp_downloads:-$tfa_downloads/css_scp_2.10.0}"
 
 linaro_2001_release="${linaro_2001_release:-$tfa_downloads/linaro/20.01}"
 linaro_release="${linaro_release:-$linaro_2001_release}"
-mbedtls_version="${mbedtls_version:-2.26.0}"
+mbedtls_version="${mbedtls_version:-2.28.0}"
 
 # mbedTLS archive public hosting available at github.com
-mbedtls_archive="${mbedtls_archive:-https://github.com/ARMmbed/mbedtls/archive/mbedtls-${mbedtls_version}.tar.gz}"
+mbedtls_archive="${mbedtls_archive:-https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v${mbedtls_version}.tar.gz}"
 
 coverity_path="${coverity_path:-${nfs_volume}/tools/coverity/static-analysis/2020.12}"
 coverity_default_checkers=(

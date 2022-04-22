@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2021 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -77,9 +77,9 @@ set_armclang_toolchain() {
 MBED_TLS_DIR=mbedtls
 MBED_TLS_URL_REPO=https://github.com/ARMmbed/mbedtls.git
 
-# mbed TLS source tag to checkout when building Trusted Firmware with Trusted
-# Board Boot support.
-MBED_TLS_SOURCES_TAG="mbedtls-2.26.0"
+# mbed TLS source tag to checkout when building Trusted Firmware with
+# cryptography support (e.g. for Trusted Board Boot feature).
+MBED_TLS_SOURCES_TAG="mbedtls-2.28.0"
 
 ARMCLANG_PATH="$(set_armclang_toolchain)"
 
