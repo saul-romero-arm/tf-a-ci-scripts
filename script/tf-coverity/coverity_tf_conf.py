@@ -96,10 +96,6 @@ exclude_paths = [
     ("drivers/renesas/rzg/qos/G2H/qos_init_g2h_v30.c", "Temporarily excluded"),
     ("drivers/renesas/rzg/qos/G2N/qos_init_g2n_v10.c", "Temporarily excluded"),
 
-    # Temporarily exclude Arm FPGA platform until build issue related to
-    # spectre-bhb mitigation is resolved.
-    ("plat/arm/board/arm_fpga/.*", "Temporarily excluded"),
-
     # Exclude the following files of imx8mq as this platform is dropped
     # from the CI. Put the files of this platform into a silent status.
     ("plat/imx/imx8m/imx8mq/gpc.c", "Not currently used"),

@@ -265,8 +265,8 @@ make TARGET_PLATFORM=fpga ${corstone700_common_flags}
 #
 # Arm internal FPGA port
 #
-#make PLAT=arm_fpga $(common_flags) \
-#    FPGA_PRELOADED_DTB_BASE=0x88000000 PRELOADED_BL33_BASE=0x82080000 all
+make PLAT=arm_fpga $(common_flags release) \
+    FPGA_PRELOADED_DTB_BASE=0x88000000 PRELOADED_BL33_BASE=0x82080000 all
 
 #
 # Total Compute platforms
