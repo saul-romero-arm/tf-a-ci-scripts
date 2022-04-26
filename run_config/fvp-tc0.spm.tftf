@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021, Arm Limited. All rights reserved.
+# Copyright (c) 2021-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
 post_tf_build() {
 	if [ ! -f "$archive/scp_ram.bin" ]; then
-		url="$scp_prebuilts/tc$plat_variant/release/scp_bl2.bin" saveas="scp_ram.bin" fetch_file
+		url="$scp_prebuilts/tc$plat_variant/release/tc$plat_variant-bl2.bin" saveas="scp_ram.bin" fetch_file
 		archive_file "scp_ram.bin"
 	fi
 
@@ -24,7 +24,7 @@ fetch_tf_resource() {
 	# Use SCP binary from SCP build if it exists, or fetch pre-built ones.
 	if [ ! -f "$archive/scp_rom.bin" ]; then
 		# Pick the appropriate binary based on target platform variant
-		url="$scp_prebuilts/tc$plat_variant/release/scp_bl1.bin" saveas="scp_rom.bin" fetch_file
+		url="$scp_prebuilts/tc$plat_variant/release/tc$plat_variant-bl1.bin" saveas="scp_rom.bin" fetch_file
 		archive_file "scp_rom.bin"
 	fi
 }
