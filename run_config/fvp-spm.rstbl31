@@ -54,7 +54,6 @@ post_fetch_tf_resource() {
 	model="$model" \
 	arch_version="8.5" \
 	has_branch_target_exception="1" \
-	restriction_on_speculative_execution="2" \
 	reset_to_bl31="1" \
 	kernel_addr=0x88000000 \
 	kernel_bin="$archive/hafnium.bin" \

@@ -38,7 +38,6 @@ post_fetch_tf_resource() {
 	arch_version="8.5" \
 	has_smmuv3_params="1" \
 	has_branch_target_exception="1" \
-	restriction_on_speculative_execution="2" \
 	memory_tagging_support_level="2" \
 		gen_model_params
 
