@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -29,8 +29,6 @@ exclude_paths = [
     ("plat/arm/board/fvp/fconf/fconf_nt_config_getter.c", "Not currently used. Future functionality"),
     ("plat/arm/common/arm_tzc_dmc500.c", "Only used by deprecated SGM platforms"),
     ("plat/marvell/armada/a8k/common/plat_bl1_setup.c", "Not used by any upstream marvell platform"),
-    ("plat/mediatek/common/custom/oem_svc.c", "Used only by mt6795 which is unsupported platform"),
-    ("plat/mediatek/mt6795/.*", "This platform fails to build and is not supported by mediatek"),
     ("plat/mediatek/mt8173/plat_mt_gic.c", "Deprecated code"),
     ("plat/nvidia/tegra/common/tegra_gicv3.c", "Not used by any upstream nvidia platform"),
     ("plat/qemu/common/sp_min/sp_min_setup.c", "Not used in any upstream platform - see GENFW-2164"),
