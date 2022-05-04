@@ -36,6 +36,15 @@ exclude_paths = [
     ("drivers/arm/gic/v3/gic600ae_fmu.c", "Not used by any upstream platform"),
     ("drivers/arm/gic/v3/gic600ae_fmu_helpers.c", "Not used by any upstream platform"),
 
+    # The following files are related to on-going CCA Attestation and Measured
+    # boot development. There is no publicly available FVP platform to test
+    # these source files right now. Some limited testing is available on the AEM
+    # FVP, but these mock some of these interfaces.
+    ("drivers/arm/mhu/mhu_v2_x.c", "Not used by any upstream platform"),
+    ("drivers/arm/mhu/mhu_wrapper_v2_x.c", "Not used by any upstream platform"),
+    ("drivers/arm/rss/rss_comms.c", "Not used by any upstream platform"),
+    ("lib/psa/initial_attestation.c", "Not used by any upstream platform"),
+
     # The following block is excluding files that are impossible to include in a build due to a missing file
     # this should be removed as soon as it would be possible to build stingray platform with SCP_BL2 option
     ("drivers/brcm/iproc_gpio.c", "Cannot be built due to the missing m0_ipc.h file"),
