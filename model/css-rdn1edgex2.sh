@@ -10,7 +10,6 @@ set_model_path "$warehouse/SysGen/SubSystemModels/11.17/33/models/$model_flavour
 cat <<EOF >"$model_param_file"
 
 -C board0.flashloader0.fname=$fip_bin
--C board0.virtioblockdevice.image_path=$busybox_bin
 -C css0.cmn600.force_rnsam_internal=false
 -C css0.cmn600.mesh_config_file=RD_N1_E1_cmn600.yml
 -C css0.gic_distributor.ITS-device-bits=20

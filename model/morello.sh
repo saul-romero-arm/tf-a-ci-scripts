@@ -15,7 +15,6 @@ cat <<EOF >"$model_param_file"
 -C Morello_Top.soc.mcp_qspi_loader.fname=$mcp_fw_bin
 -C "css.trustedBootROMloader.fname=$bl1_bin"
 -C board.ap_qspi_loader.fname=$fip_bin
--C board.virtioblockdevice.image_path=$busybox_bin
 ${uart1_out+-C css.pl011_uart_ap.out_file=$uart1_out}
 ${uart1_out+-C css.pl011_uart_ap.unbuffered_output=1}
 ${uart2_out+-C css.scp.pl011_uart_scp.out_file=$uart2_out}
