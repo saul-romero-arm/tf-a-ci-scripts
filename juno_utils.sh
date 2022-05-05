@@ -131,15 +131,4 @@ juno_aarch32_runtime() {
 	bin_name="tos-fw" src="$tmpdir/bl32.bin" fip_update
 }
 
-juno_manual_test_run() {
-	local zip_dir="$workspace/juno_recovery"
-	local zip_file="${zip_dir}.zip"
-	local tmpdir="$(mktempdir)"
-
-	# $1: test name
-	# $2: timeout (seconds)
-	# $3: log file path
-	$ci_root/script/juno_manual.py console02.remote.oss.arm.com login login $zip_file $tmpdir $1 $2 $3
-}
-
 set +u
