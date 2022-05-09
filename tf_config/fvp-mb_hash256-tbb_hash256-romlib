@@ -6,3 +6,4 @@ PLAT=fvp
 ROT_KEY=plat/arm/board/common/rotpk/arm_rotprivk_rsa.pem
 TPM_HASH_ALG=sha256
 TRUSTED_BOARD_BOOT=1
+USE_ROMLIB=1
