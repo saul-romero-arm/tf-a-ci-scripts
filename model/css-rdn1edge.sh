@@ -9,6 +9,7 @@ set_model_path "$warehouse/SysGen/SubSystemModels/11.15/26/models/Linux64_GCC-6.
 
 cat <<EOF >"$model_param_file"
 -C board.flashloader0.fname=$fip_bin
+-C board.virtioblockdevice.image_path=$busybox_bin
 -C css.cmn600.force_rnsam_internal=false
 -C css.cmn600.mesh_config_file=RD_N1_E1_cmn600.yml
 -C css.gic_distributor.ITS-device-bits=20
