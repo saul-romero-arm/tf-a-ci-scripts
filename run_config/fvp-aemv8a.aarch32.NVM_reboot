@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -27,7 +27,7 @@ post_fetch_tf_resource() {
 
 	aarch32="1" model="$model" retain_flash="1" \
 	cluster_0_num_cores="1" cluster_1_num_cores="1" \
-	cache_state_modelled="0" secure_memory="0" \
+	secure_memory="0" \
 	uart0_out="$uart0_log" \
 	uart1_out="$uart1_log" \
 	flashloader0_fwrite="flash0" \
