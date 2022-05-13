@@ -15,6 +15,7 @@ import subprocess
 import sys
 import utils
 import logging
+from pathlib import Path
 
 # File extensions to check
 VALID_FILE_EXTENSIONS = (".c", ".S", ".h")
@@ -81,56 +82,42 @@ def inc_order_is_correct(inc_list, path, commit_hash=""):
         commit_hash = commit_hash + ":"
 
     # First, check if all includes are in the appropriate group.
-    inc_group = "System", "Project", "Platform"
     incs = collections.defaultdict(list)
     error_msgs = []
     plat_incs = dir_include_paths("plat") | dir_include_paths("include/plat")
     plat_common_incs = dir_include_paths("include/plat/common")
     plat_incs.difference_update(plat_common_incs)
     libc_incs = dir_include_paths("include/lib/libc")
+    proj_incs = dir_include_paths("include/")
     indices = []
 
     for inc in inc_list:
-        inc_path = inc[1:-1]
-        if inc_path in libc_incs:
-            inc_group_index = 0
-        elif inc_path in plat_incs:
-            inc_group_index = 2
-        else:
-            inc_group_index = 1
+        inc_path = inc[1:-1].replace("..", Path(path).parents[1].as_posix())
+        inc_group_index = int(inc_path not in libc_incs)
+
+        if inc_group_index:
+            if inc_path in proj_incs:
+                inc_group_index = 1
+            elif inc_path in plat_incs:
+                inc_group_index = 2
 
         incs[inc_group_index].append(inc_path)
         indices.append((inc_group_index, inc))
 
-    index_sorted_paths = sorted(indices, key=lambda x: x[0])
-
+    index_sorted_paths = sorted(indices, key=lambda x: (x[0], x[1][1:-1]))
     if indices != index_sorted_paths:
-        error_msgs.append("Group ordering error, order should be:")
-        for index_orig, index_new in zip(indices, index_sorted_paths):
+        error_msgs.append("Include ordering error, order should be:")
+        last_group = index_sorted_paths[0][0]
+        for inc in index_sorted_paths:
             # Right angle brackets are a special entity in html, convert the
             # name to an html friendly format.
-            path_ = index_new[1]
-            if "<" in path_:
-                path_ = f"&lt{path_[1:-1]}&gt"
+            path_ = inc[1] if "<" not in inc[1] else f"&lt{inc[1][1:-1]}&gt"
 
-            if index_orig[0] != index_new[0]:
-                error_msgs.append(
-                    f"\t** #include {path_:<30} --> " \
-                    f"{inc_group[index_new[0]].lower()} header, moved to group "\
-                    f"{index_new[0]+1}."
-                )
-            else:
-                error_msgs.append(f"\t#include {path_}")
+            if last_group != inc[0]:
+                error_msgs.append("")
+                last_group = inc[0]
 
-    # Then, check alphabetic order (system, project and user separately).
-    if not error_msgs:
-        for i, inc_list in incs.items():
-            if sorted(inc_list) != inc_list:
-                error_msgs.append(
-                    "{} includes not in order. Include order should be {}".format(
-                        inc_group[i], ", ".join(sorted(inc_list))
-                    )
-                )
+            error_msgs.append(f"\t#include {path_}")
 
     # Output error messages.
     if error_msgs:
