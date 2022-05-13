@@ -102,7 +102,7 @@ gen_juno_yaml() {
         local job_file="$workspace/job.yaml"
 	local payload_type="${payload_type:?}"
 
-	bin_mode="$mode" \
+	bin_mode="$mode" juno_revision="$juno_revision" \
 		"$ci_root/script/gen_juno_${payload_type}_yaml.sh" > "$yaml_file"
 
         cp "$yaml_file" "$job_file"

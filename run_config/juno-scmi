@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -32,7 +32,7 @@ post_fetch_tf_resource() {
 		"$archive/fip.bin" \
 		"$archive/scp_bl1.bin"
 
-	payload_type="scp_tests_scmi" gen_juno_yaml
+	payload_type="scp_tests_scmi" juno_revision="juno-r0" gen_juno_yaml
 }
 
 post_package() {
