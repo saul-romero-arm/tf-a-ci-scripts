@@ -38,7 +38,7 @@ fi
 # Install lavacli with fixes
 virtualenv -p $(which python3) venv
 source venv/bin/activate
-pip install -q lavacli
+pip install -q lavacli ruamel.yaml dataclasses
 
 # Configure lavacli
 lavacli identities add \
