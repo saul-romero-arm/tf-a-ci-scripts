@@ -82,6 +82,9 @@ reset_var supports_trace_filter_regs
 # Trace buffer control register support
 reset_var supports_trace_buffer_control_regs
 
+# CRC32 support
+reset_var supports_crc32
+
 source "$ci_root/model/fvp_common.sh"
 
 #------------ Common configuration --------------
@@ -192,6 +195,10 @@ ${etm_present+-C cluster0.cpu3.etm-present=$etm_present}
 ${supports_trace_filter_regs+-C cluster0.has_self_hosted_trace_extension=$supports_trace_filter_regs}
 ${supports_trace_buffer_control_regs+-C cluster0.has_trbe=$supports_trace_buffer_control_regs}
 ${supports_branch_record_buffer_control_regs+-C cluster0.has_brbe=$supports_branch_record_buffer_control_regs}
+${supports_crc32+-C cluster0.cpu0.enable_crc32=$supports_crc32}
+${supports_crc32+-C cluster0.cpu1.enable_crc32=$supports_crc32}
+${supports_crc32+-C cluster0.cpu2.enable_crc32=$supports_crc32}
+${supports_crc32+-C cluster0.cpu3.enable_crc32=$supports_crc32}
 
 EOF
 
@@ -346,6 +353,10 @@ ${etm_present+-C cluster1.cpu2.etm-present=$etm_present}
 ${etm_present+-C cluster1.cpu3.etm-present=$etm_present}
 ${supports_system_trace_filter_regs+-C cluster1.has_self_hosted_trace_extension=$supports_system_trace_filter_regs}
 ${supports_trace_buffer_control_regs+-C cluster1.has_trbe=$supports_trace_buffer_control_regs}
+${supports_crc32+-C cluster1.cpu0.enable_crc32=$supports_crc32}
+${supports_crc32+-C cluster1.cpu1.enable_crc32=$supports_crc32}
+${supports_crc32+-C cluster1.cpu2.enable_crc32=$supports_crc32}
+${supports_crc32+-C cluster1.cpu3.enable_crc32=$supports_crc32}
 
 EOF
 
