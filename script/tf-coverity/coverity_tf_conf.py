@@ -30,6 +30,7 @@ exclude_paths = [
     ("plat/arm/common/arm_tzc_dmc500.c", "Only used by deprecated SGM platforms"),
     ("plat/marvell/armada/a8k/common/plat_bl1_setup.c", "Not used by any upstream marvell platform"),
     ("plat/mediatek/mt8173/plat_mt_gic.c", "Deprecated code"),
+    ("plat/mediatek/common/custom/oem_svc.c", "Not used by any upstream mediatek platform"),
     ("plat/nvidia/tegra/common/tegra_gicv3.c", "Not used by any upstream nvidia platform"),
     ("plat/qemu/common/sp_min/sp_min_setup.c", "Not used in any upstream platform - see GENFW-2164"),
     ("plat/rockchip/rk3399/drivers/m0/.*", "Work around the lack of support for the M0 compiler in the scripts"),

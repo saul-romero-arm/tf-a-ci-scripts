@@ -373,7 +373,7 @@ make AARCH32_SP=optee ARCH=aarch32 CROSS_COMPILE=arm-none-eabi- PLAT=picopi \
     $(common_flags) all
 make PLAT=imx8mm $(common_flags) NEED_BL2=yes MEASURED_BOOT=1 \
     TPM_HASH_ALG=sha256 ${TBB_OPTIONS} all
-make PLAT=imx8mn $(common_flags) all
+make PLAT=imx8mn $(common_flags) SDEI_SUPPORT=1 all
 make PLAT=imx8mp $(common_flags) NEED_BL2=yes ${TBB_OPTIONS} all
 
 # Due to the limited OCRAM space that can be used for TF-A, build test
