@@ -7,7 +7,11 @@
 
 post_fetch_tf_resource() {
 	local model="base-aemv8a"
-	model="$model"  arch_version="8.7" \
+
+	model="$model" \
+	arch_version="8.7" \
+	has_brbe="1" \
+	has_trbe="1" \
 		gen_model_params
 
 	model="$model" gen_fvp_yaml

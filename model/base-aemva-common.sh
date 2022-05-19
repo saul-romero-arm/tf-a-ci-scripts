@@ -300,6 +300,20 @@ if [ "$has_rme" = "1" ]; then
 EOF
 fi
 
+# FEAT_BRBE is enabled
+if [ "$has_brbe" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster0.has_brbe=1
+EOF
+fi
+
+# FEAT_TRBE is enabled
+if [ "$has_trbe" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster0.has_trbe=1
+EOF
+fi
+
 #------------ Cluster1 configuration (if exists) --------------
 if [ "$is_dual_cluster" = "1" ]; then
 	cat <<EOF >>"$model_param_file"
@@ -398,6 +412,20 @@ if [ "$fault_inject" = "1" ]; then
 -C cluster1.has_ras=2
 -C cluster1.error_record_feature_register='{"INJ":0x1,"ED":0x1,"UI":0x0,"FI":0x0,"UE":0x1,"CFI":0x0,"CEC":0x0,"RP":0x0,"DUI":0x0,"CEO":0x0}'
 -C cluster1.pseudo_fault_generation_feature_register='{"OF":false,"CI":false,"ER":false,"PN":false,"AV":false,"MV":false,"SYN":false,"UC":true,"UEU":true,"UER":false,"UEO":false,"DE":false,"CE":0,"R":false}'
+EOF
+fi
+
+# FEAT_BRBE is enabled
+if [ "$has_brbe" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster1.has_brbe=1
+EOF
+fi
+
+# FEAT_TRBE is enabled
+if [ "$has_trbe" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster1.has_trbe=1
 EOF
 fi
 
