@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -14,6 +14,12 @@
 # Test suites for stress testing are created under /opt/tests.
 
 set -e
+
+if ! [ -x "$(command -v gawk)" ]; then
+	echo "Error: gawk is not installed."
+	echo "Run 'apt-get install gawk' to install"
+	exit 1
+fi
 
 extract_script() {
 	local to="${name:?}.sh"
