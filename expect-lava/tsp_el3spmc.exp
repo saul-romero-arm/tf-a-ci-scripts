@@ -1,0 +1,13 @@
+#
+# Copyright (c) 2022, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+expect_string+=('i;TSP FF-A endpoint id')
+expect_string+=('i;TSP FF-A endpoint id')
+expect_string+=('i;TSP Tests: echo message--')
+expect_string+=('i;TSP Tests: Relaying message--')
+expect_string+=('i;TSP Tests: Memory Share Request--')
+expect_string+=('i;TSP Tests: Memory Lend Request--')
+expect_string+=('i;TSP Tests: Multi Endpoint Memory Share Request--')
+expect_string+=('i;TSP Tests: Multi Endpoint Memory Lend Request--')

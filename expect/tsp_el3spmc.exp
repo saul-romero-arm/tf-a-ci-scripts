@@ -1,0 +1,16 @@
+#
+# Copyright (c) 2022, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+expect_string "TSP FF-A endpoint id"
+expect_string "TSP Tests: echo message--"
+expect_string "TSP Tests: Relaying message--"
+expect_string "TSP Tests: Memory Share Request--"
+expect_string "TSP Tests: Memory Lend Request--"
+expect_string "TSP Tests: Multi Endpoint Memory Share Request--"
+expect_string "TSP Tests: Multi Endpoint Memory Lend Request--"
+
+source [file join [file dirname [info script]] uart-hold.inc]

@@ -1,0 +1,49 @@
+#
+# Copyright (c) 2022, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+expect {
+        "buildroot login:" {
+                send "\n\nroot\n"
+                puts "<<Linux Booted>>"
+        }
+        timeout {
+                exit_uart -1
+        }
+}
+
+expect {
+        "#" {
+                send "ioctl 255\n"
+        }
+        timeout {
+                exit_uart -1
+        }
+}
+
+expect_string "Test: Echo Message to SP"
+expect_string "Test: Message Relay vis SP to EL3 LSP."
+expect_string "Test: Memory Send."
+expect_string "Test: Memory Send in Fragments."
+expect_string "Test: Memory Lend."
+expect_string "Test: Memory Lend in Fragments."
+expect_string "Test: Memory Send with Multiple Endpoints."
+expect_string "Test: Memory Lend with Multiple Endpoints."
+expect_string "Test: Ensure Duplicate Memory Send Requests are Rejected."
+expect_string "Test: Ensure Duplicate Memory Lend Requests are Rejected."
+
+expect {
+        "Total Failures: 0" {
+                puts "<<SUCCESS>>"
+        }
+        timeout {
+                exit_uart -1
+        }
+}
+
+exit_uart 0
+
