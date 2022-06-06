@@ -204,6 +204,9 @@ ${supports_crc32+-C cluster0.cpu1.enable_crc32=$supports_crc32}
 ${supports_crc32+-C cluster0.cpu2.enable_crc32=$supports_crc32}
 ${supports_crc32+-C cluster0.cpu3.enable_crc32=$supports_crc32}
 
+${cache_state_modelled+-C cluster0.stage12_tlb_size=1024}
+${cache_state_modelled+-C cluster0.check_memory_attributes=0}
+
 EOF
 
 if [ "$has_smmuv3_params" = "1" ]; then
@@ -388,6 +391,9 @@ ${supports_crc32+-C cluster1.cpu0.enable_crc32=$supports_crc32}
 ${supports_crc32+-C cluster1.cpu1.enable_crc32=$supports_crc32}
 ${supports_crc32+-C cluster1.cpu2.enable_crc32=$supports_crc32}
 ${supports_crc32+-C cluster1.cpu3.enable_crc32=$supports_crc32}
+
+${cache_state_modelled+-C cluster1.stage12_tlb_size=1024}
+${cache_state_modelled+-C cluster1.check_memory_attributes=0}
 
 EOF
 
