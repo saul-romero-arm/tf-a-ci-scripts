@@ -160,7 +160,7 @@ pushd $OUTDIR
         -j $MERGE_JSON -l ${OUTDIR} -p $project
     else
     bash $TEST_DEF_FOLDER/coverage-tool/coverage-reporting/merge.sh \
-        -j $MERGE_JSON -l ${OUTDIR}
+        -j $MERGE_JSON -l ${OUTDIR} -w $SHARE_FOLDER
     fi
 
     generate_bmcov_header ${OUTDIR}/index.html ${REPORT_HTML}
