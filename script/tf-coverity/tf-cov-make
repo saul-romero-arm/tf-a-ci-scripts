@@ -161,7 +161,7 @@ clean_build $fvp_common_flags GIC_EXT_INTID=1
 clean_build $fvp_common_flags GIC_ENABLE_V4_EXTN=1 GIC_EXT_INTID=1
 
 # Measured Boot
-clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} TPM_HASH_ALG=sha256 MEASURED_BOOT=1 USE_ROMLIB=1
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} MBOOT_EL_HASH_ALG=sha256 MEASURED_BOOT=1 USE_ROMLIB=1
 
 # CoT descriptors in device tree
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} COT_DESC_IN_DTB=1 USE_ROMLIB=1
@@ -372,7 +372,7 @@ make AARCH32_SP=optee ARCH=aarch32 ARM_ARCH_MAJOR=7 ARM_CORTEX_A7=yes \
 make AARCH32_SP=optee ARCH=aarch32 CROSS_COMPILE=arm-none-eabi- PLAT=picopi \
     $(common_flags) all
 make PLAT=imx8mm $(common_flags) NEED_BL2=yes MEASURED_BOOT=1 \
-    TPM_HASH_ALG=sha256 ${TBB_OPTIONS} all
+    MBOOT_EL_HASH_ALG=sha256 ${TBB_OPTIONS} all
 make PLAT=imx8mn $(common_flags) SDEI_SUPPORT=1 all
 make PLAT=imx8mp $(common_flags) NEED_BL2=yes ${TBB_OPTIONS} all
 
@@ -619,7 +619,7 @@ clean_build PLAT=qemu $(common_flags) BL32=Makefile \
     BL32_RAM_LOCATION=tdram ARM_BL31_IN_DRAM=1 \
     SPD=spmd CTX_INCLUDE_EL2_REGS=0 SPMD_SPM_AT_SEL2=0 SPMC_OPTEE=1
 # Measured Boot
-clean_build PLAT=qemu $(common_flags) ${TBB_OPTIONS} TPM_HASH_ALG=sha256 MEASURED_BOOT=1
+clean_build PLAT=qemu $(common_flags) ${TBB_OPTIONS} MBOOT_EL_HASH_ALG=sha256 MEASURED_BOOT=1
 
 clean_build PLAT=qemu_sbsa $(common_flags)
 
