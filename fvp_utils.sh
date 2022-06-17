@@ -243,8 +243,6 @@ get_rootfs() {
 	popd
 }
 
-fvp_romlib_jmptbl_backup="$(mktempdir)/jmptbl.i"
-
 fvp_romlib_runtime() {
 	local tmpdir="$(mktempdir)"
 
@@ -253,23 +251,31 @@ fvp_romlib_runtime() {
 	mv "${tf_build_root:?}/${plat:?}/${mode:?}/bl1.bin" "$tmpdir/bl1.bin"
 
 	# Patch index file
-	cp "${tf_root:?}/plat/arm/board/fvp/jmptbl.i" "$fvp_romlib_jmptbl_backup"
-	sed -i '/fdt/ s/.$/&\ patch/' ${tf_root:?}/plat/arm/board/fvp/jmptbl.i
+	(
+		fvp_romlib_jmptbl="${tf_root:?}/plat/arm/board/fvp/jmptbl.i"
+		fvp_romlib_jmptbl_backup="$(mktempdir)/jmptbl.i"
 
-	# Rebuild with patched file
-	echo "Building patched romlib:"
-	build_tf
+		function __restore() {
+			mv "$fvp_romlib_jmptbl_backup" "$fvp_romlib_jmptbl";
+		}
+
+		# Make sure the original index file is restored.
+		# This will be done either when the current sub-shell exits or
+		# when one of the sub-shell's commands fails.
+		trap __restore EXIT HUP QUIT INT TERM
+
+		cp "$fvp_romlib_jmptbl" "$fvp_romlib_jmptbl_backup"
+		sed -i '/fdt/ s/.$/&\ patch/' "$fvp_romlib_jmptbl"
+
+		# Rebuild with patched file
+		echo "Building patched romlib:"
+		build_tf
+	)
 
 	# Retrieve original BL1 and romlib binaries
 	mv "$tmpdir/romlib.bin" "${tf_build_root:?}/${plat:?}/${mode:?}/romlib/romlib.bin"
 	mv "$tmpdir/bl1.bin" "${tf_build_root:?}/${plat:?}/${mode:?}/bl1.bin"
 }
-
-fvp_romlib_cleanup() {
-	# Restore original index
-	mv "$fvp_romlib_jmptbl_backup" "${tf_root:?}/plat/arm/board/fvp/jmptbl.i"
-}
-
 
 fvp_gen_bin_url() {
     local bin_mode="${bin_mode:?}"
