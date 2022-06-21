@@ -8,7 +8,7 @@
 fetch_tf_resource() {
 	kernel_type="fvp-sgi-busybox" get_kernel
 	initrd_type="fvp-sgi-ramdisk" get_initrd
-	uart="1" set_primary="1" file="linux-busybox-sgi.exp" track_expect
+	uart="1" timeout="1800" set_primary="1" file="linux-busybox-sgi.exp" track_expect
 	uart="0" file="trusted-firmware-sgi.exp" track_expect
 
 
