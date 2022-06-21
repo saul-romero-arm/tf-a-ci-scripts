@@ -1,0 +1,4 @@
+CROSS_COMPILE=aarch64-none-elf-
+DRTM_SUPPORT=1
+PLAT=fvp
+USE_ROMLIB=1

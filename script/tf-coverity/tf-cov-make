@@ -179,6 +179,9 @@ clean_build $fvp_common_flags GIC_ENABLE_V4_EXTN=1 GIC_EXT_INTID=1
 # Measured Boot
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} MBOOT_EL_HASH_ALG=sha256 MEASURED_BOOT=1 USE_ROMLIB=1
 
+# DRTM
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} TPM_HASH_ALG=sha256 DRTM_SUPPORT=1 USE_ROMLIB=1
+
 # CoT descriptors in device tree
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} COT_DESC_IN_DTB=1 USE_ROMLIB=1
 
