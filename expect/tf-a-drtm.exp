@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2022, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script for Linux/Buildroot using Measured Boot & fTPM
+#
+
+source [file join [file dirname [info script]] handle-arguments.inc]
+
+# TODO Add proper string message to claim the succesful exit of DRTM
+# flow
+expect_string "DRTM service handler: unprotect mem"
+exit_uart 0

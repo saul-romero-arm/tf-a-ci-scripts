@@ -1,0 +1,11 @@
+#
+# Copyright (c) 2022 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script for Trusted Firmware Test Framework
+#
+
+# TODO: Add proper string message to claim the succesful exit of DRTM
+prompt='DRTM service handler: unprotect mem'
+expect_string+=("i;${prompt}")
