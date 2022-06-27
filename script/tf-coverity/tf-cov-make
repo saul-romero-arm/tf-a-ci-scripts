@@ -644,6 +644,11 @@ clean_build PLAT=synquacer $(common_flags) SPM_MM=1 \
 clean_build PLAT=synquacer $(common_flags) \
     RESET_TO_BL31=1 PRELOADED_BL33_BASE=0x0 SQ_USE_SCMI_DRIVER=1
 
+# Support for BL2 and TBBR
+clean_build PLAT=synquacer $(common_flags) \
+    MBEDTLS_DIR=$(pwd)/mbedtls TRUSTED_BOARD_BOOT=1 \
+    SQ_USE_SCMI_DRIVER=1 SPD=opteed all
+
 make PLAT=poplar $(common_flags) all
 
 # Raspberry Pi Platforms
