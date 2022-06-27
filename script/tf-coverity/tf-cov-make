@@ -637,11 +637,12 @@ clean_build PLAT=uniphier $(common_flags) ${TBB_OPTIONS} SPD=tspd
 clean_build PLAT=uniphier $(common_flags) FIP_GZIP=1
 
 clean_build PLAT=synquacer $(common_flags) SPM_MM=1 \
-    EL3_EXCEPTION_HANDLING=1 ENABLE_SVE_FOR_NS=0 PRELOADED_BL33_BASE=0x0
+    RESET_TO_BL31=1 EL3_EXCEPTION_HANDLING=1 ENABLE_SVE_FOR_NS=0 \
+    PRELOADED_BL33_BASE=0x0
 
 # Support for SCP Message Interface protocol with platform specific drivers
 clean_build PLAT=synquacer $(common_flags) \
-    PRELOADED_BL33_BASE=0x0 SQ_USE_SCMI_DRIVER=1
+    RESET_TO_BL31=1 PRELOADED_BL33_BASE=0x0 SQ_USE_SCMI_DRIVER=1
 
 make PLAT=poplar $(common_flags) all
 
