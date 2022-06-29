@@ -36,3 +36,7 @@ post_fetch_tf_resource() {
 
 	model="$model" gen_fvp_yaml
 }
+
+post_tf_archive() {
+	fvp_romlib_cleanup
+}
