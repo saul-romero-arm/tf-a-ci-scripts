@@ -477,7 +477,7 @@ build_tf() {
 	config_file="${tf_build_config:-$tf_config_file}"
 
 	# Build fiptool and all targets by default
-	build_targets="${tf_build_targets:-fiptool all}"
+	build_targets="${tf_build_targets:-memmap fiptool all}"
 
 	source "$config_file"
 
