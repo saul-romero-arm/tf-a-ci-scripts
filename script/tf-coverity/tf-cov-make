@@ -276,6 +276,7 @@ make PLAT=arm_fpga $(common_flags release) \
 #
 make $(common_flags) PLAT=tc TARGET_PLATFORM=0 ${ARM_TBB_OPTIONS} all
 make $(common_flags) PLAT=tc TARGET_PLATFORM=1 ${ARM_TBB_OPTIONS} all
+make $(common_flags) PLAT=tc TARGET_PLATFORM=2 ${ARM_TBB_OPTIONS} all
 
 #
 # Morello platform

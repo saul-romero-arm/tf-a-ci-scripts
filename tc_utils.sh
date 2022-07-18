@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020-2021, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -18,6 +18,8 @@ fvp_initrd_urls[fvp-tc-ramdisk]="$tc_prebuilts/uInitrd-busybox.0x88000000"
 initrd_addr=0x8000000
 kernel_addr=0x80000
 scp_ram_addr=0x0bd80000
+rss_rom_addr=0x11000000
+rss_flash_addr=0x31000000
 
 # Hafnium build repo containing Secure hafnium binaries
 spm_secure_out_dir=secure_tc_clang

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020-2021, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -98,6 +98,7 @@ fvp_models=(
 [css-sgi575]=";;;"
 [tc0]=";;;"
 [tc1]=";;;"
+[tc2]=";;;"
 )
 
 
