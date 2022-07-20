@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -41,7 +41,7 @@ if [ "$RUN_CONFIG" != "nil" ] && echo "$RUN_CONFIG" | grep -iq '^fvp'; then
 		if [ -n "$CC_SCP_REFSPEC" ]; then #SCP
 			export JENKINS_SOURCES_WORKSPACE="${scp_root:-$workspace}"
 			if grep -q "fvp-linux.sgi" <<< "$test_config"; then
-				export LIST_OF_BINARIES=${LIST_OF_BINARIES:-"scp_ram scp_rom mcp_rom"}
+				export LIST_OF_BINARIES=${LIST_OF_BINARIES:-"scp_ram scp_rom mcp_rom mcp_ram"}
 			fi
 			export OBJDUMP="$(which 'arm-none-eabi-objdump')"
 			export READELF="$(which 'arm-none-eabi-readelf')"
