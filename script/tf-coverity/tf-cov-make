@@ -55,7 +55,6 @@ clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} ARM_TSP_RAM_LOCATION=dram SPD=t
     TSP_NS_INTR_ASYNC_PREEMPT=1
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=opteed
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tlkd
-clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=pncd SPD_PNCD_NS_IRQ=126 SPD_PNCD_S_IRQ=15
 
 # Dualroot chain of trust.
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tspd COT=dualroot
