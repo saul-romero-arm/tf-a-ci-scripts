@@ -65,6 +65,12 @@ reset_var has_smmuv3_params
 # Enable FEAT_RME
 reset_var has_rme
 
+# Enable FEAT_RNG
+reset_var has_rng
+
+# Enable FEAT_RNG_TRAP
+reset_var has_rng_trap
+
 # Layout of MPIDR. 0=AFF0 is CPUID, 1=AFF1 is CPUID
 reset_var mpidr_layout
 
@@ -293,6 +299,12 @@ if [ "$arch_version" = "8.7" ]; then
 EOF
 fi
 
+if [ "$arch_version" = "8.8" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster0.has_arm_v8-8=1
+EOF
+fi
+
 # Parameters for fault injection
 if [ "$fault_inject" = "1" ]; then
 	cat <<EOF >>"$model_param_file"
@@ -329,6 +341,20 @@ fi
 if [ "$has_trbe" = "1" ]; then
 	cat <<EOF >>"$model_param_file"
 -C cluster0.has_trbe=1
+EOF
+fi
+
+# FEAT_RNG is enabled
+if [ "$has_rng" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster0.has_rndr=1
+EOF
+fi
+
+# FEAT_RNG_TRAP is enabled
+if [ "$has_rng_trap" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster0.has_rndr_trap=1
 EOF
 fi
 
@@ -428,6 +454,12 @@ if [ "$arch_version" = "8.7" ]; then
 EOF
 fi
 
+if [ "$arch_version" = "8.8" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster1.has_arm_v8-8=1
+EOF
+fi
+
 # Parameters for fault injection
 if [ "$fault_inject" = "1" ]; then
 	cat <<EOF >>"$model_param_file"
@@ -466,6 +498,21 @@ if [ "$has_rme" = "1" ]; then
 -C cluster1.PA_SIZE=48
 EOF
 fi
+
+# FEAT_RNG is enabled
+if [ "$has_rng" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster1.has_rndr=1
+EOF
+fi
+
+# FEAT_RNG_TRAP is enabled
+if [ "$has_rng_trap" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster1.has_rndr_trap=1
+EOF
+fi
+
 fi
 
 # 48bit PA size: in order to access memory in high address ranges the
