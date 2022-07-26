@@ -112,7 +112,7 @@ actions:
             steps:
               - apt -q update
               - apt -q install -y iputils-ping
-              - ping -c 5 10.6.43.131 || lava-test-raise "Device failed to reach a remote host"
+              - ping -c 5 www.arm.com || lava-test-raise "Device failed to reach a remote host"
               - hostname -I
         from: inline
         name: device-network
@@ -149,7 +149,7 @@ actions:
     os: busybox
     images:
       image:
-        url: http://files.oss.arm.com/downloads/tf-a/css/n1sdp/busybox.img
+        url: "$n1sdp_prebuilts/busybox.img"
     uniquify: false
     device: usb_storage_device
     download:

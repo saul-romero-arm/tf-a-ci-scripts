@@ -8,27 +8,34 @@
 post_tf_build() {
         #Fetch pre-built SCP/MCP binaries if they haven't been built
         if [ ! -f "$archive/mcp_rom.bin" ]; then
-                url="$scp_mcp_prebuilts/n1sdp-mcp-bl1.bin" saveas="mcp_rom.bin" fetch_file
+                url="$scp_mcp_prebuilts/mcp_romfw.bin" saveas="mcp_rom.bin" fetch_file
                 archive_file "mcp_rom.bin"
         fi
         if [ ! -f "$archive/scp_rom.bin" ]; then
-                url="$scp_mcp_prebuilts/n1sdp-bl1.bin" saveas="scp_rom.bin" fetch_file
+                url="$scp_mcp_prebuilts/scp_romfw.bin" saveas="scp_rom.bin" fetch_file
                 archive_file "scp_rom.bin"
         fi
         if [ ! -f "$archive/scp_ram.bin" ]; then
-                url="$scp_mcp_prebuilts/n1sdp-bl2.bin" saveas="scp_ram.bin" fetch_file
+                url="$scp_mcp_prebuilts/scp_ramfw.bin" saveas="scp_ram.bin" fetch_file
                 archive_file "scp_ram.bin"
         fi
         if [ ! -f "$archive/mcp_ram.bin" ]; then
-                url="$scp_mcp_prebuilts/n1sdp-mcp-bl2.bin" saveas="mcp_ram.bin" fetch_file
+                url="$scp_mcp_prebuilts/mcp_ramfw.bin" saveas="mcp_ram.bin" fetch_file
                 archive_file "mcp_ram.bin"
         fi
 
         # Create FIP for SCP
-        "$fiptool" create --soc-fw "$tf_root/build/n1sdp/$bin_mode/bl31.bin" --scp-fw "$archive/scp_ram.bin" "scp_fw.bin"
+        "$fiptool" create --blob uuid=cfacc2c4-15e8-4668-82be-430a38fad705,file="$tf_root/build/n1sdp/$bin_mode/bl1.bin" --scp-fw "$archive/scp_ram.bin" "scp_fw.bin"
         archive_file "scp_fw.bin"
 
         # Create FIP for MCP, this needs fixed uuid for now
         "$fiptool" create --blob uuid=54464222-a4cf-4bf8-b1b6-cee7dade539e,file="$archive/mcp_ram.bin" "mcp_fw.bin"
         archive_file "mcp_fw.bin"
+
+        # Fetch BL33 [uefi.bin] for N1SDP
+        uefi_ci_bin_url="$n1sdp_prebuilts/uefi.bin" get_uefi_bin
+
+        # Create FIP for BL2, BL31, and BL33
+        build_fip BL31="$bl31" BL2="$bl2" BL33="$archive/uefi.bin"
+
 }

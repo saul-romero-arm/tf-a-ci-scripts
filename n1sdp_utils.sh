@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021 Arm Limited. All rights reserved.
+# Copyright (c) 2021-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
 source "$ci_root/fvp_utils.sh"
 
-n1sdp_prebuilts=${n1sdp_prebuilts:="$tfa_downloads/css/n1sdp"}
-scp_mcp_prebuilts=${scp_mcp_prebuilts:="$scp_mcp_downloads/n1sdp/release"}
+n1sdp_release="N1SDP-2022.06.22"
+n1sdp_prebuilts=${n1sdp_prebuilts:="$tfa_downloads/css/n1sdp/$n1sdp_release"}
+scp_mcp_prebuilts=${scp_mcp_prebuilts:="$n1sdp_prebuilts"}
 
 get_n1sdp_firmware() {
         url=$n1sdp_firmware_bin_url saveas="n1sdp-board-firmware.zip" fetch_file
@@ -27,6 +28,7 @@ gen_recovery_image_n1sdp() {
         cp -Rp --no-preserve=ownership "$archive/mcp_rom.bin" "$zip_dir/SOFTWARE"
         cp -Rp --no-preserve=ownership "$archive/scp_fw.bin" "$zip_dir/SOFTWARE"
         cp -Rp --no-preserve=ownership "$archive/scp_rom.bin" "$zip_dir/SOFTWARE"
+        cp -Rp --no-preserve=ownership "$archive/fip.bin" "$zip_dir/SOFTWARE"
 
         (cd "$zip_dir" && zip -rq "$zip_file" -- *)
 
