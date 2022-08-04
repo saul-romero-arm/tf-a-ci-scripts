@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -16,8 +16,7 @@ LOG_FILE=$(mktemp -t common.XXXX)
 if [[ "$2" == "patch" ]]; then
     cd "$1"
     parent=$(git merge-base HEAD refs/remotes/origin/master | head -1)
-    git diff ${parent}..HEAD --no-ext-diff --unified=0 --exit-code -a --no-prefix | grep -E "^\+" | \
-    grep --files-with-matches $'\r$' &> "$LOG_FILE"
+    git diff ${parent}..HEAD --no-ext-diff --unified=0 --exit-code -a --no-prefix | awk '/^\+/ && /\r$/' &> "$LOG_FILE"
 else
   # For all the source and doc files
   # We only return the files that contain CRLF
