@@ -25,20 +25,11 @@ vmmaddrwidth=23
 rvbaddr_lw=0x1000
 rvbaddr_up=0x0000
 
-if [ $plat_variant -eq 2 ]; then
-    if [ ! -f "$archive/rss_rom.bin" ]; then
-            url="$tc_prebuilts/tc$plat_variant/rss_rom.bin" saveas="rss_rom.bin" fetch_file
-	    archive_file "rss_rom.bin"
-    fi
-
-    if [ ! -f "$archive/rss_flash.bin" ]; then
-	    url="$tc_prebuilts/tc$plat_variant/rss_flash.bin" saveas="rss_flash.bin" fetch_file
-	    archive_file "rss_flash.bin"
-    fi
-fi
-
-rss_rom_file="$archive/rss_rom.bin"
-rss_flash_file="$archive/rss_flash.bin"
+# AP bl1 0x00 is mapped to 0x70010000 in RSS memory map
+ap_bl1_flash_load_addr=0x70010000
+ap_bl1_flash_size=0x20000
+rss_rom_file="$archive/$mode/rss_rom.bin"
+rss_flash_file="$archive/$mode/rss_flash.bin"
 
 # Hafnium build repo containing Secure hafnium binaries
 spm_secure_out_dir=secure_tc_clang

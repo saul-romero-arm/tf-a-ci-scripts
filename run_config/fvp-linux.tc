@@ -20,4 +20,91 @@ fetch_tf_resource() {
 
 	# Hold scp terminal_s0
 	uart="0" file="hold_uart.exp" track_expect
+
+	# RSS is applicable to TC2
+	if [ $plat_variant -eq 2 ]; then
+
+	    sign_image() {
+                # $1 ... host binary name to sign
+		# $2 ... image load address
+		# $3 ... signed bin size
+
+		local tmpdir="$(mktempdir)"
+		host_bin="`basename ${1}`"
+		signed_bin="signed_`basename ${1}`"
+		host_binary_layout="`basename -s .bin ${1}`_ns"
+
+                # development PEM containing a key - use same key which is used for SCP BL1 in pre-built image
+		url="$tc_prebuilts/tc$plat_variant/root-RSA-3072.pem" saveas="root-RSA-3072.pem" fetch_file
+		archive_file "root-RSA-3072.pem"
+
+	        RSS_SIGN_PRIVATE_KEY=$archive/root-RSA-3072.pem
+	        RSS_SEC_CNTR_INIT_VAL=1
+	        RSS_LAYOUT_WRAPPER_VERSION="1.5.0"
+
+		cat << EOF > $tmpdir/$host_binary_layout
+enum image_attributes {
+    RE_IMAGE_LOAD_ADDRESS = $2,
+    RE_SIGN_BIN_SIZE = $3,
+};
+EOF
+
+		if [ ! -f $archive/$host_bin ]; then
+		    echo "$archive/$host_bin does not exist. Aborting...!"
+		    exit 1
+		fi
+
+		echo "Signing `basename ${1}`"
+		# Get mcuboot
+		git clone "https://github.com/mcu-tools/mcuboot.git" $tmpdir/mcuboot
+		# Fetch wrapper script
+		saveas="$tmpdir" url="$tc_prebuilts/tc$plat_variant/wrapper_scripts" fetch_directory
+
+		echo "Installing dependencies..."
+		pip3 install cryptography cbor2 intelhex
+
+		pushd $tmpdir/mcuboot/scripts
+		python3 $tmpdir/wrapper_scripts/wrapper/wrapper.py \
+		        -v $RSS_LAYOUT_WRAPPER_VERSION \
+		        --layout $tmpdir/$host_binary_layout \
+		        -k $RSS_SIGN_PRIVATE_KEY \
+		        --public-key-format full \
+		        --align 1 \
+		        --pad \
+		        --pad-header \
+		        -H 0x1000 \
+		        -s $RSS_SEC_CNTR_INIT_VAL \
+		        $archive/$host_bin  \
+		        $tmpdir/$signed_bin
+
+		echo "created signed_`basename ${1}`"
+		url="$tmpdir/$signed_bin" saveas="$signed_bin" fetch_file
+		archive_file "$signed_bin"
+		popd
+	    }
+
+            inject_bl1() {
+                # Get pre-built rss rom
+                if [ ! -f "$archive/rss_rom.bin" ]; then
+                    url="$tc_prebuilts/tc$plat_variant/rss_rom.bin" fetch_file
+		    archive_file "rss_rom.bin"
+		fi
+
+		# Get pre-built rss flash
+		if [ ! -f "$archive/rss_flash.bin" ]; then
+		    url="$tc_prebuilts/tc$plat_variant/rss_flash.bin" fetch_file
+		    archive_file "rss_flash.bin"
+		fi
+
+		# Inject signed AP bl1 into pre-built rss flash image bundle - both at primary and secondary locations.
+		dd if=$archive/$signed_bin of=$archive/rss_flash.bin  bs=1 seek=$((0x240000)) conv=notrunc status=progress
+		dd if=$archive/$signed_bin of=$archive/rss_flash.bin  bs=1 seek=$((0x340000)) conv=notrunc status=progress
+            }
+
+            # sign AP bl1
+	    sign_image bl1.bin $ap_bl1_flash_load_addr $ap_bl1_flash_size
+
+	    # Inject signed bl1 to pre-built rss flash image
+	    inject_bl1
+	fi
 }
