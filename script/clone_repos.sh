@@ -440,7 +440,7 @@ if upon "$clone_scp"; then
 	fi
 	git submodule -q update $cmsis_reference --init
 
-	eval cmsis_dir="$(git submodule status | awk 'NR==1{print $2}')"
+	eval cmsis_dir="$(git submodule status | grep cmsis | awk 'NR==1{print $2}')"
 
 	# Workaround while fixing permissions on /arm/projectscratch/ssg/trusted-fw/ref-repos/cmsis
 	cd $cmsis_dir
