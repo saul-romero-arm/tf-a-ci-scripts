@@ -344,6 +344,13 @@ if [ "$has_trbe" = "1" ]; then
 EOF
 fi
 
+# FEAT_PACQARMA3 is enabled
+if [ "$has_pacqarma3" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster0.has_qarma3_pac=1
+EOF
+fi
+
 # FEAT_RNG is enabled
 if [ "$has_rng" = "1" ]; then
 	cat <<EOF >>"$model_param_file"
@@ -496,6 +503,13 @@ if [ "$has_rme" = "1" ]; then
 -C cluster1.gicv3.without-DS-support=1
 -C cluster1.max_32bit_el=-1
 -C cluster1.PA_SIZE=48
+EOF
+fi
+
+# FEAT_PACQARMA3 is enabled
+if [ "$has_pacqarma3" = "1" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster1.has_qarma3_pac=1
 EOF
 fi
 
