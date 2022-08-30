@@ -612,6 +612,7 @@ make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
 
 # Platforms from TI
 make PLAT=k3 $(common_flags) all
+make PLAT=k3 TARGET_BOARD=j784s4 $(common_flags) all
 
 clean_build PLAT=qemu $(common_flags) ${TBB_OPTIONS}
 # Use GICV3 driver
