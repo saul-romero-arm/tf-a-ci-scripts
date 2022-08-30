@@ -322,6 +322,7 @@ clean_build $(common_flags) PLAT=fvp_r ${ARM_TBB_OPTIONS} ENABLE_STACK_PROTECTOR
 make PLAT=mt8173 $(common_flags) all
 make PLAT=mt8183 $(common_flags) all
 make PLAT=mt8186 $(common_flags) COREBOOT=1 all
+make PLAT=mt8188 $(common_flags) COREBOOT=1 all
 make PLAT=mt8192 $(common_flags) COREBOOT=1 all
 make PLAT=mt8195 $(common_flags) COREBOOT=1 all
 
