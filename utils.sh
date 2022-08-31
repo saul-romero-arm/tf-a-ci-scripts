@@ -229,6 +229,34 @@ extend_path() {
 	eval "$path_var=\"$array_val\""
 }
 
+# Expand and evaluate Bash variables and expressions in a file, whose path is
+# given by the first parameter.
+#
+# For example, to expand a file containing the following:
+#
+#     My name is ${name}!
+#
+# You might use:
+#
+#     name="Chris" expand_template "path-to-my-file.txt"
+#
+# This would yield:
+#
+#     My name is Chris!
+#
+# If you need to run multiple expansions on a file (e.g. to fill out information
+# incrementally), then you can escape expansion of a variable with a backslash,
+# e.g. `\${name}`.
+#
+# The expanded output is printed to the standard output stream.
+expand_template() {
+	local path="$1"
+
+	eval "cat <<-EOF
+	$(<${path})
+	EOF"
+}
+
 # Fetch and extract the latest supported version of the LLVM toolchain from
 # a compressed archive file to a target directory, if it is required.
 setup_llvm_toolchain() {

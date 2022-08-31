@@ -1,0 +1,87 @@
+device_type: juno
+job_name: tf-juno
+
+context:
+  bootloader_prompt: $bootloader_prompt
+
+$tags
+$juno_revision
+
+timeouts:
+  # Global timeout value for the whole job.
+  job:
+    minutes: 30
+  # Unless explicitly overridden, no single action should take more than
+  # 10 minutes to complete.
+  action:
+    minutes: 10
+
+priority: medium
+visibility: public
+
+actions:
+
+- deploy:
+    namespace: recovery
+    to: vemsd
+    recovery_image:
+      url: $recovery_img_url
+      compression: zip
+
+- deploy:
+    namespace: target
+    to: nfs
+    os: $os
+    nfsrootfs:
+      url: $nfs_rootfs
+      compression: gz
+
+- boot:
+    # Drastically increase the timeout for the boot action because of the udev
+    # issues when using TF build config "juno-all-cpu-reset-ops".
+    # TODO: Should increase the timeout only for this TF build config, not all!
+    timeout:
+      minutes: 15
+    namespace: target
+    connection-namespace: recovery
+    method: u-boot
+    commands: norflash
+    auto-login:
+      login_prompt: 'login:'
+      username: root
+    prompts:
+    - $linux_prompt
+
+- test:
+    namespace: target
+    timeout:
+      minutes: 10
+    definitions:
+    - repository:
+        metadata:
+          format: Lava-Test Test Definition 1.0
+          name: container-test-run
+          description: '"Prepare system..."'
+          os:
+          - $os
+          scope:
+          - functional
+        run:
+          steps:
+          - echo "Rebooting..."
+      from: inline
+      name: target-configure
+      path: inline/target-configure.yaml
+
+- boot:
+    timeout:
+      minutes: 15
+    namespace: target
+    connection-namespace: recovery
+    method: u-boot
+    commands: norflash
+    auto-login:
+      login_prompt: 'login:'
+      username: root
+    prompts:
+    - $linux_prompt
