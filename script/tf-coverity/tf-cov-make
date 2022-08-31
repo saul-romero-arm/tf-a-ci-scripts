@@ -61,7 +61,14 @@ clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=pncd SPD_PNCD_NS_IRQ=126 SP
 clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tspd COT=dualroot
 
 # FEAT_RME with CCA chain of trust.
-clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tspd USE_ROMLIB=1 ENABLE_RME=1 MEASURED_BOOT=1
+#
+# Note that we override PLAT_RSS_NOT_SUPPORTED build flag (which defaults to 1
+# on the Base AEM FVP) just to analyse the RSS communication driver code through
+# Coverity. In reality, RSS is not supported on FVP right now (or on any other
+# upstream platform, for that matter) so the resulting firmware would not be
+# functional.
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=tspd USE_ROMLIB=1 \
+	    ENABLE_RME=1 MEASURED_BOOT=1 PLAT_RSS_NOT_SUPPORTED=0
 
 clean_build $fvp_common_flags SPD=trusty
 clean_build $fvp_common_flags SPD=trusty TRUSTY_SPD_WITH_GENERIC_SERVICES=1
