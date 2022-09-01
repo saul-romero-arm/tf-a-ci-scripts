@@ -17,7 +17,7 @@ post_tf_build() {
 	# but dummy BL33 and BL32.
 	#
 	local dummy_file="$(mktempfile)"
-	echo "hello world" > "$dummy_file"
+	echo "hello world" >"$dummy_file"
 
 	build_fip BL33="$dummy_file" BL32="$dummy_file"
 
@@ -40,31 +40,32 @@ fetch_tf_resource() {
 
 	archive_file "initrd.bin"
 	archive_file "dtb.bin"
+}
 
-	# Expect scripts
-	uart="0" file="spm-linux-uart0.exp" track_expect
-	uart="2" file="spm-uart2.exp" track_expect
-
+generate_lava_job_template() {
 	payload_type="linux" gen_fvp_yaml_template
 }
 
-post_fetch_tf_resource() {
-        local model="base-aemv8a"
+generate_lava_job() {
+	local model="base-aemv8a"
+
+	uart="0" file="spm-linux-uart0.exp" track_expect
+	uart="2" file="spm-uart2.exp" track_expect
 
 	model="$model" \
-	arch_version="8.5" \
-	has_branch_target_exception="1" \
-	reset_to_bl31="1" \
-	kernel_addr=0x88000000 \
-	kernel_bin="$archive/hafnium.bin" \
-	spmc_manifest="fvp_spmc_manifest.dtb" \
-	spm_bin="$archive/secure_hafnium.bin" \
-	sp1_pkg="cactus-primary.pkg" \
-	sp2_pkg="cactus-secondary.pkg" \
-	sp3_pkg="cactus-tertiary.pkg" \
-	sp4_pkg="ivy.pkg" \
-	has_smmuv3_params="1" \
-	memory_tagging_support_level="2" \
+		arch_version="8.5" \
+		has_branch_target_exception="1" \
+		has_smmuv3_params="1" \
+		kernel_addr="0x88000000" \
+		kernel_bin="$archive/hafnium.bin" \
+		memory_tagging_support_level="2" \
+		reset_to_bl31="1" \
+		sp1_pkg="cactus-primary.pkg" \
+		sp2_pkg="cactus-secondary.pkg" \
+		sp3_pkg="cactus-tertiary.pkg" \
+		sp4_pkg="ivy.pkg" \
+		spm_bin="$archive/secure_hafnium.bin" \
+		spmc_manifest="fvp_spmc_manifest.dtb" \
 		gen_model_params
 
 	model="$model" gen_fvp_yaml

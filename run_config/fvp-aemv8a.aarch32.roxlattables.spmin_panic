@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -15,14 +15,12 @@ pre_tf_build() {
 	apply_tf_patch "readonly_xlat_tables/sp_min_data_abort_print_panic_message.patch"
 }
 
-post_tf_archive() {
-        local model="base-aemv8a"
-	aarch32="1" model="$model" gen_model_params
+generate_lava_job() {
+	local model="base-aemv8a"
 
-	model="$model" gen_fvp_yaml
-}
-
-fetch_tf_resource() {
 	uart="0" timeout="60" file="timeout_spmin_roxlattables.exp" track_expect
 	uart="1" timeout="60" file="crash_panic.exp" track_expect
+
+	model="$model" aarch32="1" gen_model_params
+	model="$model" gen_fvp_yaml
 }

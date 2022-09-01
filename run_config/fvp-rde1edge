@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2022 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -10,19 +10,19 @@ fetch_tf_resource() {
 	url="$sgi_prebuilts/scp-ram.bin" fetch_file
 	url="$sgi_prebuilts/scp-rom.bin" fetch_file
 
-
 	archive_file "mcp-rom.bin"
 	archive_file "scp-ram.bin"
 	archive_file "scp-rom.bin"
 }
 
-post_fetch_tf_resource() {
-        local model="css-rde1edge"
+generate_lava_job() {
+	local model="css-rde1edge"
 
-	model="css-rde1edge" \
-	gen_model_params
+	uart="0" set_expect_variable "num_cpus" "32"
+
 	set_run_env "ports_script" "$ci_root/model/css-sgi575-ports.awk"
 	set_run_env "num_uarts" "2"
-	uart="0" set_expect_variable "num_cpus" "32"
+
+	model="css-rde1edge" gen_model_params
 	model="$model" gen_fvp_yaml
 }

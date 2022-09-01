@@ -15,12 +15,6 @@ post_tf_build() {
 }
 
 fetch_tf_resource() {
-	# Expect scripts
-	uart="0" set_payload_uart="1" file="tftf-non-primary.exp" track_expect
-	uart="1" set_primary="1" file="spm-cactus-sp-uart1.exp" track_expect
-
-	payload_type="tftf" gen_fvp_yaml_template
-
 	# Use SCP binary from SCP build if it exists, or fetch pre-built ones.
 	if [ ! -f "$archive/scp_rom.bin" ]; then
 		# Pick the appropriate binary based on target platform variant
@@ -29,15 +23,21 @@ fetch_tf_resource() {
 	fi
 }
 
-post_fetch_tf_resource() {
-        local model="tc0"
+generate_lava_job_template() {
+	payload_type="tftf" gen_fvp_yaml_template
+}
 
-	model="$model" \
-	memory_tagging_support_level="2" \
-		gen_model_params
+generate_lava_job() {
+	local model="tc0"
+
+	uart="0" set_payload_uart="1" file="tftf-non-primary.exp" track_expect
+
+	uart="1" set_expect_variable "num_cpus" "8"
+	uart="1" set_primary="1" file="spm-cactus-sp-uart1.exp" track_expect
 
 	set_run_env "ports_script" "$ci_root/model/tc-ports.awk"
 	set_run_env "num_uarts" "2"
-	uart="1" set_expect_variable "num_cpus" "8"
+
+	model="$model" memory_tagging_support_level="2" gen_model_params
 	model="$model" gen_fvp_yaml
 }

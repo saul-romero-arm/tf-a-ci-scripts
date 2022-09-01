@@ -1461,6 +1461,10 @@ for mode in $modes; do
 		call_hook fetch_tf_resource
 		call_hook post_fetch_tf_resource
 
+		# Generate LAVA job files if necessary
+		call_hook generate_lava_job_template
+		call_hook generate_lava_job
+
 		# Clear any local changes made by applied patches
 		undo_tf_patches
 

@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021 Arm Limited. All rights reserved.
+# Copyright (c) 2021-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-fetch_tf_resource() {
-        uart="0" file="tftf.exp" track_expect
-        uart="1" file="hold_uart.exp" track_expect
-
-        payload_type="tftf" gen_fvp_yaml_template
-}
-
 post_tf_build() {
-        build_fip BL33="$archive/tftf.bin"
+	build_fip BL33="$archive/tftf.bin"
 }
 
 post_tf_archive() {
-        gen_gpt_bin "$archive/fip.bin"
+	gen_gpt_bin "$archive/fip.bin"
+}
+
+generate_lava_job_template() {
+	uart="0" file="tftf.exp" track_expect
+	uart="1" file="hold_uart.exp" track_expect
+
+	payload_type="tftf" gen_fvp_yaml_template
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -10,14 +10,12 @@ pre_tf_build() {
 	apply_tf_patch "ubsan/ubsan_test.patch"
 }
 
-post_tf_archive() {
-        local model="base-aemv8a"
+generate_lava_job() {
+	local model="base-aemv8a"
+
+	# Expect trap message on uart 1
+	uart="1" set_primary="1" file="ubsan-test-trap.exp" track_expect
 
 	model="$model" gen_model_params
 	model="$model" gen_fvp_yaml
-}
-
-fetch_tf_resource() {
-	# Expect trap message on uart 1
-	uart="1" set_primary="1" file="ubsan-test-trap.exp" track_expect
 }

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-post_fetch_tf_resource() {
-        local model="cortex-a57x4-a53x4"
+generate_lava_job() {
+	local model="cortex-a57x4-a53x4"
 
 	model="$model" gen_model_params
 	model="$model" gen_fvp_yaml

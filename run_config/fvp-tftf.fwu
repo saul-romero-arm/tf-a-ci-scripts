@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -9,7 +9,6 @@ pre_tftf_build() {
 	# Build TFTF and FWU images for this config
 	targets="tftf ns_bl1u ns_bl2u" set_tftf_build_targets
 }
-
 
 # Perform FWU steps after all build products have been archived.
 post_tf_build() {
@@ -23,7 +22,7 @@ post_tf_archive() {
 	cp "$archive/fip.bin" "$archive/backup_fip.bin"
 }
 
-fetch_tf_resource() {
+generate_lava_job_template() {
 	uart="0" timeout="900" file="tftf.exp" track_expect
 
 	payload_type="tftf" gen_fvp_yaml_template

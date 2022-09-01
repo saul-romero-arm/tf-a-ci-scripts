@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -12,11 +12,9 @@ pre_tf_build() {
 	apply_tf_patch "fault_inject/fvp-fault-handlers.patch"
 }
 
-post_tf_archive() {
-        local model="base-aemv8a"
+generate_lava_job() {
+	local model="base-aemv8a"
 
-	model="$model" fault_inject="1" arch_version="8.4" \
-		gen_model_params
-
+	model="$model" arch_version="8.4" fault_inject="1" gen_model_params
 	model="$model" gen_fvp_yaml
 }

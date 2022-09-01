@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -9,19 +9,20 @@ post_tf_build() {
 	get_uboot_bin
 }
 
-post_fetch_tf_resource() {
-        local model="base-aemv8a"
+generate_lava_job() {
+	local model="base-aemv8a"
 
 	image=${archive}/tmp.bin
-	printf '\1\0\0\0' > "$image"
+	printf '\1\0\0\0' >"$image"
 
-	preload_bl33="1" \
-	preload_bl33_bin="uboot.bin" \
-	reset_to_bl31="1" \
-	cache_state_modelled="0" \
-	memprotect="$image" \
-	memprotect_addr="0xBFC0000" \
-		model="$model" gen_model_params
+	model="$model" \
+		cache_state_modelled="0" \
+		memprotect_addr="0xBFC0000" \
+		memprotect="$image" \
+		preload_bl33_bin="uboot.bin" \
+		preload_bl33="1" \
+		reset_to_bl31="1" \
+		gen_model_params
 
 	model="$model" gen_fvp_yaml
 }

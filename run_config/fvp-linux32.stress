@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -8,10 +8,12 @@
 fetch_tf_resource() {
 	kernel_type="fvp-oe-uboot32" get_kernel
 	initrd_type="dummy-ramdisk32" get_initrd
-	# No expect tracking as this is an interactive test (test_run=1)
 
 	tmp_dir="$(mktempdir)"
 	ln -s "${img_file:?}" "$archive/rootfs.bin"
+}
 
+generate_lava_job_template() {
+	# No expect tracking as this is an interactive test (test_run=1)
 	payload_type="linux" gen_fvp_yaml_template
 }

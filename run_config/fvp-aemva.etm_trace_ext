@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021 Arm Limited. All rights reserved.
+# Copyright (c) 2021-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-post_fetch_tf_resource() {
+generate_lava_job() {
 	local model="base-aemva"
 
-	etm_present="1" \
-	etm_plugin="1" \
-	supports_trace_buffer_control_regs="1" \
-	supports_trace_filter_regs="2" \
-	model="$model" gen_model_params
+	model="$model" \
+		etm_plugin="1" \
+		etm_present="1" \
+		supports_trace_buffer_control_regs="1" \
+		supports_trace_filter_regs="2" \
+		gen_model_params
 
 	model="$model" gen_fvp_yaml
 }

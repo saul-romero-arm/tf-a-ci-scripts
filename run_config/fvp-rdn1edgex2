@@ -19,12 +19,6 @@ fetch_tf_resource() {
 		url="$scp_mcp_prebuilts/rdn1e1-bl1.bin" saveas="scp_rom.bin" fetch_file
 		archive_file "scp_rom.bin"
 	fi
-
-	# Hold scp terminal_uart_aon on css0
-	uart="2" file="hold_uart.exp" track_expect
-
-	# Hold scp terminal_uart_aon on css1
-	uart="3" file="hold_uart.exp" track_expect
 }
 
 pre_tf_build() {
@@ -37,12 +31,20 @@ pre_tf_build() {
 	apply_tf_patch "css_rd_multichip_fvp/spinlock-send-explicit-event-after-store-release.patch"
 }
 
-post_fetch_tf_resource() {
-        local model="css-rdn1edgex2"
+generate_lava_job() {
+	local model="css-rdn1edgex2"
 
-	model="$model" gen_model_params
+	uart="1" set_expect_variable "num_cpus" "16"
+
+	# Hold scp terminal_uart_aon on css0
+	uart="2" file="hold_uart.exp" track_expect
+
+	# Hold scp terminal_uart_aon on css1
+	uart="3" file="hold_uart.exp" track_expect
+
 	set_run_env "ports_script" "$ci_root/model/css-rdinfra-ports.awk"
 	set_run_env "num_uarts" "4"
-	uart="1" set_expect_variable "num_cpus" "16"
+
+	model="$model" gen_model_params
 	model="$model" gen_fvp_yaml
 }

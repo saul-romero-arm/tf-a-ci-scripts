@@ -9,17 +9,15 @@ post_tf_build() {
 	build_fip BL33="$archive/tftf.bin" BL32="$archive/secure_hafnium.bin"
 }
 
-fetch_tf_resource() {
-	# Expect scripts
-	uart="0" file="tftf.exp" track_expect
-	uart="2" file="spm-uart2.exp" track_expect
-
+generate_lava_job_template() {
 	payload_type="tftf" gen_fvp_yaml_template
-
 }
 
-post_fetch_tf_resource() {
-        local model="base-aemv8a"
+generate_lava_job() {
+	local model="base-aemv8a"
+
+	uart="0" file="tftf.exp" track_expect
+	uart="2" file="spm-uart2.exp" track_expect
 
 	# SPM(reference implementation of S-EL2 firmware) has SMMUv3 driver
 	# enabled to help with stage-2 translation and virtualization of
@@ -27,12 +25,12 @@ post_fetch_tf_resource() {
 	# by confuguring the appropriate parameters of the SMMUv3 AEM.
 
 	model="$model" \
-	amu_present="1" \
-	sve_plugin=1 \
-	arch_version="8.5" \
-	has_smmuv3_params="1" \
-	has_branch_target_exception="1" \
-	memory_tagging_support_level="2" \
+		amu_present="1" \
+		arch_version="8.5" \
+		has_branch_target_exception="1" \
+		has_smmuv3_params="1" \
+		memory_tagging_support_level="2" \
+		sve_plugin="1" \
 		gen_model_params
 
 	model="$model" gen_fvp_yaml

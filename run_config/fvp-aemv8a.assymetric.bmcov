@@ -1,23 +1,26 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-post_fetch_tf_resource() {
-        local model="base-aemv8a"
+generate_lava_job() {
+	local model="base-aemv8a"
 
-	bmcov_plugin=1 bmcov_plugin_path="${coverage_trace_plugin}" \
-	arch_version="8.3" \
-		cluster_0_reg_reset="0xffffffff" \
-		cluster_0_has_el2="0" \
-		cluster_1_reg_reset="0xffffffff" \
-		cluster_1_has_el2="0" \
-		cluster_0_num_cores="2" \
-		cluster_1_num_cores="3" \
-		model="$model" gen_model_params
 	uart="0" set_expect_variable "num_cpus" "5"
+
+	model="$model" \
+		arch_version="8.3" \
+		bmcov_plugin_path="${coverage_trace_plugin}" \
+		bmcov_plugin="1" \
+		cluster_0_has_el2="0" \
+		cluster_0_num_cores="2" \
+		cluster_0_reg_reset="0xffffffff" \
+		cluster_1_has_el2="0" \
+		cluster_1_num_cores="3" \
+		cluster_1_reg_reset="0xffffffff" \
+		gen_model_params
 
 	model="$model" gen_fvp_yaml
 }
