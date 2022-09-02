@@ -6,6 +6,6 @@
 #
 
 fetch_tf_resource() {
-	dtb_type="fvp-base-gicv2-psci-aarch32" get_dtb
+	dtb_type="fvp-base-gicv2-psci" get_dtb
 	update_fip_hw_config
 }
