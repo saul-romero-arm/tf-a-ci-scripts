@@ -24,6 +24,9 @@ fetch_tf_resource() {
 	# RSS is applicable to TC2
 	if [ $plat_variant -eq 2 ]; then
 
+	    # Hold RSS terminal_uart_ap
+	    uart="2" file="hold_uart.exp" track_expect
+
 	    sign_image() {
                 # $1 ... host binary name to sign
 		# $2 ... image load address
