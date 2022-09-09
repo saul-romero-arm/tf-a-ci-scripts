@@ -634,7 +634,7 @@ gen_fvp_yaml() {
     # include the model parameters
     while read -r line; do
         if [ -n "$line" ]; then
-            yaml_line="- \"${line}\""
+            yaml_line="- $(echo "${line}" | jq -Rsa .)"
             sed -i -e "/{BOOT_ARGUMENTS}/i \ \ \ \ $yaml_line" "$yaml_file"
         fi
     done < "$lava_model_params"
