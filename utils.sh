@@ -382,12 +382,12 @@ coverity_default_checkers=(
 docker_registry="${docker_registry:-}"
 
 # Define toolchain version and toolchain binary paths
-toolchain_version="11.2-2022.02"
+toolchain_version="11.3.rel1"
 
-aarch64_none_elf_dir="${nfs_volume}/pdsw/tools/gcc-arm-${toolchain_version}-x86_64-aarch64-none-elf"
+aarch64_none_elf_dir="${nfs_volume}/pdsw/tools/arm-gnu-toolchain-${toolchain_version}-x86_64-aarch64-none-elf"
 aarch64_none_elf_prefix="aarch64-none-elf-"
 
-arm_none_eabi_dir="${nfs_volume}/pdsw/tools/gcc-arm-${toolchain_version}-x86_64-arm-none-eabi"
+arm_none_eabi_dir="${nfs_volume}/pdsw/tools/arm-gnu-toolchain-${toolchain_version}-x86_64-arm-none-eabi"
 arm_none_eabi_prefix="arm-none-eabi-"
 
 path_list=(
