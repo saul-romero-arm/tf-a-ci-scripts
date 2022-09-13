@@ -108,7 +108,7 @@ fetch_directory() {
 			local cut_dirs="$(echo "$modified_url" | awk -F/ '{print NF - 5}')"
 			sa="${saveas:-$base}"
 			echo "Fetch: $modified_url -> $sa"
-			wget -rq -nH --cut-dirs="$cut_dirs" --no-parent \
+			wget -rq -nH --cut-dirs="$cut_dirs" --no-parent -e robots=off \
 				--reject="index.html*" "$modified_url"
 			if [ "$sa" != "$base" ]; then
 				mv "$base" "$sa"
