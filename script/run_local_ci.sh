@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -146,7 +146,7 @@ run_one_test() {
 						else
 							print_success "$config_string" >&5
 							if [ -d "$workspace/artefacts/release" ] && \
-							[ -f "$workspace/artefacts/release/tr-FVP_Base_RevC_2xAEMv8A.cluster0.cpu0.log" ]; then
+							[ -f "$workspace/artefacts/release/tr-FVP_Base_RevC_2xAEMvA.cluster0.cpu0.log" ]; then
 								cp $workspace/artefacts/release/*.log $workspace/artefacts/debug
 							fi
 							# Setting environmental variables for run of code coverage

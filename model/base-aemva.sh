@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -11,7 +11,7 @@ default_var sve_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_
 
 default_var etm_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/ETMv4ExamplePlugin.so"
 
-default_var ete_plugin_path "$warehouse/SysGen/ETE/0.0/79/external/lib/Linux64_GCC-6.4/libete-plugin.so"
+default_var ete_plugin_path "$warehouse/SysGen/PVModelLib/$model_version/$model_build/external/plugins/$model_flavour/libete-plugin.so"
 
 default_var is_dual_cluster 0
 

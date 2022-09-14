@@ -8,6 +8,9 @@
 generate_lava_job() {
 	local model="cortex-a55x4-a75x4"
 
-	model="$model" cache_state_modelled="0" gen_model_params
+	model="$model" \
+	cache_state_modelled="0" \
+	data_instance="cluster0.subcluster0.cpu0" \
+	gen_model_params
 	model="$model" gen_fvp_yaml
 }

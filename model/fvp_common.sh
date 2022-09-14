@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019-2021, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -26,6 +26,7 @@ reset_var reset_to_spmin
 reset_var secure_memory
 reset_var secure_ram_fill
 reset_var wait_debugger
+reset_var cluster_0_num_cores
 
 
 if [ "$bl2_at_el3" ]; then
@@ -51,6 +52,8 @@ ${secure_ram_fill+-C bp.secureSRAM.fill1=0x00000000}
 ${secure_ram_fill+-C bp.secureSRAM.fill2=0x00000000}
 
 ${bl2_at_el3+--data ${data_instance}=$bl2_bin@${bl2_addr:?}}
+
+${cluster_0_num_cores+-C cluster0.NUM_CORES=$cluster_0_num_cores}
 
 ${reset_to_bl31+--data ${data_instance}=$bl31_bin@${bl31_addr:?}}
 ${preload_bl33+--data ${data_instance}=$preload_bl33_bin@${bl33_addr:?}}

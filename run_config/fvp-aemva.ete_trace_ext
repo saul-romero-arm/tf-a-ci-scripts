@@ -11,9 +11,6 @@ generate_lava_job() {
 	model="$model" \
 		ete_plugin="1" \
 		etm_present="1" \
-		model_build="6684" \
-		model_flavour="Linux64_GCC-6.4" \
-		model_version="0.0" \
 		supports_trace_buffer_control_regs="1" \
 		supports_trace_filter_regs="2" \
 		gen_model_params
