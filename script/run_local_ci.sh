@@ -130,8 +130,8 @@ run_one_test() {
 			;;
 
 		"run")
-			# Local runs for FVP or arm_fpga unless asked not to
-			if echo "$RUN_CONFIG" | grep -q "^fvp" && \
+			# Local runs for FVP, QEMU, or arm_fpga unless asked not to
+			if echo "$RUN_CONFIG" | grep -q "^\(fvp\|qemu\)" && \
 					not_upon "$skip_runs"; then
 				echo "running: $config_string" >&5
 				if [ -n "$cc_enable" ]; then

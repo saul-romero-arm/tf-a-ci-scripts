@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2022 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+post_tf_build(){
+	url="$uefi_url" filename="uefi.bin" fetch_and_archive
+
+	build_fip BL33="$archive/uefi.bin"
+}
+
+post_tf_archive(){
+	image="qemu_bios.bin" bl1_path="$archive/bl1.bin" \
+		fip_path="$archive/fip.bin" gen_qemu_image
+}

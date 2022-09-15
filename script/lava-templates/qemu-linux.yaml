@@ -1,0 +1,85 @@
+device_type: qemu
+job_name: qemu-linux-${test_config}
+priority: medium
+visibility: public
+
+metadata:
+  test_config: ${test_config}
+  build_url: ${BUILD_URL}
+  emulator: ${model}
+
+$(if [ -n "${gerrit_url}" ]; then
+	cat <<-YAML
+  gerrit_url: "${gerrit_url}"
+	YAML
+fi)
+
+context:
+  arch: aarch64
+  machine: ${machine:-virt}
+  cpu: ${cpu:-max}
+  extra_options:
+$(for boot_argument in "${boot_arguments[@]:?}"; do
+	cat <<-YAML
+	    - ${boot_argument}
+	YAML
+done)
+
+timeouts:
+  job:
+    minutes: 15
+  actions:
+      login-action:
+        minutes: 5
+      auto-login-action:
+        minutes: 2
+      boot-image-retry:
+        minutes: 2
+      boot-qemu-image:
+        minutes: 2
+      bootloader-action:
+        minutes: 3
+      bootloader-commands:
+        minutes: 3
+      bootloader-interrupt:
+        seconds: 30
+      bootloader-retry:
+        minutes: 3
+      download-retry:
+        minutes: 5
+      lava-test-shell:
+        minutes: 3
+      nfs-deploy:
+        minutes: 10
+      power-off:
+        seconds: 10
+      reset-device:
+        seconds: 30
+  connection:
+    minutes: 2
+
+actions:
+- deploy:
+    to: tmpfs
+    images:
+$(for artefact in "${artefacts[@]:?}"; do
+	cat <<-YAML
+      ${artefact:?}:
+        url: ${artefact_urls[${artefact}]:?}
+	YAML
+
+	[[ "${artefact:?}" =~ ^(kernel|bios|initrd)$ ]] && cat <<-YAML
+        image_arg: -${artefact} {${artefact}}
+	YAML
+
+	[[ "${artefact:?}" =~ ^(busybox|initrd)$ ]] && cat <<-YAML
+        compression: gz
+	YAML
+done)
+
+- boot:
+    method: qemu
+    media: tmpfs
+    prompts: ["${prompt}"]
+    timeout:
+      minutes: 2
