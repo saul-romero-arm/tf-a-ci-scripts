@@ -44,7 +44,7 @@ exclude_paths = [
     ("drivers/arm/mhu/mhu_v2_x.c", "Not used by any upstream platform"),
     ("drivers/arm/mhu/mhu_wrapper_v2_x.c", "Not used by any upstream platform"),
     ("drivers/arm/rss/rss_comms.c", "Not used by any upstream platform"),
-    ("lib/psa/initial_attestation.c", "Not used by any upstream platform"),
+    ("lib/psa/delegated_attestation.c", "Not used by any upstream platform"),
 
     # The following block is excluding files that are impossible to include in a build due to a missing file
     # this should be removed as soon as it would be possible to build stingray platform with SCP_BL2 option
