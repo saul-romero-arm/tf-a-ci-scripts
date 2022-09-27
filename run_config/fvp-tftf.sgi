@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2022 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+fetch_tf_resource() {
+	uart="1" timeout="1200" set_primary="1" file="tftf-sgi.exp" track_expect
+	uart="0" file="hold_uart.exp" track_expect
+
+	payload_type="tftf" gen_fvp_yaml_template
+}

@@ -12,7 +12,7 @@
 nomination_rules = {
         # Run RDN1EDGE TF-A Tests and MISRA checks for any platform changes
         "path:plat/arm/board/rdn1edge":
-            ["tf-l3-boot-tests-css/fvp-rdn1edge-tbb,fvp-rdn1edge-default:fvp-tftf-fip.tftf-rdn1edge",
+            ["tf-l3-boot-tests-css/fvp-rdn1edge-tbb,fvp-rdn1edge-default:fvp-tftf.sgi-fip.tftf-rdn1edge",
              "tf-l2-coverity-misra-nominated/fvp-rdn1edge-tbb:coverity-tf-misra.diff",
              "tf-l3-boot-tests-css/fvp-rdn1edgex2-tbb:fvp-linux.sgi-fip.sgi-rdn1edgex2-debug",
              "tf-l2-coverity-misra-nominated/fvp-rdn1edgex2-tbb:coverity-tf-misra.diff"],
@@ -25,7 +25,7 @@ nomination_rules = {
         # Run SGI575 boot test, TF-A Tests and MISRA checks for any changes with "sgi" in the path
         "pathre:sgi":
             ["tf-l3-boot-tests-css/fvp-sgi575-tbb:fvp-linux.sgi-fip.sgi-sgi575-debug",
-             "tf-l3-boot-tests-css/fvp-sgi575-tbb,fvp-sgi575-default:fvp-tftf-fip.tftf-sgi575",
+             "tf-l3-boot-tests-css/fvp-sgi575-tbb,fvp-sgi575-default:fvp-tftf.sgi-fip.tftf-sgi575",
              "tf-l2-coverity-misra-nominated/fvp-sgi575-tbb:coverity-tf-misra.diff"],
 
         # Run Coverity MISRA checks for tc platform changes
