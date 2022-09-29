@@ -136,6 +136,12 @@ cat <<EOF >index.html
 <html>
 <body>
 <h1>MISRA Delta reports for the patch</h1>
+
+<p>
+Patch: <a href="${GERRIT_CHANGE_URL}/${GERRIT_PATCHSET_NUMBER}">${GERRIT_CHANGE_URL}/${GERRIT_PATCHSET_NUMBER}</a><br />
+CI Build: <a href="${BUILD_URL}">${BUILD_URL}</a>
+</p>
+
 <li><a href="misra_delta.txt">Cumulative TXT report</a>
 <li><a href="diff_output/">Per MISRA rule TXT reports</a>
 <li><a href="new_issues_html/by_service.html#first_file/service&kind">New issues, groupped per file changed (HTML).</a>
