@@ -105,11 +105,11 @@ def main(args):
         print ("License regexp: " + LICENSE_ID_LINE)
 
     if args.patch:
-        print("Checking files modified between patches " + args.from_ref
+        print("Checking files added between patches " + args.from_ref
               + " and " + args.to_ref + "...")
 
         (rc, stdout, stderr) = utils.shell_command(['git', 'diff',
-            '--diff-filter=ACMRT', '--name-only', args.from_ref, args.to_ref ])
+            '--diff-filter=ACRT', '--name-only', args.from_ref, args.to_ref ])
         if rc:
             return COPYRIGHT_ERROR
 
