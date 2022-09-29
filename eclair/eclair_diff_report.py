@@ -9,6 +9,8 @@
 
 import sys
 import glob
+import os
+from string import Template
 
 
 def lcut(l, prefix):
@@ -42,6 +44,15 @@ if len(sys.argv) > 1:
 files = sorted(glob.glob(path + "/*.etr"))
 #print(files)
 
+EMPTY_REPORT_HEADER = """\
+No new MISRA issues detected, good work!
+"""
+
+NONEMPTY_REPORT_HEADER = Template("""\
+MISRA delta report: ${BUILD_URL}artifact/
+
+= MISRA delta report for the patch (issues resolved and/or newly added) =
+""").safe_substitute(os.environ)
 
 header_done = False
 
@@ -51,9 +62,9 @@ for f in files:
     comp = f.rsplit(".", 2)
 #    print("*", f, comp)
     if not header_done:
-        print("=== MISRA delta report for the patch (issues resolved and/or newly added) ===\n")
+        print(NONEMPTY_REPORT_HEADER)
         header_done = True
     process_file(f, comp[-2])
 
 if not header_done:
-    print("No new MISRA issues detected, good work!")
+    print(EMPTY_REPORT_HEADER)
