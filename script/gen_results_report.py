@@ -66,8 +66,7 @@ def main(fd, csv_path, png_path):
     print(results_row, file=fd)
 
     # Format table button to link to full-size plot of results.
-    TABLE_FOOTER.format(build_url + "/" + png_path)
-    print(TABLE_FOOTER, file=fd)
+    print(TABLE_FOOTER.format(build_url + png_path), file=fd)
 
 
 if __name__ == "__main__":
@@ -105,7 +104,7 @@ if __name__ == "__main__":
 
     with open(output_path, "w") as fd:
         try:
-            main(output_path, csv_path, png_path)
+            main(fd, csv_path, png_path)
         except:
             print_error_message(fd)
             raise
