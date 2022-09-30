@@ -560,9 +560,21 @@ gen_fvp_yaml_expect() {
         fi
 
         # Get all expect strings
-        expect_file=$ci_root/expect-lava/${expect_file}
-        source $expect_file
+        expect_dir="${ci_root}/expect-lava"
+        expect_file="${expect_dir}/${expect_file}"
 
+        # Allow the expectations to be provided directly in LAVA's job YAML
+        # format, rather than converting it from a pseudo-Expect Bash script in
+        # the block below.
+        if [ -f "${expect_file/.exp/.yaml}" ]; then
+            pushd "${expect_dir}"
+            expand_template "${expect_file/.exp/.yaml}"
+            popd
+
+            continue
+        else
+            source "${expect_file}"
+        fi
 
         if [ ${#expect_string[@]} -gt 0 ]; then
 

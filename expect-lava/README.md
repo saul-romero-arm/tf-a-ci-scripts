@@ -1,9 +1,23 @@
-# Expect Scripts
+# LAVA Expectation Scripts
 
-The project tracks two set of expect scripts under two different folders, `expect` and
-`expect-lava`, the former required for local (non-LAVA) or Internal CI (Arm CI) and
-the latter for Open CI (LAVA). Note that any contribution into the expect scripts
-**must be done in both folders**, otherwise expect test coverage will differ.
+This repository contains two sets of scripts under two different folders - `expect` and
+`expect-lava` -  which specify the expected UART output of tests run on the on-premises CI, and
+OpenCI. The on-premises CI utilizes the `expect` utility to test UART output from FVP jobs, whilst
+OpenCI utilizes LAVA in all cases (both CIs utilize LAVA for physical board tests).
+
+To aid with migration from the on-premises CI to OpenCI, expectations in `expect-lava` may be
+written in Bash utilizing a set of common Bash infrastructure designed to emulate `expect`'s
+functionality. These scripts end with `.exp`, and the infrastructure is described in the next
+section.
+
+Alternatively, test fragments may be written directly in LAVA's test description format, documented
+[here][1]. These expectations will be picked up if the file ends in `.yaml` and there is no
+corresponding `.exp` file. These files may contain Bash expressions (such as variable expansion).
+
+Note that any contribution into the expect scripts **must be done in both folders**, otherwise test
+expectations will differ.
+
+[1]: https://validation.linaro.org/static/docs/v2/developing-tests.html
 
 ## LAVA Test Actions
 
@@ -28,7 +42,7 @@ after `BL1: Booting BL2`
 
 Monitor actions are used in the following scenario
 
-* regex matching through the log, i.e. 'Digest(\s|\w):\s(\w{2}\s){16}'. 
+* regex matching through the log, i.e. 'Digest(\s|\w):\s(\w{2}\s){16}'.
 
 The following sections go in detail providing syntactic details for each scenario.
 
