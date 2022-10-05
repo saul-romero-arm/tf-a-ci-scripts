@@ -284,15 +284,33 @@ fvp_gen_bin_url() {
     fi
 }
 
+# Generates the template for YAML-based LAVA job definitions from a file
+# corresponding to the currently-selected payload, e.g.:
+#
+# - `lava-templates/fvp-linux.yaml`
+# - `lava-templates/fvp-tftf.yaml`
+#
+# The job definition template is itself expanded with visibility of all
+# variables that are available from within the function, including those with
+# local scope.
+#
+# TODO: Move the Gerrit metadata generation to to the main YAML generation phase
+#   so that we can template the file in one phase.
 gen_fvp_yaml_template() {
-    local yaml_template_file="$workspace/fvp_template.yaml"
+    if [ -n "${GERRIT_CHANGE_NUMBER}" ]; then
+        local gerrit_url="https://review.trustedfirmware.org/c/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}"
+    elif [ -n "${GERRIT_REFSPEC}" ]; then
+        local gerrit_url=$(echo ${GERRIT_REFSPEC} |
+            awk -F/ '{print "https://review.trustedfirmware.org/c/" $4 "/" $5}')
+    fi
 
-    # must parameters for yaml generation
-    local payload_type="${payload_type:?}"
+    local yaml_template_file="${workspace}/fvp_template.yaml"
 
-    "$ci_root/script/gen_fvp_${payload_type}_yaml.sh" > "$yaml_template_file"
+    pushd "${ci_root}/script/lava-templates"
+    expand_template "fvp-${payload_type:?}.yaml" > "$yaml_template_file"
+    popd
 
-    archive_file "$yaml_template_file"
+    archive_file "${yaml_template_file}"
 }
 
 gen_fvp_yaml() {

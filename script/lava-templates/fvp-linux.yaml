@@ -2,7 +2,12 @@ metadata:
   test_config: {TEST_CONFIG}
   fvp_model: {MODEL}
   build_url: ${BUILD_URL}
-${gerrit_meta}
+
+$(if [ -n "${gerrit_url}" ]; then
+	cat <<-YAML
+  gerrit_url: "${gerrit_url}"
+	YAML
+fi)
 
 device_type: fvp
 job_name: fvp-linux-{TEST_CONFIG}
