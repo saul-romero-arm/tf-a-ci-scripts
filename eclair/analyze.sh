@@ -28,9 +28,12 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" ; echo "${PWD}")"
 # Directory where to put all ECLAIR output and temporary files.
 ECLAIR_OUTPUT_DIR="${WORKSPACE}/ECLAIR/out"
 
-export CROSS_COMPILE="/opt/gcc-arm-11.2-2022.02-x86_64-aarch64-none-elf/bin/aarch64-none-elf-"
+TF_CONFIG="$1"
 
-PLAT="$1"
+# Automatically export vars
+set -a
+source ${WORKSPACE}/tf-a-ci-scripts/tf_config/${TF_CONFIG}
+set +a
 
 export CC_ALIASES="${CROSS_COMPILE}gcc"
 export CXX_ALIASES="${CROSS_COMPILE}g++"
@@ -50,7 +53,7 @@ export ECLAIR_WORKSPACE="${ECLAIR_DATA_DIR}/eclair_workspace"
 export ECLAIR_DIAGNOSTICS_OUTPUT="${ECLAIR_OUTPUT_DIR}/DIAGNOSTICS.txt"
 
 # Identifies the particular build of the project.
-export ECLAIR_PROJECT_NAME="TF_A_${PLAT}"
+export ECLAIR_PROJECT_NAME="TF_A_${TF_CONFIG}"
 # All paths mentioned in ECLAIR reports that are below this directory
 # will be presented as relative to ECLAIR_PROJECT_ROOT.
 export ECLAIR_PROJECT_ROOT="${WORKSPACE}/trusted-firmware-a"
@@ -63,7 +66,7 @@ mkdir -p "${ECLAIR_DATA_DIR}"
   # Perform the build (from scratch) in an ECLAIR environment.
   "${ECLAIR_BIN_DIR}/eclair_env"                   \
       "-eval_file='${SCRIPT_DIR}/MISRA_C_2012_selection.ecl'" \
-      -- "${SCRIPT_DIR}/build-tfa.sh" "${PLAT}"
+      -- "${SCRIPT_DIR}/build-tfa.sh" "${TF_CONFIG}"
 )
 
 # Create the project database.
