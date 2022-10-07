@@ -11,4 +11,4 @@ env
 
 cd ${WORKSPACE}/trusted-firmware-a
 make clean
-make ${MAKE_TARGET} -j3
+make ${MAKE_TARGET} -j3 $(cat ${WORKSPACE}/tf-a-ci-scripts/tf_config/$1)
