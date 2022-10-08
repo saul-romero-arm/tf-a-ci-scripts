@@ -19,29 +19,12 @@ then
     exit 1
 fi
 
-# Absolute path of the ECLAIR bin directory.
-ECLAIR_BIN_DIR="/opt/bugseng/eclair/bin"
+TF_CONFIG="$1"
 
-# Directory where this script resides: usually in a directory named "ECLAIR".
+# Directory where this script resides.
 SCRIPT_DIR="$(cd "$(dirname "$0")" ; echo "${PWD}")"
 
-export CROSS_COMPILE="/opt/gcc-arm-11.2-2022.02-x86_64-aarch64-none-elf/bin/aarch64-none-elf-"
-
-PLAT="$1"
-
-export CC_ALIASES="${CROSS_COMPILE}gcc"
-export CXX_ALIASES="${CROSS_COMPILE}g++"
-export LD_ALIASES="${CROSS_COMPILE}ld"
-export AR_ALIASES="${CROSS_COMPILE}ar"
-export AS_ALIASES="${CROSS_COMPILE}as"
-export FILEMANIP_ALIASES="cp mv ${CROSS_COMPILE}objcopy"
-
-# Identifies the particular build of the project.
-export ECLAIR_PROJECT_NAME="TF_A_${PLAT}"
-# All paths mentioned in ECLAIR reports that are below this directory
-# will be presented as relative to ECLAIR_PROJECT_ROOT.
-export ECLAIR_PROJECT_ROOT="${WORKSPACE}/trusted-firmware-a"
-
+. ${SCRIPT_DIR}/analyze_common.sh
 
 function do_analyze() {
 
@@ -60,7 +43,7 @@ function do_analyze() {
       # Perform the build (from scratch) in an ECLAIR environment.
       "${ECLAIR_BIN_DIR}/eclair_env"                   \
           "-eval_file='${SCRIPT_DIR}/MISRA_C_2012_selection.ecl'" \
-          -- "${SCRIPT_DIR}/build-tfa.sh" "${PLAT}"
+          -- "${SCRIPT_DIR}/build-tfa.sh" "${TF_CONFIG}"
     )
 
     # Create the project database.
