@@ -19,31 +19,15 @@ then
     exit 1
 fi
 
-# Absolute path of the ECLAIR bin directory.
-ECLAIR_BIN_DIR="/opt/bugseng/eclair/bin"
+TF_CONFIG="$1"
 
-# Directory where this script resides: usually in a directory named "ECLAIR".
+# Directory where this script resides.
 SCRIPT_DIR="$(cd "$(dirname "$0")" ; echo "${PWD}")"
+
+. ${SCRIPT_DIR}/analyze_common.sh
 
 # Directory where to put all ECLAIR output and temporary files.
 ECLAIR_OUTPUT_DIR="${WORKSPACE}/ECLAIR/out"
-
-TF_CONFIG="$1"
-
-# Automatically export vars
-set -a
-source ${WORKSPACE}/tf-a-ci-scripts/tf_config/${TF_CONFIG}
-set +a
-
-export CC_ALIASES="${CROSS_COMPILE}gcc"
-export CXX_ALIASES="${CROSS_COMPILE}g++"
-export LD_ALIASES="${CROSS_COMPILE}ld"
-export AR_ALIASES="${CROSS_COMPILE}ar"
-export AS_ALIASES="${CROSS_COMPILE}as"
-export FILEMANIP_ALIASES="cp mv ${CROSS_COMPILE}objcopy"
-
-which ${CROSS_COMPILE}gcc
-${CROSS_COMPILE}gcc -v
 
 # ECLAIR binary data directory and workspace.
 export ECLAIR_DATA_DIR="${ECLAIR_OUTPUT_DIR}/.data"
@@ -51,12 +35,6 @@ export ECLAIR_DATA_DIR="${ECLAIR_OUTPUT_DIR}/.data"
 export ECLAIR_WORKSPACE="${ECLAIR_DATA_DIR}/eclair_workspace"
 # Destination file for the ECLAIR diagnostics.
 export ECLAIR_DIAGNOSTICS_OUTPUT="${ECLAIR_OUTPUT_DIR}/DIAGNOSTICS.txt"
-
-# Identifies the particular build of the project.
-export ECLAIR_PROJECT_NAME="TF_A_${TF_CONFIG}"
-# All paths mentioned in ECLAIR reports that are below this directory
-# will be presented as relative to ECLAIR_PROJECT_ROOT.
-export ECLAIR_PROJECT_ROOT="${WORKSPACE}/trusted-firmware-a"
 
 # Erase and recreate the output directory and the data directory.
 rm -rf "${ECLAIR_OUTPUT_DIR}"
