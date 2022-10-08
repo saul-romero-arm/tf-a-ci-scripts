@@ -15,6 +15,15 @@ set -a
 source ${WORKSPACE}/tf-a-ci-scripts/tf_config/${TF_CONFIG}
 set +a
 
+if [ "${TRUSTED_BOARD_BOOT}" = 1 -o "${MEASURED_BOOT}" = 1 ]; then
+    # These configurations require mbedTLS component
+    wget -q ${MBEDTLS_URL}
+    tar xaf $(basename ${MBEDTLS_URL})
+    rm $(basename ${MBEDTLS_URL})
+    pwd; ls -l
+    export MBEDTLS_DIR="${PWD}/$(ls -1d mbedtls-*)"
+fi
+
 export CC_ALIASES="${CROSS_COMPILE}gcc"
 export CXX_ALIASES="${CROSS_COMPILE}g++"
 export LD_ALIASES="${CROSS_COMPILE}ld"
