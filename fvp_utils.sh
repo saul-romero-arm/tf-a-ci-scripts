@@ -437,123 +437,52 @@ gen_fvp_yaml() {
         [uboot]="{UBOOT}"
     )
 
-    # templates cover all possible artefacts, but model parameters may
-    # not required all, i.e. romlib.bin, so delete those irrelevant from
-    # the template
-    for m in "${!artefacts_macros[@]}"; do
-        # there are artefacts where deletion is handled in special case, so treat them accordingly
-        case "$m" in
-            busybox)
-                # besides the macro removal, remove the compression field
-                if ! grep -q "${m}.bin" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/,/compression: gz\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            cactus_primary)
-                # cactus packages have a hyphen, not an underscore
-                if ! grep -E -q "cactus-primary.pkg" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            cactus_secondary)
-                # cactus packages have a hyphen, not an underscore
-                if ! grep -E -q "cactus-secondary.pkg" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            cactus_tertiary)
-                # cactus packages have a hyphen, not an underscore
-                if ! grep -E -q "cactus-tertiary.pkg" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            coverage_trace_plugin)
-                if ! grep -q "coverage_trace.so" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            fvp_spmc_manifest_dtb)
-                # handles fvp_spmc_manifest.dtb as DTB file
-                if ! grep -q "=fvp_spmc_manifest.dtb" "$archive/model_params"; then
-                    sed -i "/ $m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            generic_trace)
-                # the image (Linux Kernel) is named as kernel.bin
-                if ! grep -q "GenericTrace.so" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            image)
-                # the image (Linux Kernel) is named as kernel.bin
-                if ! grep -q "kernel.bin" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            ivy)
-                # the ivy package
-                if ! grep -q "ivy.pkg" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            manifest_dtb)
-                # handles manifest.dtb as DTB file
-                if ! grep -q "=manifest.dtb" "$archive/model_params"; then
-                    sed -i "/ $m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            mcp_rom_hyphen)
-                # mcp rom is either present as mcp-rom or mcp_rom, handle the former case
-                if ! grep -q "mcp-rom.bin" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            ramdisk)
-                # ramdisk is named initrd and is present with to extensions: bin or img
-                if ! grep -E -q "initrd.bin|initrd.img" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            rootfs)
-                # besides the macro removal, remove the compression field
-                if ! grep -q "rootfs.bin" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/,/compression: gz\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            scp_ram_hyphen)
-                # scp ram is either present as scp-ram or scp_ram, handle the former case
-                if ! grep -q "scp-ram.bin" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            scp_rom_hyphen)
-                # scp rom is either present as scp-rom or scp_rom, handle the former case
-                if ! grep -q "scp-rom.bin" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-            *)
-                if ! grep -q "${m}.bin" "$archive/model_params"; then
-                    sed -i "/$m:\$/d" "${yaml_template_file}"
-                    sed -i "/url: ${artefacts_macros[$m]}\$/d" "${yaml_template_file}"
-                fi
-                ;;
-        esac
+    declare -A artefact_filters=(
+        [backup_fip]="backup_fip.bin"
+        [bl1]="bl1.bin"
+        [bl2]="bl2.bin"
+        [bl31]="bl31.bin"
+        [bl32]="bl32.bin"
+        [busybox]="busybox.bin"
+        [cactus_primary]="cactus-primary.pkg"
+        [cactus_secondary]="cactus-secondary.pkg"
+        [cactus_tertiary]="cactus-tertiary.pkg"
+        [coverage_trace_plugin]="coverage_trace.so"
+        [dtb]="dtb.bin"
+        [el3_payload]="el3_payload.bin"
+        [fip_gpt]="fip_gpt.bin"
+        [fip]="fip.bin"
+        [fvp_spmc_manifest_dtb]="=fvp_spmc_manifest.dtb"
+        [fwu_fip]="fwu_fip.bin"
+        [generic_trace]="GenericTrace.so"
+        [hafnium]="hafnium.bin"
+        [image]="kernel.bin"
+        [ivy]="ivy.pkg"
+        [manifest_dtb]="=manifest.dtb"
+        [mcp_rom_hyphen]="mcp-rom.bin"
+        [mcp_rom]="mcp_rom.bin"
+        [ns_bl1u]="ns_bl1u.bin"
+        [ns_bl2u]="ns_bl2u.bin"
+        [ramdisk]="initrd.bin|initrd.img"
+        [romlib]="romlib.bin"
+        [rootfs]="rootfs.bin"
+        [scp_ram_hyphen]="scp-ram.bin"
+        [scp_ram]="scp_ram.bin"
+        [scp_rom_hyphen]="scp-rom.bin"
+        [scp_rom]="scp_rom.bin"
+        [secure_hafnium]="secure_hafnium.bin"
+        [spm]="spm.bin"
+        [tftf]="tftf.bin"
+        [tmp]="tmp.bin"
+        [uboot]="uboot.bin"
+    )
+
+    declare -a artefacts=()
+
+    for artefact in "${!artefact_filters[@]}"; do
+        if grep -E -q "${artefact_filters[${artefact}]}" "${archive}/model_params"; then
+            artefacts+=("${artefact}")
+        fi
     done
 
     # copied files are the working files

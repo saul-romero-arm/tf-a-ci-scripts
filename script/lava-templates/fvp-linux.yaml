@@ -37,82 +37,17 @@ actions:
 - deploy:
     to: fvp
     images:
-      backup_fip:
-        url: {BACKUP_FIP}
-      bl1:
-        url: {BL1}
-      bl2:
-        url: {BL2}
-      bl31:
-        url: {BL31}
-      bl32:
-        url: {BL32}
-      busybox:
-        url: {BUSYBOX}
+
+$(for artefact in "${artefacts[@]:?}"; do
+	cat <<-YAML
+      ${artefact:?}:
+        url: ${artefacts_macros[${artefact:?}]:?}
+	YAML
+
+	[[ "${artefact:?}" =~ ^(busybox|rootfs)$ ]] && cat <<-YAML
         compression: gz
-      cactus_primary:
-        url: {CACTUS_PRIMARY}
-      cactus_secondary:
-        url: {CACTUS_SECONDARY}
-      cactus_tertiary:
-        url: {CACTUS_TERTIARY}
-      coverage_trace_plugin:
-        url: {COVERAGE_TRACE_PLUGIN}
-      dtb:
-        url: {DTB}
-      el3_payload:
-        url: {EL3_PAYLOAD}
-      fvp_spmc_manifest_dtb:
-        url: {FVP_SPMC_MANIFEST_DTB}
-      fip:
-        url: {FIP}
-      fip_gpt:
-        url: {FIP_GPT}
-      fwu_fip:
-        url: {FWU_FIP}
-      generic_trace:
-        url: {GENERIC_TRACE}
-      hafnium:
-        url: {HAFNIUM}
-      image:
-        url: {IMAGE}
-      ivy:
-        url: {IVY}
-      manifest_dtb:
-        url: {MANIFEST_DTB}
-      mcp_rom:
-        url: {MCP_ROM}
-      mcp_rom_hyphen:
-        url: {MCP_ROM_HYPHEN}
-      ns_bl1u:
-        url: {NS_BL1U}
-      ns_bl2u:
-        url: {NS_BL2U}
-      ramdisk:
-        url: {RAMDISK}
-      romlib:
-        url: {ROMLIB}
-      rootfs:
-        url: {ROOTFS}
-        compression: gz
-      secure_hafnium:
-        url: {SECURE_HAFNIUM}
-      scp_ram:
-        url: {SCP_RAM}
-      scp_ram_hyphen:
-        url: {SCP_RAM_HYPHEN}
-      scp_rom:
-        url: {SCP_ROM}
-      scp_rom_hyphen:
-        url: {SCP_ROM_HYPHEN}
-      spm:
-        url: {SPM}
-      tftf:
-        url: {TFTF}
-      tmp:
-        url: {TMP}
-      uboot:
-        url: {UBOOT}
+	YAML
+done)
 
 - boot:
     method: fvp
