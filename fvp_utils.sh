@@ -289,30 +289,19 @@ fvp_gen_bin_url() {
 #
 # - `lava-templates/fvp-linux.yaml`
 # - `lava-templates/fvp-tftf.yaml`
-#
-# The job definition template is itself expanded with visibility of all
-# variables that are available from within the function, including those with
-# local scope.
-#
-# TODO: Move the Gerrit metadata generation to to the main YAML generation phase
-#   so that we can template the file in one phase.
 gen_fvp_yaml_template() {
-    if [ -n "${GERRIT_CHANGE_NUMBER}" ]; then
-        local gerrit_url="https://review.trustedfirmware.org/c/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}"
-    elif [ -n "${GERRIT_REFSPEC}" ]; then
-        local gerrit_url=$(echo ${GERRIT_REFSPEC} |
-            awk -F/ '{print "https://review.trustedfirmware.org/c/" $4 "/" $5}')
-    fi
-
     local yaml_template_file="${workspace}/fvp_template.yaml"
 
-    pushd "${ci_root}/script/lava-templates"
-    expand_template "fvp-${payload_type:?}.yaml" > "$yaml_template_file"
-    popd
+    cp "${ci_root}/script/lava-templates/fvp-${payload_type:?}.yaml" \
+        "${yaml_template_file}"
 
     archive_file "${yaml_template_file}"
 }
 
+# Generates the final YAML-based LAVA job definition from a template file.
+#
+# The job definition template is expanded with visibility of all variables that
+# are available from within the function, including those with local scope.
 gen_fvp_yaml() {
     local model="${model:?}"
 
@@ -347,6 +336,13 @@ gen_fvp_yaml() {
 
     # optional parameters, defaults to globals
     local model_dtb="${model_dtb:-$default_model_dtb}"
+
+    if [ -n "${GERRIT_CHANGE_NUMBER}" ]; then
+        local gerrit_url="https://review.trustedfirmware.org/c/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}"
+    elif [ -n "${GERRIT_REFSPEC}" ]; then
+        local gerrit_url=$(echo ${GERRIT_REFSPEC} |
+            awk -F/ '{print "https://review.trustedfirmware.org/c/" $4 "/" $5}')
+    fi
 
     # possible artefacts
     backup_fip="$(fvp_gen_bin_url backup_fip.bin)"
@@ -504,7 +500,7 @@ gen_fvp_yaml() {
     done
 
     # copied files are the working files
-    cp "${yaml_template_file}" "${yaml_file}"
+    expand_template "${yaml_template_file}" > "${yaml_file}"
     cp "$archive/model_params" "$lava_model_params"
 
     # Ensure braces in the FVP model parameters are not accidentally interpreted
