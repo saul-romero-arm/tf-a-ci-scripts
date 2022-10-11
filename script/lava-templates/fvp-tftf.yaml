@@ -1,6 +1,6 @@
 metadata:
-  test_config: {TEST_CONFIG}
-  fvp_model: {MODEL}
+  test_config: ${test_config}
+  fvp_model: ${model}
   build_url: ${BUILD_URL}
 
 $(if [ -n "${gerrit_url}" ]; then
@@ -10,7 +10,7 @@ $(if [ -n "${gerrit_url}" ]; then
 fi)
 
 device_type: fvp
-job_name: {TEST_CONFIG}
+job_name: ${test_config}
 
 timeouts:
   job:
@@ -69,12 +69,12 @@ done)
 
 - boot:
     method: fvp
-    license_variable: ARMLMD_LICENSE_FILE={ARMLMD_LICENSE_FILE}
+    license_variable: ARMLMD_LICENSE_FILE=${armlmd_license_file}
     docker:
-      name: {BOOT_DOCKER_NAME}
+      name: ${docker_name}
       local: true
-    image: {BOOT_IMAGE_DIR}/{BOOT_IMAGE_BIN}
-    version_string: {BOOT_VERSION_STRING}
+    image: ${model_dir}/${model_bin}
+    version_string: ${version_string}
     console_string: 'terminal_0: Listening for serial connection on port (?P<PORT>\d+)'
     feedbacks:
       - '(?P<NAME>terminal_1): Listening for serial connection on port (?P<PORT>\d+)'

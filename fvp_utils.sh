@@ -395,22 +395,8 @@ gen_fvp_yaml() {
     # arrays that relates variables and template macros
     # NOTE: any addition on these arrays, requires an addition in the
     # fvp templates
-    declare -A metadata_macros
-    declare -A yaml_macros
     declare -A artefacts_macros
-    metadata_macros=(
-        [test_config]="{TEST_CONFIG}"
-    )
-    yaml_macros=(
-        [armlmd_license_file]="{ARMLMD_LICENSE_FILE}"
-        [docker_name]="{BOOT_DOCKER_NAME}"
-        [model]="{MODEL}"
-        [model_bin]="{BOOT_IMAGE_BIN}"
-        [model_dir]="{BOOT_IMAGE_DIR}"
-        [prompt1]="{PROMPT1}"
-        [prompt2]="{PROMPT2}"
-        [version_string]="{BOOT_VERSION_STRING}"
-    )
+
     artefacts_macros=(
         [backup_fip]="{BACKUP_FIP}"
         [bl1]="{BL1}"
@@ -507,16 +493,6 @@ gen_fvp_yaml() {
     # as LAVA macros.
     sed -i -e 's/{/{{/g' "${lava_model_params}"
     sed -i -e 's/}/}}/g' "${lava_model_params}"
-
-    # replace metadata macros with real values
-    for m in "${!metadata_macros[@]}"; do
-        sed -i -e "s|${metadata_macros[$m]}|${!m}|" "$yaml_file"
-    done
-
-    # replace yaml macros with real values
-    for m in "${!yaml_macros[@]}"; do
-        sed -i -e "s|${yaml_macros[$m]}|${!m}|" "$yaml_file"
-    done
 
     # replace artefact macros with real values
     for m in "${!artefacts_macros[@]}"; do
