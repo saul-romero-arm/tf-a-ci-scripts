@@ -8,7 +8,7 @@
 # to run
 #
 
-fetch_tf_resource() {
+post_tf_build() {
 	# Get the images for the test.
 	edk_url="$tfa_downloads/ftpm/FVP_AARCH64_EFI.fd"
 	rootfs_url="$tfa_downloads/ftpm/boot-fat.uefi.img" get_rootfs
