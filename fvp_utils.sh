@@ -392,51 +392,6 @@ gen_fvp_yaml() {
 
     test_config="${TEST_CONFIG}"
 
-    # arrays that relates variables and template macros
-    # NOTE: any addition on these arrays, requires an addition in the
-    # fvp templates
-    declare -A artefacts_macros
-
-    artefacts_macros=(
-        [backup_fip]="{BACKUP_FIP}"
-        [bl1]="{BL1}"
-        [bl2]="{BL2}"
-        [bl31]="{BL31}"
-        [bl32]="{BL32}"
-        [cactus_primary]="{CACTUS_PRIMARY}"
-        [cactus_secondary]="{CACTUS_SECONDARY}"
-        [cactus_tertiary]="{CACTUS_TERTIARY}"
-        [coverage_trace_plugin]="{COVERAGE_TRACE_PLUGIN}"
-        [fvp_spmc_manifest_dtb]="{FVP_SPMC_MANIFEST_DTB}"
-        [busybox]="{BUSYBOX}"
-        [dtb]="{DTB}"
-        [el3_payload]="{EL3_PAYLOAD}"
-        [fip_gpt]="{FIP_GPT}"
-        [fwu_fip]="{FWU_FIP}"
-        [fip]="{FIP}"
-        [generic_trace]="{GENERIC_TRACE}"
-        [hafnium]="{HAFNIUM}"
-        [image]="{IMAGE}"
-        [ivy]="{IVY}"
-        [manifest_dtb]="{MANIFEST_DTB}"
-        [mcp_rom]="{MCP_ROM}"
-        [mcp_rom_hyphen]="{MCP_ROM_HYPHEN}"
-        [ns_bl1u]="{NS_BL1U}"
-        [ns_bl2u]="{NS_BL2U}"
-        [ramdisk]="{RAMDISK}"
-        [romlib]="{ROMLIB}"
-        [rootfs]="{ROOTFS}"
-        [secure_hafnium]="{SECURE_HAFNIUM}"
-        [scp_ram]="{SCP_RAM}"
-        [scp_ram_hyphen]="{SCP_RAM_HYPHEN}"
-        [scp_rom]="{SCP_ROM}"
-        [scp_rom_hyphen]="{SCP_ROM_HYPHEN}"
-        [spm]="{SPM}"
-        [tftf]="{TFTF}"
-        [tmp]="{TMP}"
-        [uboot]="{UBOOT}"
-    )
-
     declare -A artefact_filters=(
         [backup_fip]="backup_fip.bin"
         [bl1]="bl1.bin"
@@ -477,6 +432,51 @@ gen_fvp_yaml() {
         [uboot]="uboot.bin"
     )
 
+    # In LAVA we don't provide the paths to the artefacts directly, but instead
+    # use macros of the form `{XYZ}`. This is a list of regular expression
+    # replacements to run on the model parameters file before we add them to the
+    # LAVA job definition.
+    declare -A artefact_macros=(
+        ["[= ]backup_fip.bin"]="={BACKUP_FIP}"
+        ["[= ]bl1.bin"]="={BL1}"
+        ["[= ]bl2.bin"]="={BL2}"
+        ["[= ]bl31.bin"]="={BL31}"
+        ["[= ]bl32.bin"]="={BL32}"
+        ["[= ]cactus-primary.pkg"]="={CACTUS_PRIMARY}"
+        ["[= ]cactus-secondary.pkg"]="={CACTUS_SECONDARY}"
+        ["[= ]cactus-tertiary.pkg"]="={CACTUS_TERTIARY}"
+        ["[= ].*coverage_trace.so"]="={COVERAGE_TRACE_PLUGIN}"
+        ["[= ]fvp_spmc_manifest.dtb"]="={FVP_SPMC_MANIFEST_DTB}"
+        ["[= ]busybox.bin"]="={BUSYBOX}"
+        ["[= ]dtb.bin"]="={DTB}"
+        ["[= ]el3_payload.bin"]="={EL3_PAYLOAD}"
+        ["[= ]fip_gpt.bin"]="={FIP_GPT}"
+        ["[= ]fwu_fip.bin"]="={FWU_FIP}"
+        ["[= ]fip.bin"]="={FIP}"
+        ["[= ].*GenericTrace.so"]="={GENERIC_TRACE}"
+        ["[= ].*/hafnium.bin"]="={HAFNIUM}"
+        ["[= ]kernel.bin"]="={IMAGE}"
+        ["[= ]ivy.pkg"]="={IVY}"
+        ["[= ]manifest.dtb"]="={MANIFEST_DTB}"
+        ["[= ]mcp-rom.bin"]="={MCP_ROM}"
+        ["[= ]mcp_rom_hyphen.bin"]="={MCP_ROM_HYPHEN}"
+        ["[= ]ns_bl1u.bin"]="={NS_BL1U}"
+        ["[= ]ns_bl2u.bin"]="={NS_BL2U}"
+        ["[= ]initrd.bin"]="={RAMDISK}"
+        ["[= ]initrd.img"]="={RAMDISK}"
+        ["[= ]romlib.bin"]="={ROMLIB}"
+        ["[= ]rootfs.bin"]="={ROOTFS}"
+        ["[= ].*/secure_hafnium.bin"]="={SECURE_HAFNIUM}"
+        ["[= ]scp_ram.bin"]="={SCP_RAM}"
+        ["[= ]scp-ram.bin"]="={SCP_RAM_HYPHEN}"
+        ["[= ]scp_rom.bin"]="={SCP_ROM}"
+        ["[= ]scp-rom.bin"]="={SCP_ROM_HYPHEN}"
+        ["[= ]spm.bin"]="={SPM}"
+        ["[= ]tftf.bin"]="={TFTF}"
+        ["[= ].*/tmp.bin"]="={TMP}"
+        ["[= ]uboot.bin"]="={UBOOT}"
+    )
+
     declare -a artefacts=()
 
     for artefact in "${!artefact_filters[@]}"; do
@@ -494,65 +494,11 @@ gen_fvp_yaml() {
     sed -i -e 's/{/{{/g' "${lava_model_params}"
     sed -i -e 's/}/}}/g' "${lava_model_params}"
 
-    # replace artefact macros with real values
-    for m in "${!artefacts_macros[@]}"; do
-        sed -i -e "s|${artefacts_macros[$m]}|${!m}|" "$yaml_file"
-    done
-
-    # LAVA expects parameters as 'macros', i.e. {X} instead of x.bin, so
-    # replace them. As in the macro removal above, handle special cases for several
-    # artefacts
-    for m in "${!artefacts_macros[@]}"; do
-        case "$m" in
-            cactus_primary)
-                sed -i -e "s|=cactus-primary.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            cactus_secondary)
-                sed -i -e "s|=cactus-secondary.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            cactus_tertiary)
-                sed -i -e "s|=cactus-tertiary.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            coverage_trace_plugin)
-                sed -i -e "s|--plugin .*coverage_trace.so|--plugin ${artefacts_macros[$m]}|" "$lava_model_params"
-                sed -i -e "s|--plugin=.*coverage_trace.so|--plugin=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            fvp_spmc_manifest_dtb)
-                sed -i -e "s|=fvp_spmc_manifest.dtb|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            generic_trace)
-                sed -i -e "s|--plugin .*GenericTrace.so|--plugin ${artefacts_macros[$m]}|" "$lava_model_params"
-		sed -i -e "s|--plugin=.*GenericTrace.so|--plugin=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            image)
-                sed -i -e "s|=kernel.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            ivy)
-                sed -i -e "s|=ivy.pkg|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            manifest_dtb)
-                sed -i -e "s|=manifest.dtb|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            mcp_rom_hyphen)
-                sed -i -e "s|=mcp-rom.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            ramdisk)
-                sed -i -e "s|=initrd.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-                sed -i -e "s|=initrd.img|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            scp_ram_hyphen)
-                sed -i -e "s|=scp-ram.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            scp_rom_hyphen)
-                sed -i -e "s|=scp-rom.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            tmp | hafnium | secure_hafnium)
-                sed -i -e "s|=.*/${m}.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-            *)
-                sed -i -e "s|=${m}.bin|=${artefacts_macros[$m]}|" "$lava_model_params"
-                ;;
-        esac
+    # LAVA expects FVP binary paths as macros, i.e. `{X}` instead of `x.bin`, so
+    # replace the file paths in our pre-generated model parameters.
+    for regex in "${!artefact_macros[@]}"; do
+        sed -i -e "s!${regex}!${artefact_macros[${regex}]}!" \
+            "${lava_model_params}"
     done
 
     # include the model parameters

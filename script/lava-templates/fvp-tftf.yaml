@@ -59,7 +59,7 @@ actions:
 $(for artefact in "${artefacts[@]:?}"; do
 	cat <<-YAML
       ${artefact:?}:
-        url: ${artefacts_macros[${artefact:?}]:?}
+        url: ${!artefact:?}
 	YAML
 
 	[[ "${artefact:?}" =~ ^(busybox|rootfs)$ ]] && cat <<-YAML
