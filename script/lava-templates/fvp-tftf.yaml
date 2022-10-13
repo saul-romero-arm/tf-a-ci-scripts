@@ -81,4 +81,9 @@ done)
       - '(?P<NAME>terminal_2): Listening for serial connection on port (?P<PORT>\d+)'
       - '(?P<NAME>terminal_3): Listening for serial connection on port (?P<PORT>\d+)'
     arguments:
-{BOOT_ARGUMENTS}
+
+$(for boot_argument in "${boot_arguments[@]:?}"; do
+	cat <<-YAML
+      - $(echo "${boot_argument}" | jq -R .)
+	YAML
+done)

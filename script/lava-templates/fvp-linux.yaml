@@ -70,4 +70,9 @@ done)
     timeout:
       minutes: 30
     arguments:
-{BOOT_ARGUMENTS}
+
+$(for boot_argument in "${boot_arguments[@]:?}"; do
+	cat <<-YAML
+      - $(echo "${boot_argument}" | jq -R .)
+	YAML
+done)

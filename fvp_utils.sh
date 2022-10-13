@@ -485,9 +485,8 @@ gen_fvp_yaml() {
         fi
     done
 
-    # copied files are the working files
-    expand_template "${yaml_template_file}" > "${yaml_file}"
-    cp "$archive/model_params" "$lava_model_params"
+    # Derive LAVA model parameters from the non-LAVA ones
+    cp "${archive}/model_params" "${lava_model_params}"
 
     # Ensure braces in the FVP model parameters are not accidentally interpreted
     # as LAVA macros.
@@ -501,14 +500,12 @@ gen_fvp_yaml() {
             "${lava_model_params}"
     done
 
-    # include the model parameters
-    while read -r line; do
-        if [ -n "$line" ]; then
-            yaml_line="- $(echo "${line}" | jq -R .)"
-            sed -i -e "/{BOOT_ARGUMENTS}/i \ \ \ \ $yaml_line" "$yaml_file"
-        fi
-    done < "$lava_model_params"
-    sed -i -e '/{BOOT_ARGUMENTS}/d' "$yaml_file"
+    # Read boot arguments into an array so that the job template file can
+    # iterate over them.
+    readarray -t boot_arguments < "${lava_model_params}"
+
+    # Generate the LAVA job definition, minus the test expectations
+    expand_template "${yaml_template_file}" > "${yaml_file}"
 
     # Append expect commands into the job definition through test-interactive commands
     gen_fvp_yaml_expect >> "$yaml_file"
