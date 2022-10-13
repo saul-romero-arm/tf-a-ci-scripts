@@ -644,6 +644,8 @@ clean_build PLAT=qemu_sbsa $(common_flags) BL32=Makefile SPM_MM=1 \
 # For hikey enable PMF to include all files in the platform port
 make PLAT=hikey $(common_flags) ${TBB_OPTIONS} ENABLE_PMF=1 all
 make PLAT=hikey960 $(common_flags) ${TBB_OPTIONS} all
+make PLAT=hikey960 $(common_flags) ${TBB_OPTIONS} SPD=spmd SPMC_AT_EL3=1 \
+    SPMD_SPM_AT_SEL2=0 BL32=optee PLAT_SP_MANIFEST_DTS=foo NEED_FDT=no all
 make PLAT=poplar $(common_flags) all
 
 # Platforms from Socionext
