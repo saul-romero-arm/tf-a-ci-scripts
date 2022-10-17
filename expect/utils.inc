@@ -1,8 +1,19 @@
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
+
+# Determine whether the script is being run on a live FVP UART terminal or
+# postprocessing a UART log file (probably dumped by LAVA).
+proc postprocessing {} {
+	if { [info exists ::env(uart_log_file)] } {
+		return 1
+	} else {
+		return 0
+	}
+}
+
 # Retrieve script parameters from environment variables. If they don't exist,
 # return empty string
 proc get_param {name {default ""}} {
@@ -14,10 +25,13 @@ proc get_param {name {default ""}} {
 }
 
 proc exit_uart {status} {
-	# Allow UART output to flush
-	sleep 1
-	send "\x1b"
-	send "close\r"
+	if { [postprocessing] != 1 } {
+		# Allow UART output to flush
+		sleep 1
+		send "\x1b"
+		send "close\r"
+	}
+
 	exit $status
 }
 

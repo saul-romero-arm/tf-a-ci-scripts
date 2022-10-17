@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -10,8 +10,14 @@
 source [file join [file dirname [info script]] utils.inc]
 
 # Store environment variables into local variables
-set uart_port [get_param uart_port]
-set timeout [get_param timeout]
+set timeout [get_param timeout 30]
 
-# Open a telnet connection on the required UART port
-set telnet_pid [spawn telnet localhost $uart_port]
+if { [postprocessing] != 1 } {
+    # Open a Telnet connection to the required UART port
+    set uart_port [get_param uart_port]
+    set telnet_pid [spawn telnet localhost $uart_port]
+} else {
+    # Read directly from the UART log file
+    set uart_log_file [get_param uart_log_file]
+    set telnet_pid [spawn cat $uart_log_file]
+}

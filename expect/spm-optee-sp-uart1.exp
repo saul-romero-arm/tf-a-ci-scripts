@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -7,7 +7,7 @@
 source [file join [file dirname [info script]] handle-arguments.inc]
 
 expect {
-	"OP-TEE version: 3.3"  {
+	"OP-TEE version: "  {
 		puts "<<OP-TEE version>>"
 	}
 	timeout {

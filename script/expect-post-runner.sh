@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2021, Linaro Limited
+# Copyright (c) 2021-2022, Linaro Limited
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -8,8 +8,6 @@
 # to be run from Jenkins build, with $WORKSPACE set and per-UART test
 # plans prepare in artefacts/debug/run/. See expect-post/README.md for
 # more info about post-expect scripts.
-
-set -e
 
 if [ -z "$WORKSPACE" ]; then
     echo "Error: WORKSPACE is not set. This script is intended to be run from Jenkins build. (Or suitably set up local env)."
@@ -19,28 +17,49 @@ fi
 total=0
 failed=0
 
+# TODO: move dependency installation to the Dockerfile
+sudo DEBIAN_FRONTEND=noninteractive apt update && \
+    sudo DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y expect ||
+    exit 1
+
 for uartdir in $WORKSPACE/artefacts/debug/run/uart*; do
     # In case no dirs exist and the glob above isn't expanded at all.
     if [ ! -d "$uartdir" ]; then
         break
     fi
 
+    total=$((total + 1))
+
+    expscript_fragment=$(cat ${uartdir}/expect)
+    expscript=${WORKSPACE}/tf-a-ci-scripts/expect/${expscript_fragment}
+
+    if [ ! -f "${expscript}" ]; then
+        echo "expect/${expscript_fragment}: MISS"
+        failed=$((failed + 1))
+
+        continue
+    fi
+
     uart=$(basename $uartdir)
-    if [ $uart == "uart0" ]; then
-        continue
-    fi
-    expscript=$(cat $uartdir/expect)
-    if [ ! -f $WORKSPACE/tf-a-ci-scripts/expect-post/$expscript ]; then
-        echo "expect-post/$expscript: MISS"
-        continue
-    fi
-    if ! $WORKSPACE/tf-a-ci-scripts/expect-post/$expscript $WORKSPACE/lava-$uart.log; then
-        echo "expect-post/$expscript($uart): FAIL"
+
+    (
+        if [ -f "${uartdir}/env" ]; then
+            set -a
+            source "${uartdir}/env"
+            set +a
+        fi
+
+        export uart_log_file="${WORKSPACE}/lava-${uart}.log"
+
+        expect "${expscript}"
+    )
+
+    if [ $? != 0 ]; then
+        echo "expect/${expscript_fragment}(${uart}): FAIL"
         failed=$((failed + 1))
     else
-        echo "expect-post/$expscript($uart): pass"
+        echo "expect/${expscript_fragment}(${uart}): pass"
     fi
-    total=$((total + 1))
 done
 
 echo "Post expect scripts: total=$total failed=$failed"
