@@ -507,6 +507,69 @@ gen_fvp_yaml() {
     # iterate over them.
     readarray -t boot_arguments < "${lava_model_params}"
 
+    # Source runtime environment variables now so that they are accessible from
+    # the LAVA job template.
+    local run_root="${archive}/run"
+    local run_env="${run_root}/env"
+
+    if [ -f "${run_env}" ]; then
+        source "${run_env}"
+    fi
+
+    # The following defaults are based on those used by `run_package.sh`!
+
+    local num_uarts="${num_uarts:-4}"
+
+    # The payload UART for most FVPs is the primary UART, and the primary UART
+    # for most FVPs is UART0, but there are some tests and platforms where that
+    # isn't the case.
+    local primary_uart="${primary_uart:-0}"
+    local payload_uart="${payload_uart:-${primary_uart}}"
+
+    # TODO: Introduce a mechanism for mapping terminal names to UART indices.
+    #
+    # In the on-premises CI, the scripts figure out the FVP terminal names by
+    # first booting up the FVP, running an AWK script over it (the "ports
+    # script") which populates a Bash array with the real terminal names for
+    # each UART index, and then killing the FVP.
+    #
+    # In LAVA, we're supposed to know the terminal names beforehand to populate
+    # the console string and feedback regular expressions, which means we need
+    # to effectively run this process in reverse.
+    #
+    # To avoid having to introduce a whole new scheme for mapping the UARTs to
+    # their FVP terminal names, we're instead going to run the ports script over
+    # a list of all of the terminal names we have ever known, then use that to
+    # update the template file with the proper terminal names.
+    declare -a ports
+
+    if [ "${ports_script}" = "" ]; then
+        for ((i=0; i<${num_uarts}; i++)); do
+            ports[$i]="terminal_${i}"
+        done
+    else
+        local ports_input=$(mktempfile)
+        local ports_output=$(mktempfile)
+
+        cat > "${ports_input}" <<-EOF
+			terminal_0
+			terminal_1
+			terminal_2
+			terminal_3
+			terminal_s0
+			terminal_s1
+			terminal_uart_aon
+			terminal_uart_ap
+			terminal_uart0
+			terminal_uart1_ap
+		EOF
+
+        awk -v "num_uarts=${num_uarts}" -f "${ports_script:?}" \
+            "${ports_input}" > "${ports_output}"
+
+        source "${ports_output}"
+    fi
+
     # Generate the LAVA job definition, minus the test expectations
     expand_template "${yaml_template_file}" > "${yaml_file}"
 
@@ -522,21 +585,15 @@ gen_fvp_yaml() {
 }
 
 gen_fvp_yaml_expect() {
-
-    run_root="$archive/run"
-
     # Loop through all uarts expect files
     for expect_file in $(find $run_root -name expect); do
+        local uart_number=$(basename "$(dirname ${expect_file})")
 
-        # TODO: currently, only handle UART 0
-        case $expect_file in
-            *uart0* )
-                uart_number=uart0
-                ;;
-            *)
-                continue
-                ;;
-        esac
+        # Only handle the primary UART through LAVA. The remaining UARTs are
+        # validated after LAVA returns by the post-expect script.
+        if [ "${uart_number:?}" != "uart${primary_uart}" ]; then
+            continue
+        fi
 
         # Array containing "interactive" or "monitor" expect strings and populated during run config execution.
         # Interactive expect scripts are converted into LAVA Interactive Test Actions (see

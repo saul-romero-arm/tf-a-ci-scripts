@@ -62,11 +62,19 @@ done)
       local: true
     image: ${model_dir}/${model_bin}
     version_string: ${version_string}
-    console_string: 'terminal_0: Listening for serial connection on port (?P<PORT>\d+)'
+    console_string: '${ports[${payload_uart:?}]:?}: Listening for serial connection on port (?P<PORT>\d+)'
     feedbacks:
-      - '(?P<NAME>terminal_1): Listening for serial connection on port (?P<PORT>\d+)'
-      - '(?P<NAME>terminal_2): Listening for serial connection on port (?P<PORT>\d+)'
-      - '(?P<NAME>terminal_3): Listening for serial connection on port (?P<PORT>\d+)'
+
+$(for port in "${ports[@]}"; do
+	if [ "${port}" = "${ports[${payload_uart}]}" ]; then
+		continue
+	fi
+
+	cat <<-YAML
+      - '(?P<NAME>${port}): Listening for serial connection on port (?P<PORT>\d+)'
+	YAML
+done)
+
     timeout:
       minutes: 30
     arguments:
