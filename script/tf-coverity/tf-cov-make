@@ -207,17 +207,6 @@ clean_build $juno_common_flags CSS_USE_SCMI_SDS_DRIVER=0
 clean_build $juno_common_flags SPD=tspd ${ARM_TBB_OPTIONS} ARM_CRYPTOCELL_INTEG=1 CCSBROM_LIB_PATH=${CRYPTOCELL_LIB_PATH} KEY_SIZE=2048
 
 #
-# System Guidance for Infrastructure platform SGI575
-# Enable build config with RAS_EXTENSION to cover more files
-make $(common_flags) PLAT=sgi575 ${ARM_TBB_OPTIONS} EL3_EXCEPTION_HANDLING=1 FAULT_INJECTION_SUPPORT=1 \
-    HANDLE_EA_EL3_FIRST=1 RAS_EXTENSION=1 SDEI_SUPPORT=1 SPM_MM=1 ENABLE_SVE_FOR_NS=0 all
-
-#
-# System Guidance for Infrastructure platform RD-N1-Edge-Dual
-#
-make $(common_flags) PLAT=rdn1edge CSS_SGI_CHIP_COUNT=2 ${ARM_TBB_OPTIONS} all
-
-#
 # System Guidance for Infrastructure platform RD-E1Edge
 #
 make $(common_flags) PLAT=rde1edge ${ARM_TBB_OPTIONS} CSS_SGI_CHIP_COUNT=1 all
