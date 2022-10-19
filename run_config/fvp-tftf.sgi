@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2022 Arm Limited. All rights reserved.
+# Copyright (c) 2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-fetch_tf_resource() {
+generate_lava_job_template() {
 	uart="1" timeout="1200" set_primary="1" file="tftf-sgi.exp" track_expect
 	uart="0" file="hold_uart.exp" track_expect
 

@@ -11,7 +11,9 @@ post_tf_build() {
 	rootfs_url="$tfa_downloads/drtm/test-disk.img" get_rootfs
 	url="$edk_url" saveas="edk2.bin" fetch_file
 	archive_file "edk2.bin"
+}
 
+generate_lava_job_template() {
 	# Configure the uarts for tracking.
 	uart="0" file="hold_uart.exp" track_expect
 	uart="1" set_primary="1" timeout="700" file="tf-a-drtm.exp" track_expect

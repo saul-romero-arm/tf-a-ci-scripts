@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2022 Arm Limited. All rights reserved.
+# Copyright (c) 2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-post_fetch_tf_resource() {
-	model="base-aemv8a"
-
-	model="$model" \
-	arch_version="8.6" \
-	has_branch_target_exception="1" \
-		gen_model_params
+generate_lava_job() {
+	local model="base-aemv8a"
 
 	uart="0" set_expect_variable "num_cpus" "4"
+
 	model="$model" \
-	model_bin="FVP_Base_RevC-2xAEMvA" \
+		arch_version="8.6" \
+		has_branch_target_exception="1" \
+		gen_model_params
+
+	model="$model" \
+		model_bin="FVP_Base_RevC-2xAEMvA" \
 		gen_fvp_yaml
 }
