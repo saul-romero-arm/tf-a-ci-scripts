@@ -62,7 +62,7 @@ cleanup() {
 	echo "signal received: $sig"
 
 	# Avoid the model termination gracefully when the parameter 'exit_on_model_param'
-        # is set and test if exited successfully.
+	# is set and test if exited successfully.
 	if [ "$exit_on_model_param" -eq 0 ] || [ "$sig" != "EXIT" ]; then
 		# Kill all background processes so far and wait for them
 		while read pid; do
@@ -76,11 +76,13 @@ cleanup() {
 				model_cid=$(pgrep -P "$model_pid" | xargs)
 				# ignore errors
 				kill -SIGINT "$model_cid" &>/dev/null || true
-				# Allow some time to print data
-				sleep 2
-			else
-				kill_and_reap "$pid"
+				# Allow some time to print data, we can't use wait since the process is
+				# a child of the daemonized launch process.
+				sleep 5
 			fi
+
+			kill_and_reap "$pid"
+
 		done < <(find -name '*.pid')
 	fi
 
