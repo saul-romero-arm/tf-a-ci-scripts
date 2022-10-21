@@ -44,9 +44,10 @@ if len(sys.argv) > 1:
 files = sorted(glob.glob(path + "/*.etr"))
 #print(files)
 
-EMPTY_REPORT_HEADER = """\
+EMPTY_REPORT_HEADER = Template("""\
 No new MISRA issues detected, good work!
-"""
+${BUILD_URL}artifact/
+""").safe_substitute(os.environ)
 
 NONEMPTY_REPORT_HEADER = Template("""\
 MISRA delta report: ${BUILD_URL}artifact/
