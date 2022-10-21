@@ -1,13 +1,21 @@
 #!/bin/bash
 #
-# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2022, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 set -ex
 
-should_post_comment=0
+# Set to 0 to temporarily disable posting comments to Gerrit.
+should_post_comment=1
 
+# Don't post comments if run on the staging server.
+if echo "$JENKINS_URL" | grep -q "ci\.staging"; then
+    should_post_comment=0
+fi
+
+# Always enable posting comments to sandbox (test) projects, even if they're
+# disabled above.
 if echo "${GERRIT_PROJECT}" | grep -q sandbox; then
     should_post_comment=1
 fi
