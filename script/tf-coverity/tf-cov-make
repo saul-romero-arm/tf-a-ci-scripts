@@ -147,7 +147,7 @@ clean_build $fvp_common_flags CROSS_COMPILE=arm-none-eabi- \
 
 # RAS Extension Support
 clean_build $fvp_common_flags EL3_EXCEPTION_HANDLING=1 \
-    FAULT_INJECTION_SUPPORT=1 HANDLE_EA_EL3_FIRST=1 RAS_EXTENSION=1 \
+    FAULT_INJECTION_SUPPORT=1 HANDLE_EA_EL3_FIRST_NS=1 RAS_EXTENSION=1 \
     SDEI_SUPPORT=1
 
 # Hardware Assisted Coherency(DynamIQ)
@@ -479,7 +479,7 @@ clean_build PLAT=stingray $(common_flags) BOARD_CFG=bcm958742t-ns3 \
 
 # Platforms from Marvell
 make PLAT=a3700 $(common_flags) SCP_BL2=/dev/null CM3_SYSTEM_RESET=1 \
-    A3720_DB_PM_WAKEUP_SRC=1 HANDLE_EA_EL3_FIRST=1 all
+    A3720_DB_PM_WAKEUP_SRC=1 HANDLE_EA_EL3_FIRST_NS=1 all
 
 # Source files from mv-ddr-marvell repository are necessary
 # to build below four platforms
