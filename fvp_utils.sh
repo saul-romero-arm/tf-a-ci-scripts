@@ -489,6 +489,11 @@ gen_fvp_yaml() {
     cp "${yaml_template_file}" "${yaml_file}"
     cp "$archive/model_params" "$lava_model_params"
 
+    # Ensure braces in the FVP model parameters are not accidentally interpreted
+    # as LAVA macros.
+    sed -i -e 's/{/{{/g' "${lava_model_params}"
+    sed -i -e 's/}/}}/g' "${lava_model_params}"
+
     # replace metadata macros with real values
     for m in "${!metadata_macros[@]}"; do
         sed -i -e "s|${metadata_macros[$m]}|${!m}|" "$yaml_file"
