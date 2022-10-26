@@ -68,6 +68,7 @@ function make_self_contained() {
 ${ECLAIR_BIN_DIR}/eclair_report -db=${PROJECT_ECD} \
     -summary_txt=${ECLAIR_OUTPUT_DIR}/../summary_txt \
     -full_txt=${ECLAIR_OUTPUT_DIR}/../full_txt \
+    -reports1_html=strictness,${ECLAIR_OUTPUT_DIR}/../full_html/by_strictness/@TAG@.html \
     -full_html=${ECLAIR_OUTPUT_DIR}/../full_html
 
 # summary_txt contains just a single report file not present in full_txt, move it there and be done with it.
