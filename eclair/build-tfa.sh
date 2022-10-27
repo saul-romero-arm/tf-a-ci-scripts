@@ -10,9 +10,9 @@ set -ex
 env
 
 cd ${WORKSPACE}/trusted-firmware-a
-make clean
+make clean DEBUG=${DEBUG}
 
 # Replace '$(PWD)' with the *current* $PWD.
 MAKE_TARGET=$(echo "${MAKE_TARGET}" | sed "s|\$(PWD)|$PWD|")
 
-make ${MAKE_TARGET} -j3 $(cat ${WORKSPACE}/tf-a-ci-scripts/tf_config/$1)
+make ${MAKE_TARGET} -j3 $(cat ${WORKSPACE}/tf-a-ci-scripts/tf_config/$1) DEBUG=${DEBUG}
