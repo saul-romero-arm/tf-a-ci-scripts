@@ -52,6 +52,8 @@ reset_var has_gicv4_1
 
 reset_var sve_plugin
 
+reset_var has_sme
+
 reset_var bmcov_plugin
 
 reset_var retain_flash
@@ -110,6 +112,7 @@ ${has_gicv4_1+-C has-gicv4.1=$has_gicv4_1}
 ${sve_plugin+--plugin=$sve_plugin_path}
 ${sve_plugin+-C SVE.ScalableVectorExtension.enable_at_reset=0}
 ${sve_plugin+-C SVE.ScalableVectorExtension.veclen=$((128 / 8))}
+${has_sme+-C SVE.ScalableVectorExtension.has_sme=1}
 
 ${bmcov_plugin+--plugin=$bmcov_plugin_path}
 
@@ -302,6 +305,13 @@ fi
 if [ "$arch_version" = "8.8" ]; then
 	cat <<EOF >>"$model_param_file"
 -C cluster0.has_arm_v8-8=1
+EOF
+fi
+
+if [ "$arch_version" = "9.2" ]; then
+	cat <<EOF >>"$model_param_file"
+-C cluster0.has_arm_v9-2=1
+-C cluster1.has_arm_v9-2=1
 EOF
 fi
 
