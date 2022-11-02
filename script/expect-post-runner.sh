@@ -6,7 +6,7 @@
 #
 # Runner for scripts in expect-post/ directory. This script is intended
 # to be run from Jenkins build, with $WORKSPACE set and per-UART test
-# plans prepare in artefacts/debug/run/. See expect-post/README.md for
+# plans prepare in artefacts-lava/run/. See expect-post/README.md for
 # more info about post-expect scripts.
 
 if [ -z "$WORKSPACE" ]; then
@@ -22,7 +22,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt update && \
     sudo DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y expect ||
     exit 1
 
-for uartdir in $WORKSPACE/artefacts/debug/run/uart*; do
+for uartdir in $WORKSPACE/artefacts-lava/run/uart*; do
     # In case no dirs exist and the glob above isn't expanded at all.
     if [ ! -d "$uartdir" ]; then
         break
