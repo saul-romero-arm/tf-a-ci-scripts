@@ -90,4 +90,18 @@ exclude_paths = [
     ("plat/imx/imx8m/imx8mq/gpc.c", "Not currently used"),
     ("plat/imx/imx8m/imx8mq/imx8mq_bl31_setup.c", "Not currently used"),
     ("plat/imx/imx8m/imx8mq/imx8mq_psci.c", "Not currently used"),
+
+    # Exclude the following files of RDN1EDGE and SGI575 as these platforms
+    # are deprecated and removed from the CI.
+    ("plat/arm/board/rdn1edge/rdn1edge_err.c", "Only used by deprecated RDN1EDGE platforms"),
+    ("plat/arm/board/rdn1edge/rdn1edge_plat.c", "Only used by deprecated RDN1EDGE platforms"),
+    ("plat/arm/board/rdn1edge/rdn1edge_security.c", "Only used by deprecated RDN1EDGE platforms"),
+    ("plat/arm/board/rdn1edge/rdn1edge_topology.c", "Only used by deprecated RDN1EDGE platforms"),
+    ("plat/arm/board/rdn1edge/rdn1edge_trusted_boot.c", "Only used by deprecated RDN1EDGE platforms"),
+    ("plat/arm/board/sgi575/sgi575_err.c", "Only used by deprecated SGI575 platform"),
+    ("plat/arm/board/sgi575/sgi575_plat.c", "Only used by deprecated SGI575 platform"),
+    ("plat/arm/board/sgi575/sgi575_security.c", "Only used by deprecated SGI575 platform"),
+    ("plat/arm/board/sgi575/sgi575_topology.c", "Only used by deprecated SGI575 platform"),
+    ("plat/arm/board/sgi575/sgi575_trusted_boot.c", "Only used by deprecated SGI575 platform"),
+    ("plat/arm/css/sgi/sgi_ras.c", "Only used by deprecated SGI575 platform"),
 ]
