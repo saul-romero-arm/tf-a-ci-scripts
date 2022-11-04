@@ -35,7 +35,7 @@ common_flags() {
 }
 
 # Check if execution environment is ARM's jenkins (Jenkins running under ARM
-# infraestructure)
+# infrastructure)
 is_arm_jenkins_env() {
     if [ "$JENKINS_HOME" ]; then
 	if echo "$JENKINS_URL" | grep -q "oss.arm.com"; then
