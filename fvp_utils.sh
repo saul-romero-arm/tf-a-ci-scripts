@@ -58,11 +58,11 @@ fvp_base_aemv8r="fvp:fvp_base_aemv8r_${model_version}_${model_build};/opt/model/
 
 declare -A fvp_models
 fvp_models=(
-[base-aemv8a-quad]=";;;"
+[base-aemv8a-quad]="${fvp_base_aemv8a_aemv8a_aemv8a_aemv8a_ccn502};FVP_Base_AEMv8A-AEMv8A-AEMv8A-AEMv8A-CCN502"
 [base-aemv8a-revb]="${fvp_arm_std_library};FVP_Base_AEMvA-AEMvA"
 [base-aemv8a-latest-revb]="${fvp_arm_std_library};FVP_Base_AEMvA-AEMvA"
-[base-aemva]=";;;"
-[base-aemv8a-gic600ae]=";;;"
+[base-aemva]="${fvp_base_aemva};FVP_Base_AEMvA"
+[base-aemv8a-gic600ae]="${fvp_base_aemv8a_gic600ae};FVP_Base_AEMv8A-GIC600AE"
 [foundationv8]="${foundation_platform};Foundation_Platform"
 [base-aemv8a]="${fvp_base_revc_2xaemva};FVP_Base_RevC-2xAEMvA"
 [cortex-a32x4]="${fvp_arm_std_library_11_12};FVP_Base_Cortex-A32x4"
