@@ -609,7 +609,7 @@ make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
 # STM32MP1 TBBR
 make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
     $(common_flags) ARM_ARCH_MAJOR=7 STM32MP_SDMMC=1 \
-    BUILD_PLAT=build/stm32mp1-sdmmc/debug \
+    BUILD_PLAT=build/stm32mp1-sdmmc-tbbr/debug \
     MBEDTLS_DIR=$(pwd)/mbedtls TRUSTED_BOARD_BOOT=1 \
     ARCH=aarch32 AARCH32_SP=sp_min ENABLE_STACK_PROTECTOR=strong bl2 bl32
 
@@ -622,7 +622,7 @@ make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
 # STM32MP13 TBBR
 make PLAT=stm32mp1 CROSS_COMPILE=arm-none-eabi- \
     $(common_flags) ARM_ARCH_MAJOR=7 STM32MP_SDMMC=1 \
-    BUILD_PLAT=build/stm32mp1-mp13-sdmmc/debug STM32MP13=1 \
+    BUILD_PLAT=build/stm32mp1-mp13-sdmmc-tbbr/debug STM32MP13=1 \
     MBEDTLS_DIR=$(pwd)/mbedtls TRUSTED_BOARD_BOOT=1 \
     ARCH=aarch32 AARCH32_SP=optee ENABLE_STACK_PROTECTOR=strong bl2
 
