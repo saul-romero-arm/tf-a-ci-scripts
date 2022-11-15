@@ -108,4 +108,8 @@ exclude_paths = [
     # Exclude the following files used for STM32MP host tools (fiptool and cert_create)
     ("plat/st/stm32mp1/plat_def_uuid_config.c ", "Used to build STM32MP fiptool"),
     ("plat/st/stm32mp1/stm32mp1_tbb_cert.c", "Used to build STM32MP cert_create"),
+
+    # Exclude the IO files
+    ("drivers/io/io_dummy.c ", "None of the upstream platforms using this file"),
+
 ]
