@@ -104,4 +104,8 @@ exclude_paths = [
     ("plat/arm/board/sgi575/sgi575_topology.c", "Only used by deprecated SGI575 platform"),
     ("plat/arm/board/sgi575/sgi575_trusted_boot.c", "Only used by deprecated SGI575 platform"),
     ("plat/arm/css/sgi/sgi_ras.c", "Only used by deprecated SGI575 platform"),
+
+    # Exclude the following files used for STM32MP host tools (fiptool and cert_create)
+    ("plat/st/stm32mp1/plat_def_uuid_config.c ", "Used to build STM32MP fiptool"),
+    ("plat/st/stm32mp1/stm32mp1_tbb_cert.c", "Used to build STM32MP cert_create"),
 ]
