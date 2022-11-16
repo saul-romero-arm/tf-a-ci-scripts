@@ -859,7 +859,7 @@ gen_gpt_bin() {
 
     if [[ $fip_max_size -lt $bin_size ]]
     then
-           echo "FIP binary ($bin_size bytes) larger than max partition 1"
+           echo "FIP binary ($bin_size bytes) larger than max partition 1" \
                 "size ($fip_max_size byte)"
            return
     fi
