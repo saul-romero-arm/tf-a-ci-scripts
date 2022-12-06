@@ -85,19 +85,4 @@ ${ECLAIR_BIN_DIR}/eclair_report -db=${PROJECT_ECD} -reports_jenkins=${JENKINS_XM
 xz ${PROJECT_ECD}
 
 
-cat <<EOF >index.html
-<html>
-<body>
-<h1>MISRA reports</h1>
-
-<p>
-TF-A Config: ${TF_CONFIG}
-CI Build: <a href="${BUILD_URL}">${BUILD_URL}</a>
-</p>
-
-<li><a href="ECLAIR/full_txt/">Full TXT report</a>
-<li><a href="ECLAIR/full_html/index.html">Full HTML report</a>
-<li><a href="ECLAIR/full_html/by_service.html#strictness/service/first_file&strictness">Report by issue strictness (Mandatory/Required/Advisory) (HTML).</a>
-</body>
-</html>
-EOF
+. ${SCRIPT_DIR}/analyze_index_html.sh
