@@ -20,6 +20,11 @@ if echo "${GERRIT_PROJECT}" | grep -q sandbox; then
     should_post_comment=1
 fi
 
+# If run without a patch (e.g. for debugging, don't try to post comment.
+if [ -z "$GERRIT_CHANGE_NUMBER" ]; then
+    should_post_comment=0
+fi
+
 if [ $should_post_comment -eq 1 ]; then
     mkdir -p ~/.ssh/
     ssh-keyscan -H -p 29418 $GERRIT_HOST >> ~/.ssh/known_hosts
