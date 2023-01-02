@@ -649,7 +649,7 @@ clean_build PLAT=qemu_sbsa $(common_flags)
 
 # QEMU with SPM support
 clean_build PLAT=qemu_sbsa $(common_flags) BL32=Makefile SPM_MM=1 \
-    EL3_EXCEPTION_HANDLING=1 ENABLE_SVE_FOR_NS=0
+    EL3_EXCEPTION_HANDLING=1 ENABLE_SME_FOR_NS=0 ENABLE_SVE_FOR_NS=0
 
 # For hikey enable PMF to include all files in the platform port
 make PLAT=hikey $(common_flags) ${TBB_OPTIONS} ENABLE_PMF=1 all
