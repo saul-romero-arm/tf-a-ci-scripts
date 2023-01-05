@@ -194,6 +194,9 @@ clean_build $fvp_common_flags ENABLE_SME_FOR_NS=1 ENABLE_FEAT_HCX=1
 # Architectural Feature Detection mechanism
 clean_build $fvp_common_flags FEATURE_DETECTION=1
 
+# RNG trap feature
+clean_build $fvp_common_flags ENABLE_FEAT_RNG=1 ENABLE_FEAT_RNG_TRAP=1
+
 #
 # Juno platform
 # We'll use the following flags for all Juno builds.
