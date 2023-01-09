@@ -1,13 +1,10 @@
 #
-# Copyright (c) 2021, Arm Limited. All rights reserved.
+# Copyright (c) 2023, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 # Expect script for Trusted Firmware Test Framework
 #
-
-expect_string+=("i;Unhandled Exception in EL3.")
-expect_string+=("i;x30")
 expect_string+=("i;x0")
 expect_string+=("i;x1")
 expect_string+=("i;x2")
@@ -38,6 +35,7 @@ expect_string+=("i;x26")
 expect_string+=("i;x27")
 expect_string+=("i;x28")
 expect_string+=("i;x29")
+expect_string+=("i;x30")
 expect_string+=("i;scr_el3")
 expect_string+=("i;sctlr_el3")
 expect_string+=("i;cptr_el3")

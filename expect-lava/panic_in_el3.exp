@@ -1,0 +1,10 @@
+#
+# Copyright (c) 2023, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Expect script for Trusted Firmware Test Framework
+#
+
+expect_string+=("i;PANIC in EL3.")
+source $ci_root/expect-lava/exception_regs.inc
