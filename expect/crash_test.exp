@@ -12,3 +12,4 @@ expect_string "Unhandled External Abort received"
 expect_string "Unhandled Exception from EL2"
 
 source [file join [file dirname [info script]] exception_regs.inc]
+expect_string "x30"
