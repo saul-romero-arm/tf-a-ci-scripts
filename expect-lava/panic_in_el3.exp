@@ -8,4 +8,5 @@
 
 expect_string+=("i;PANIC in EL3.")
 expect_string+=("i;x30")
-source $ci_root/expect-lava/exception_regs.inc
+source $ci_root/expect-lava/exception_gp_regs.inc
+source $ci_root/expect-lava/exception_sys_regs.inc

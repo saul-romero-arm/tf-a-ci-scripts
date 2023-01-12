@@ -11,5 +11,6 @@ source [file join [file dirname [info script]] handle-arguments.inc]
 expect_string "Unhandled External Abort received"
 expect_string "Unhandled Exception from EL2"
 
-source [file join [file dirname [info script]] exception_regs.inc]
+source [file join [file dirname [info script]] exception_gp_regs.inc]
 expect_string "x30"
+source [file join [file dirname [info script]] exception_sys_regs.inc]
