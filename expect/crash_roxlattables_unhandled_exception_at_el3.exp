@@ -11,5 +11,5 @@ source [file join [file dirname [info script]] handle-arguments.inc]
 expect_string "Translation tables are now read-only at EL3."
 expect_string "Unhandled Exception in EL3."
 expect_string "x30"
-
-source [file join [file dirname [info script]] exception_regs.inc]
+source [file join [file dirname [info script]] exception_gp_regs.inc]
+source [file join [file dirname [info script]] exception_sys_regs.inc]
