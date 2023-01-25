@@ -197,6 +197,9 @@ clean_build $fvp_common_flags FEATURE_DETECTION=1
 # RNG trap feature
 clean_build $fvp_common_flags ENABLE_FEAT_RNG=1 ENABLE_FEAT_RNG_TRAP=1
 
+# OPTEE_ALLOW_SMC_LOAD feature
+clean_build $fvp_common_flags ${ARM_TBB_OPTIONS} SPD=opteed OPTEE_ALLOW_SMC_LOAD=1 PLAT_XLAT_TABLES_DYNAMIC=1
+
 #
 # Juno platform
 # We'll use the following flags for all Juno builds.
