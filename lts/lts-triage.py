@@ -135,10 +135,9 @@ def main():
         score = score + process_ps(ps)
         debug_print("# score after process_ps:", score)
 
-        print("{}:    {}".format(cmt.hexsha, score))
-
-        ln = f"{cmt.summary}:    {score}\n"
-        file_str += ln
+        ln = f"{cmt.summary}:    {score}"
+        file_str += ln + "\n"
+        print(ln)
 
         if score > 0:
             at_least_one_match = True
