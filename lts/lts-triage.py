@@ -11,6 +11,7 @@ import pkg_resources
 import os
 import git
 import re
+import sys
 import argparse
 from io import StringIO
 pkg_resources.require("unidiff>=0.7.4")
@@ -90,11 +91,15 @@ TO_CHECK = 'to_check'
 def main():
     parser = argparse.ArgumentParser(prog="lts-triage.py", description="check patches for LTS candidacy")
     parser.add_argument("--repo", required=True, help="path to tf-a git repo")
+    parser.add_argument("--email_path", required=True, help="path including the filename for email file")
     parser.add_argument("--debug", help="print debug logs", action="store_true")
 
     args = parser.parse_args()
     global global_debug
     global_debug = args.debug
+
+    file_str = "Below is an interesting patchset. Patches are listed in format {Subject}: {Score}.\n\n"
+    at_least_one_match = False
 
     repo = git.Repo(args.repo)
 
@@ -112,7 +117,7 @@ def main():
         # if we find a same commit hash among the ones we collected from integration branch
         # then we have seen all the new patches in this patch set, so we should exit.
         if cmt.hexsha in rebase_hashes:
-            debug_print("## stopping because found sha1 common between the two branches: ", cmt.hexsha)
+            print("## stopping because found sha1 common between the two branches: ", cmt.hexsha)
             break;
 
         # don't process merge commits
@@ -132,9 +137,22 @@ def main():
 
         print("{}:    {}".format(cmt.hexsha, score))
 
+        ln = f"{cmt.summary}:    {score}\n"
+        file_str += ln
+
+        if score > 0:
+            at_least_one_match = True
+
         cnt = cnt - 1
         if cnt == 0:
             break
+
+    if at_least_one_match == True:
+        try:
+            with open(args.email_path, "x") as f:
+                f.write(file_str)
+        except:
+            print("\n\nERROR: Couldn't open email file due to error: ", sys.exc_info()[0])
 
 if __name__ == '__main__':
     main()
