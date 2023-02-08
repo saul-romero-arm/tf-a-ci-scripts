@@ -119,4 +119,6 @@ exclude_paths = [
 
     # Exclude the following files used for TC host tools (fiptool)
     ("plat/arm/board/tc/plat_def_uuid_config.c", "Used to build TC fiptool"),
+
+    ("lib/psa/rss_platform.c", "Not used yet."),
 ]
