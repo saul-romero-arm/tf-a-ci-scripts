@@ -12,7 +12,7 @@ export TEST_DEFINITIONS_REFSPEC=${TEST_DEFINITIONS_REFSPEC:-tools-coverage-workf
 
 else
 
-export TEST_DEFINITIONS_REPO=${TEST_DEFINITIONS_REPO:-https://review.trustedfirmware.org/ci/qa-tools}
-export TEST_DEFINITIONS_REFSPEC=${TEST_DEFINITIONS_REFSPEC:-openci}
+export TEST_DEFINITIONS_REPO=${TEST_DEFINITIONS_REPO:-https://git.gitlab.arm.com/tooling/qa-tools.git}
+export TEST_DEFINITIONS_REFSPEC=${TEST_DEFINITIONS_REFSPEC:-bug-fix-intermediate-layer}
 
 fi
